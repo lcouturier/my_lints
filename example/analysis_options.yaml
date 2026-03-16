@@ -1,3 +1,9 @@
 plugins:
   my_lints:
     path: ../
+
+
+my_lints:
+  rules:
+    - avoid_nested_if:
+      max-nesting-level: 2
