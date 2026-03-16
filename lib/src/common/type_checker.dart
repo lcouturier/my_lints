@@ -1,3 +1,5 @@
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -19,19 +21,12 @@ class TypeChecker {
   ///
   /// Use this for dart: core types or when you need precise matching.
   /// Example: `TypeChecker.fromUrl('dart:core#Iterable')`
-  const TypeChecker.fromUrl(String url)
-    : _url = url,
-      _name = null,
-      _packageName = null,
-      _checkers = null;
+  const TypeChecker.fromUrl(String url) : _url = url, _name = null, _packageName = null, _checkers = null;
 
   /// Creates a type checker that matches if any of the given checkers match.
   ///
   /// Useful for checking against multiple possible types.
-  const TypeChecker.any(this._checkers)
-    : _name = null,
-      _packageName = null,
-      _url = null;
+  const TypeChecker.any(this._checkers) : _name = null, _packageName = null, _url = null;
 
   final String? _name;
   final String? _packageName;
@@ -133,17 +128,10 @@ class TypeChecker {
   }
 }
 
-bool _checkSelfOrSupertypes(
-  DartType? type,
-  bool Function(DartType?) predicate,
-) =>
-    predicate(type) ||
-    (type is InterfaceType && type.allSupertypes.any(predicate));
+bool _checkSelfOrSupertypes(DartType? type, bool Function(DartType?) predicate) =>
+    predicate(type) || (type is InterfaceType && type.allSupertypes.any(predicate));
 
-DartType? _getSelfOrSupertypes(
-  DartType? type,
-  bool Function(DartType?) predicate,
-) {
+DartType? _getSelfOrSupertypes(DartType? type, bool Function(DartType?) predicate) {
   if (predicate(type)) {
     return type;
   }
@@ -154,30 +142,33 @@ DartType? _getSelfOrSupertypes(
   return null;
 }
 
-bool isIterableOrSubclass(DartType? type) =>
-    _checkSelfOrSupertypes(type, (t) => t?.isDartCoreIterable ?? false);
+bool isIterableOrSubclass(DartType? type) => _checkSelfOrSupertypes(type, (t) => t?.isDartCoreIterable ?? false);
 
-bool isListOrSubclass(DartType? type) =>
-    _checkSelfOrSupertypes(type, (t) => t?.isDartCoreList ?? false);
+bool isListOrSubclass(DartType? type) => _checkSelfOrSupertypes(type, (t) => t?.isDartCoreList ?? false);
 
 // ignore: unused-code
-bool isMapOrSubclass(DartType? type) =>
-    _checkSelfOrSupertypes(type, (t) => t?.isDartCoreMap ?? false);
+bool isMapOrSubclass(DartType? type) => _checkSelfOrSupertypes(type, (t) => t?.isDartCoreMap ?? false);
 
-bool isNullableType(DartType? type) =>
-    type?.nullabilitySuffix == NullabilitySuffix.question;
+bool isNullableType(DartType? type) => type?.nullabilitySuffix == NullabilitySuffix.question;
 
-DartType? getSupertypeIterable(DartType? type) =>
-    _getSelfOrSupertypes(type, (t) => t?.isDartCoreIterable ?? false);
+DartType? getSupertypeIterable(DartType? type) => _getSelfOrSupertypes(type, (t) => t?.isDartCoreIterable ?? false);
 
-DartType? getSupertypeList(DartType? type) =>
-    _getSelfOrSupertypes(type, (t) => t?.isDartCoreList ?? false);
+DartType? getSupertypeList(DartType? type) => _getSelfOrSupertypes(type, (t) => t?.isDartCoreList ?? false);
 
-DartType? getSupertypeSet(DartType? type) =>
-    _getSelfOrSupertypes(type, (t) => t?.isDartCoreSet ?? false);
+DartType? getSupertypeSet(DartType? type) => _getSelfOrSupertypes(type, (t) => t?.isDartCoreSet ?? false);
 
-DartType? getSupertypeMap(DartType? type) =>
-    _getSelfOrSupertypes(type, (t) => t?.isDartCoreMap ?? false);
+DartType? getSupertypeMap(DartType? type) => _getSelfOrSupertypes(type, (t) => t?.isDartCoreMap ?? false);
+
+bool isLastElementAccess(BinaryExpression expression, String targetName) {
+  final left = expression.leftOperand;
+  final right = expression.rightOperand;
+
+  return left is PrefixedIdentifier &&
+      right is IntegerLiteral &&
+      left.name == '$targetName.length' &&
+      expression.operator.type == TokenType.MINUS &&
+      right.value == 1;
+}
 
 extension IterableExtensions<T> on Iterable<T> {
   T? firstWhereOrNull(bool Function(T element) test) {
@@ -194,11 +185,7 @@ extension IterableExtensions<T> on Iterable<T> {
     return (false, null);
   }
 
-  R firstWhereOrElse<R>(
-    bool Function(T element) test,
-    R Function(T) selector,
-    R Function() orElse,
-  ) {
+  R firstWhereOrElse<R>(bool Function(T element) test, R Function(T) selector, R Function() orElse) {
     for (final element in this) {
       if (test(element)) return selector(element);
     }
@@ -209,15 +196,33 @@ extension IterableExtensions<T> on Iterable<T> {
 const stringChecker = TypeChecker.fromUrl('dart:core#String');
 const listChecker = TypeChecker.fromUrl('dart:core#List');
 const iterableChecker = TypeChecker.fromUrl('dart:core#Iterable');
-const equatableChecker = TypeChecker.fromName(
-  'Equatable',
-  packageName: 'equatable',
-);
+const equatableChecker = TypeChecker.fromName('Equatable', packageName: 'equatable');
 const cubitChecker = TypeChecker.fromName('Cubit', packageName: 'bloc');
 const blocChecker = TypeChecker.fromName('Bloc', packageName: 'bloc');
 const widgetChecker = TypeChecker.fromName('Widget', packageName: 'flutter');
 const stateChecker = TypeChecker.fromName('State', packageName: 'flutter');
-const statelessChecker = TypeChecker.fromName(
-  'StatelessWidget',
-  packageName: 'flutter',
-);
+const statelessChecker = TypeChecker.fromName('StatelessWidget', packageName: 'flutter');
+
+extension DartTypeNullableExtensions on DartType? {
+  // Checks if a type is nullable.
+  bool get isNullable => isNullableType(this);
+  // Checks if a type is a Widget.
+  // ignore: deprecated_member_use
+  bool get isWidget => this?.getDisplayString(withNullability: false) == 'Widget';
+
+  // Checks if a type is a callback function.
+  bool get isCallbackType {
+    return toString().startsWith('Null') || _isCallbackType(this);
+  }
+
+  // Checks if a type has a constructor with a given name.
+  bool hasConstructor(String name) {
+    return (this is InterfaceType) && (this! as InterfaceType).constructors.any((e) => e.name == name);
+  }
+
+  // Checks if a DartType is a callback type.
+  bool _isCallbackType(DartType? type) {
+    return (type is FunctionType &&
+        (type.returnType is VoidType || type.returnType is DynamicType || type.formalParameters.isEmpty));
+  }
+}
