@@ -4,31 +4,33 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/extensions.dart';
 
-class AvoidNestedIfRule extends AnalysisRule {
-  static final LintCode code = LintCode('avoid_nested_if', 'Avoid nested if statements.');
+class AvoidInvertConditionRule extends AnalysisRule {
+  static final LintCode code = LintCode(
+    'avoid_invert_condition',
+    'Avoid inverting conditions',
+    correctionMessage: 'Avoid inverting conditions',
+  );
 
-  AvoidNestedIfRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidInvertConditionRule() : super(name: code.lowerCaseName, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
-    registry.addIfStatement(this, _Visitor(this));
+    registry.addBinaryExpression(this, _Visitor(this));
   }
 }
 
 class _Visitor extends SimpleAstVisitor<void> {
-  final AvoidNestedIfRule rule;
+  final AvoidInvertConditionRule rule;
 
   _Visitor(this.rule);
 
   @override
-  void visitIfStatement(IfStatement node) {
-    final depth = node.depth((node) => node is IfStatement);
-    if (depth > 3) {
+  void visitBinaryExpression(BinaryExpression node) {
+    if (node.leftOperand is Literal) {
       rule.reportAtNode(node);
     }
   }

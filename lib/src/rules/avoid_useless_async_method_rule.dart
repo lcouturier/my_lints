@@ -6,22 +6,15 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 class AvoidUselessAsyncMethodRule extends AnalysisRule {
-  AvoidUselessAsyncMethodRule()
-    : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidUselessAsyncMethodRule() : super(name: code.lowerCaseName, description: code.problemMessage);
 
-  static const code = LintCode(
-    'avoid_useless_async_method',
-    'Avoid useless async method.',
-  );
+  static const code = LintCode('avoid_useless_async_method', 'Avoid useless async method.');
 
   @override
   DiagnosticCode get diagnosticCode => code;
 
   @override
-  void registerNodeProcessors(
-    RuleVisitorRegistry registry,
-    RuleContext context,
-  ) {
+  void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     registry
       ..addMethodDeclaration(this, _Visitor(this))
       ..addFunctionDeclaration(this, _Visitor(this));
