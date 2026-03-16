@@ -248,3 +248,21 @@ extension FormalParameterExtensions on FormalParameter {
       (this as SimpleFormalParameter).type != null &&
       (this as SimpleFormalParameter).type.toString() == 'BuildContext';
 }
+
+extension ExpressionExtensions on Expression {
+  bool get isNegativeOne {
+    return switch (this) {
+      PrefixExpression(
+        operator: Token(type: TokenType.MINUS),
+        operand: IntegerLiteral(value: 1),
+      ) =>
+        true,
+      _ => false,
+    };
+  }
+
+  bool get isIndexOfCall {
+    return this is MethodInvocation &&
+        (this as MethodInvocation).methodName.name == 'indexOf';
+  }
+}

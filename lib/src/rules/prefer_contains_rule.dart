@@ -5,28 +5,33 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
-class PreferContains extends AnalysisRule {
+class PreferContainsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_contains',
     'Use .contains() instead of .indexOf() compared to -1.',
     correctionMessage: 'Replace with .contains() for better readability.',
   );
 
-  PreferContains() : super(name: code.lowerCaseName, description: code.problemMessage);
+  PreferContainsRule()
+    : super(name: code.lowerCaseName, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
 
   @override
-  void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
+  ) {
     final visitor = _Visitor(this);
     registry.addBinaryExpression(this, visitor);
   }
 }
 
 class _Visitor extends SimpleAstVisitor<void> {
-  final PreferContains rule;
+  final PreferContainsRule rule;
 
   _Visitor(this.rule);
 
@@ -38,26 +43,13 @@ class _Visitor extends SimpleAstVisitor<void> {
     final left = node.leftOperand;
     final right = node.rightOperand;
 
-    // Check: x.indexOf(item) == -1 or x.indexOf(item) != -1
-    if (_isIndexOfCall(left) && _isNegativeOne(right)) {
+    if (left.isIndexOfCall && right.isNegativeOne) {
       rule.reportAtNode(node);
       return;
     }
 
-    // Check reversed: -1 == x.indexOf(item) or -1 != x.indexOf(item)
-    if (_isNegativeOne(left) && _isIndexOfCall(right)) {
+    if (left.isNegativeOne && right.isIndexOfCall) {
       rule.reportAtNode(node);
     }
-  }
-
-  static bool _isIndexOfCall(Expression expr) {
-    return expr is MethodInvocation && expr.methodName.name == 'indexOf';
-  }
-
-  static bool _isNegativeOne(Expression expr) {
-    if (expr case PrefixExpression(operator: Token(type: TokenType.MINUS), operand: IntegerLiteral(value: 1))) {
-      return true;
-    }
-    return false;
   }
 }
