@@ -35,17 +35,13 @@ class PreferExplicitFunctionType extends AnalysisRule {
     correctionMessage: 'Try adding explicit return type and parameter list.',
   );
 
-  PreferExplicitFunctionType()
-    : super(name: code.lowerCaseName, description: code.problemMessage);
+  PreferExplicitFunctionType() : super(name: code.lowerCaseName, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
 
   @override
-  void registerNodeProcessors(
-    RuleVisitorRegistry registry,
-    RuleContext context,
-  ) {
+  void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
     registry.addNamedType(this, visitor);
   }
