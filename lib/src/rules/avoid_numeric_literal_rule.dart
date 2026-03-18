@@ -51,29 +51,22 @@ class _Visitor extends SimpleAstVisitor<void> {
   }
 
   bool _shouldIgnore(Expression node) {
-    final items = [
-      () => node.thisOrAncestorOfType<VariableDeclarationList>()?.isConst ?? false,
-      () => _isMinusOne(node),
-      () => node.thisOrAncestorOfType<EnumConstantArguments>() != null,
-      () => node.thisOrAncestorOfType<InstanceCreationExpression>()?.isConst ?? false,
-      () => node.isInstanceCreationDateTime,
-      () => node.isInstanceCreationDuration,
-    ];
+    if (_isMinusOne(node)) return true;
+    if (node.parent is IndexExpression) return true;
 
-    return items.any((e) => e());
-  }
-}
+    // Remonter l'arbre une seule fois pour les vérifications de contexte
+    AstNode? current = node.parent;
+    while (current != null) {
+      if (current is VariableDeclarationList && current.isConst) return true;
+      if (current is EnumConstantArguments) return true;
+      if (current is InstanceCreationExpression) {
+        if (current.isConst) return true;
+        final typeName = current.staticType?.getDisplayString(withNullability: false);
+        if (typeName == 'DateTime' || typeName == 'Duration') return true;
+      }
+      current = current.parent;
+    }
 
-extension on Expression {
-  bool get isInstanceCreationDateTime {
-    final instance = thisOrAncestorOfType<InstanceCreationExpression>();
-    if (instance == null) return false;
-    return instance.staticType?.element?.name == 'DateTime';
-  }
-
-  bool get isInstanceCreationDuration {
-    final instance = thisOrAncestorOfType<InstanceCreationExpression>();
-    if (instance == null) return false;
-    return instance.staticType?.element?.name == 'Duration';
+    return false;
   }
 }

@@ -21,6 +21,8 @@ void foo() {
   final x = 42;
   print(x);
 
+  print(list[2]);
+
   final items = [1, 2, 3];
   print(items);
 
