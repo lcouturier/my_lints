@@ -27,37 +27,37 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitListLiteral(ListLiteral node) {
+    // ...localSet ?? {},
     for (var element in node.elements.whereType<SpreadElement>().where((e) => e.expression is BinaryExpression)) {
-      final binary = element.expression as BinaryExpression;
-      if (binary.rightOperand is TypedLiteral) {
-        if (binary.operator.type == TokenType.QUESTION_QUESTION) {
-          rule.reportAtNode(element);
-        }
+      if (element.expression case BinaryExpression(
+        operator: Token(type: TokenType.QUESTION_QUESTION),
+        rightOperand: TypedLiteral(),
+      )) {
+        rule.reportAtNode(element);
       }
     }
 
+    // ...localSet != null ? localSet : <String>{},
     for (var element in node.elements.whereType<SpreadElement>().where((e) => e.expression is ConditionalExpression)) {
-      final conditional = element.expression as ConditionalExpression;
-      if (conditional.condition is BinaryExpression) {
-        final binary = conditional.condition as BinaryExpression;
-
-        if ((binary.operator.type == TokenType.BANG_EQ) && (binary.rightOperand is NullLiteral)) {
-          rule.reportAtNode(element);
-        }
+      if (element.expression case ConditionalExpression(
+        condition: BinaryExpression(operator: Token(type: TokenType.BANG_EQ), rightOperand: NullLiteral()),
+      )) {
+        rule.reportAtNode(element);
       }
     }
 
+    // if (localSet != null) ...localSet,
     for (var element in node.elements.whereType<IfElement>()) {
-      if ((element.expression is BinaryExpression) && (element.thenElement is SpreadElement)) {
-        final binary = element.expression as BinaryExpression;
-        final left = binary.leftOperand as SimpleIdentifier;
-        if ((element.thenElement as SpreadElement).expression is! SimpleIdentifier) {
-          return;
-        }
-        final then = ((element.thenElement as SpreadElement).expression as SimpleIdentifier);
-        if (left.name != then.name) return;
-        if ((binary.operator.type == TokenType.BANG_EQ) && (binary.rightOperand is NullLiteral)) {
-          rule.reportAtNode(element);
+      if (element.expression case BinaryExpression(
+        operator: Token(type: TokenType.BANG_EQ),
+        leftOperand: SimpleIdentifier(name: final name),
+        rightOperand: NullLiteral(),
+      )) {
+        if (element.thenElement case SpreadElement(expression: SimpleIdentifier())) {
+          final then = ((element.thenElement as SpreadElement).expression as SimpleIdentifier);
+          if (then.name == name) {
+            rule.reportAtNode(element);
+          }
         }
       }
     }

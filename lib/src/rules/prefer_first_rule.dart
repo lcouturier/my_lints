@@ -7,23 +7,16 @@ import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
 class PreferFirstRule extends AnalysisRule {
-  static final LintCode code = LintCode(
-    'prefer_first_rule',
-    'Prefer using first instead of where().first',
-  );
+  static final LintCode code = LintCode('prefer_first_rule', 'Prefer using first instead of where().first');
 
-  PreferFirstRule()
-    : super(name: code.lowerCaseName, description: code.problemMessage);
+  PreferFirstRule() : super(name: code.lowerCaseName, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
 
   @override
   @override
-  void registerNodeProcessors(
-    RuleVisitorRegistry registry,
-    RuleContext context,
-  ) {
+  void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     registry.addIndexExpression(this, _Visitor(this));
   }
 }
@@ -37,8 +30,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitMethodInvocation(MethodInvocation node) {
     super.visitMethodInvocation(node);
 
-    if (isIterableOrSubclass(node.realTarget?.staticType) &&
-        node.methodName.name == 'elementAt') {
+    if (isIterableOrSubclass(node.realTarget?.staticType) && node.methodName.name == 'elementAt') {
       final arg = node.argumentList.arguments.first;
 
       if (arg is IntegerLiteral && arg.value == 0) {

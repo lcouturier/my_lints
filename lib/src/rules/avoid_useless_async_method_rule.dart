@@ -15,9 +15,10 @@ class AvoidUselessAsyncMethodRule extends AnalysisRule {
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
+    final visitor = _Visitor(this);
     registry
-      ..addMethodDeclaration(this, _Visitor(this))
-      ..addFunctionDeclaration(this, _Visitor(this));
+      ..addMethodDeclaration(this, visitor)
+      ..addFunctionDeclaration(this, visitor);
   }
 }
 

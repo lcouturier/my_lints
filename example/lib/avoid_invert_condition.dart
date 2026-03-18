@@ -18,3 +18,10 @@ void foo3() {
     print('value is equal to 1');
   }
 }
+
+void foo4() {
+  bool value = false;
+  if (true == value) {
+    print("value is true");
+  }
+}
