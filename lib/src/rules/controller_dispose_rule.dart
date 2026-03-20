@@ -61,12 +61,14 @@ class _ControllerDisposeVisitor extends RecursiveAstVisitor<void> {
     final fieldType = node.fields.type;
     if (fieldType == null) return;
 
-    final typeName = fieldType.toString();
-    if ((_controllerTypes.contains(typeName)) || (fieldType.type?.shouldBeDisposed() ?? false)) {
-      for (final variable in node.fields.variables) {
-        final name = variable.name.lexeme;
-        if (variable.initializer != null) {
-          _controllers.add(name);
+    if (fieldType is NamedType) {
+      final typeName = fieldType.name.lexeme;
+      if ((_controllerTypes.contains(typeName)) || (fieldType.type?.shouldBeDisposed() ?? false)) {
+        for (final variable in node.fields.variables) {
+          final name = variable.name.lexeme;
+          if (variable.initializer != null) {
+            _controllers.add(name);
+          }
         }
       }
     }
@@ -89,8 +91,6 @@ class _ControllerDisposeVisitor extends RecursiveAstVisitor<void> {
 
       _disposedControllers.addAll(visitor.disposedControllers);
     }
-
-    super.visitMethodDeclaration(node);
   }
 }
 
@@ -107,7 +107,8 @@ class _InitStateVisitor extends RecursiveAstVisitor<void> {
     if (left is SimpleIdentifier && right is InstanceCreationExpression) {
       final name = left.name;
 
-      if (controllers.contains(name) || (left.staticType?.shouldBeDisposed() ?? false)) {
+      final shouldBeDisposed = left.staticType?.shouldBeDisposed() ?? false;
+      if (controllers.contains(name) || shouldBeDisposed) {
         controllers.add(name);
       }
     }

@@ -4,7 +4,6 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/extensions.dart';
 
 class AvoidNestedIfRule extends AnalysisRule {
   static final LintCode code = LintCode('avoid_nested_if', 'Avoid nested if statements.');
@@ -20,16 +19,22 @@ class AvoidNestedIfRule extends AnalysisRule {
   }
 }
 
-class _Visitor extends SimpleAstVisitor<void> {
+class _Visitor extends RecursiveAstVisitor<void> {
   final AvoidNestedIfRule rule;
+  int _depth = 0;
 
   _Visitor(this.rule);
 
   @override
   void visitIfStatement(IfStatement node) {
-    final depth = node.depth((node) => node is IfStatement);
-    if (depth > 3) {
+    _depth++;
+
+    if (_depth > 3) {
       rule.reportAtNode(node);
     }
+
+    super.visitIfStatement(node);
+
+    _depth--;
   }
 }
