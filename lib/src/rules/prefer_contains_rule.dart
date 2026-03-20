@@ -33,19 +33,14 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
-    final op = node.operator.type;
-    if (op != TokenType.EQ_EQ && op != TokenType.BANG_EQ) return;
-
-    final left = node.leftOperand;
-    final right = node.rightOperand;
-
-    if (left.isIndexOfCall && right.isNegativeOne) {
-      rule.reportAtNode(node);
-      return;
-    }
-
-    if (left.isNegativeOne && right.isIndexOfCall) {
-      rule.reportAtNode(node);
+    if (node case BinaryExpression(
+      operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
+      leftOperand: final left,
+      rightOperand: final right,
+    )) {
+      if ((left.isIndexOfCall && right.isNegativeOne) || (left.isNegativeOne && right.isIndexOfCall)) {
+        rule.reportAtNode(node);
+      }
     }
   }
 }

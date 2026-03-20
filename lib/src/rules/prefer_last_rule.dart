@@ -8,7 +8,7 @@ import 'package:my_lints/src/common/type_checker.dart';
 
 class PreferLastRule extends AnalysisRule {
   static const LintCode code = LintCode(
-    'prefer_last',
+    'prefer_last_over_index',
     "Use '.last' instead of '.lastWhere' when you just want the last element.",
     correctionMessage: "Replace with '.last'.",
     severity: DiagnosticSeverity.WARNING,
@@ -36,7 +36,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   @override
   void visitMethodInvocation(MethodInvocation node) {
     final target = node.realTarget;
-    if (isIterableOrSubclass(node.realTarget?.staticType) && node.methodName.name == 'elementAt') {
+    if (node.methodName.name == 'elementAt') {
       final arg = node.argumentList.arguments.first;
 
       if (arg is BinaryExpression && isLastElementAccess(arg, target.toString())) {
@@ -49,12 +49,10 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitIndexExpression(IndexExpression node) {
     final target = node.realTarget;
 
-    if (isListOrSubclass(target.staticType)) {
-      final index = node.index;
+    final index = node.index;
 
-      if (index is BinaryExpression && isLastElementAccess(index, target.toString())) {
-        rule.reportAtNode(node);
-      }
+    if (index is BinaryExpression && isLastElementAccess(index, target.toString())) {
+      rule.reportAtNode(node);
     }
   }
 }

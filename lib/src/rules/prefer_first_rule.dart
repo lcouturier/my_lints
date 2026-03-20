@@ -4,10 +4,9 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/type_checker.dart';
 
 class PreferFirstRule extends AnalysisRule {
-  static final LintCode code = LintCode('prefer_first_rule', 'Prefer using first instead of where().first');
+  static final LintCode code = LintCode('prefer_first_over_index', 'prefer first over index 0');
 
   PreferFirstRule() : super(name: code.name, description: code.problemMessage);
 
@@ -17,7 +16,10 @@ class PreferFirstRule extends AnalysisRule {
   @override
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
-    registry.addIndexExpression(this, _Visitor(this));
+    final visitor = _Visitor(this);
+    registry
+      ..addIndexExpression(this, visitor)
+      ..addMethodInvocation(this, visitor);
   }
 }
 
@@ -28,10 +30,11 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    super.visitMethodInvocation(node);
+    if (node.methodName.name == 'elementAt') {
+      final args = node.argumentList.arguments;
+      if (args.isEmpty) return;
 
-    if (isIterableOrSubclass(node.realTarget?.staticType) && node.methodName.name == 'elementAt') {
-      final arg = node.argumentList.arguments.first;
+      final arg = args.first;
 
       if (arg is IntegerLiteral && arg.value == 0) {
         rule.reportAtNode(node);
@@ -41,12 +44,10 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitIndexExpression(IndexExpression node) {
-    if (isListOrSubclass(node.realTarget.staticType)) {
-      final index = node.index;
+    final index = node.index;
 
-      if (index is IntegerLiteral && index.value == 0) {
-        rule.reportAtNode(node);
-      }
+    if (index is IntegerLiteral && index.value == 0) {
+      rule.reportAtNode(node);
     }
   }
 }

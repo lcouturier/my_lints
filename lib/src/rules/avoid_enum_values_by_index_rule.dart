@@ -32,11 +32,14 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitIndexExpression(IndexExpression node) {
-    final target = node.target;
-    if (target is PrefixedIdentifier && target.identifier.name == 'values' && node.index is IntegerLiteral) {
-      if (target.prefix.element is EnumElement) {
-        rule.reportAtNode(node);
-      }
+    if (node case IndexExpression(
+      index: IntegerLiteral(),
+      target: PrefixedIdentifier(
+        identifier: SimpleIdentifier(name: 'values'),
+        prefix: SimpleIdentifier(element: Element()),
+      ),
+    )) {
+      rule.reportAtNode(node);
     }
   }
 }

@@ -31,9 +31,12 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitAssignmentExpression(AssignmentExpression node) {
-    if (node.operator.type != TokenType.EQ) return;
-    if (node.leftHandSide.toString() != node.rightHandSide.toString()) return;
-
-    rule.reportAtNode(node);
+    if (node case AssignmentExpression(
+      operator: Token(type: TokenType.EQ),
+      leftHandSide: SimpleIdentifier(name: final left),
+      rightHandSide: SimpleIdentifier(name: final right),
+    )) {
+      if (left == right) rule.reportAtNode(node);
+    }
   }
 }

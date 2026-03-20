@@ -34,23 +34,32 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitVariableDeclaration(VariableDeclaration node) {
-    if (node.initializer case BinaryExpression(
-      leftOperand: PropertyAccess(propertyName: SimpleIdentifier(name: 'length')),
-      operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
-      rightOperand: IntegerLiteral(value: 0),
-    )) {
-      rule.reportAtNode(node.initializer!, arguments: ['length', '==']);
-    }
+    _check(node.initializer);
   }
 
   @override
   void visitIfStatement(IfStatement node) {
-    if (node.expression case BinaryExpression(
-      leftOperand: PrefixedIdentifier(identifier: SimpleIdentifier(name: 'length')),
+    _check(node.expression);
+  }
+
+  void _check(Expression? expr) {
+    if (expr case BinaryExpression(
+      leftOperand: final left,
       operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
       rightOperand: IntegerLiteral(value: 0),
-    )) {
-      rule.reportAtNode(node.expression, arguments: ['length', '==']);
+    ) when _isLengthAccess(left)) {
+      rule.reportAtNode(expr!, arguments: ['length', '==']);
     }
+  }
+
+  /// list.length → PrefixedIdentifier
+  /// this.list.length → PropertyAccess
+  /// (foo.bar).length → PropertyAccess
+  bool _isLengthAccess(Expression expr) {
+    return switch (expr) {
+      PropertyAccess(propertyName: SimpleIdentifier(name: 'length')) => true,
+      PrefixedIdentifier(identifier: SimpleIdentifier(name: 'length')) => true,
+      _ => false,
+    };
   }
 }
