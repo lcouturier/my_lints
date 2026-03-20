@@ -30,9 +30,9 @@ import 'package:my_lints/src/rules/prefer_is_empty_rule.dart';
 import 'package:my_lints/src/rules/prefer_last_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_spread_rule.dart';
 
-final plugin = MyLints();
+final plugin = MyLintsPlugin();
 
-class MyLints extends Plugin {
+class MyLintsPlugin extends Plugin {
   @override
   String get name => 'My Lints';
 
