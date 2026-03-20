@@ -8,6 +8,7 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+@Deprecated('Do not use')
 class NoBooleanLiteralCompareRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'no_boolean_literal_compare',

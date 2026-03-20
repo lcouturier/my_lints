@@ -7,7 +7,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 class PreferNullAwareSpreadRule extends AnalysisRule {
-  static final LintCode code = LintCode('prefer_null_aware_spread', 'Prefer null-aware spread operator.');
+  static const LintCode code = LintCode('prefer_null_aware_spread', 'Prefer null-aware spread operator.');
 
   PreferNullAwareSpreadRule() : super(name: code.name, description: code.problemMessage);
 

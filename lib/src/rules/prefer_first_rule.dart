@@ -6,7 +6,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 class PreferFirstRule extends AnalysisRule {
-  static final LintCode code = LintCode('prefer_first_over_index', 'prefer first over index 0');
+  static const LintCode code = LintCode('prefer_first_over_index', 'prefer first over index 0');
 
   PreferFirstRule() : super(name: code.name, description: code.problemMessage);
 

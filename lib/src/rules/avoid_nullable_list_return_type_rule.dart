@@ -7,7 +7,7 @@ import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
 class AvoidNullableListReturnTypeRule extends AnalysisRule {
-  static final LintCode code = LintCode(
+  static const LintCode code = LintCode(
     'avoid_nullable_list_return_type',
     'Avoid nullable list return type',
     correctionMessage: 'Avoid nullable list return type',

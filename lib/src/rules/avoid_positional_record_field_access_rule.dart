@@ -7,7 +7,7 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
 class AvoidPositionalRecordFieldAccessRule extends AnalysisRule {
-  static final LintCode code = LintCode(
+  static const LintCode code = LintCode(
     'avoid_positional_record_field_access',
     'Avoid positional record field access',
     correctionMessage: 'Avoid positional record field access',

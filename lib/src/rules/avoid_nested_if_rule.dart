@@ -6,7 +6,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 class AvoidNestedIfRule extends AnalysisRule {
-  static final LintCode code = LintCode('avoid_nested_if', 'Avoid nested if statements.');
+  static const LintCode code = LintCode('avoid_nested_if', 'Avoid nested if statements.');
 
   AvoidNestedIfRule() : super(name: code.name, description: code.problemMessage);
 

@@ -44,7 +44,6 @@ class MyLints extends Plugin {
       ..registerWarningRule(PreferLastRule())
       ..registerWarningRule(PreferAnyOrEvery())
       ..registerWarningRule(PreferIsEmptyRule())
-      ..registerWarningRule(NoBooleanLiteralCompareRule())
       ..registerWarningRule(PreferNullAwareSpreadRule())
       ..registerWarningRule(AvoidMixingNamedAndPositionalFields())
       ..registerWarningRule(AvoidNestedSwitchExpressionRule())
@@ -65,7 +64,6 @@ class MyLints extends Plugin {
     registry
       ..registerFixForRule(PreferAnyOrEvery.code, PreferAnyOrEveryFix.new)
       ..registerFixForRule(AvoidInvertConditionRule.code, AvoidInvertConditionFix.new)
-      ..registerFixForRule(NoBooleanLiteralCompareRule.code, NoCompareBooleanFix.new)
       ..registerFixForRule(PreferContainsRule.code, PreferContainsFix.new)
       ..registerFixForRule(PreferLastRule.code, PreferLastFix.new)
       ..registerFixForRule(AvoidEnumValuesByIndexRule.code, AvoidEnumValuesByIndexFix.new)

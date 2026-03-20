@@ -9,7 +9,7 @@ import 'package:analyzer/error/error.dart';
 class PreferIsEmptyRule extends AnalysisRule {
   PreferIsEmptyRule() : super(name: code.name, description: code.problemMessage);
 
-  static final LintCode code = LintCode(
+  static const LintCode code = LintCode(
     'prefer_is_empty',
     'Prefer using isEmpty instead of length',
     correctionMessage: "Prefer using `.isEmpty` over `.length == 0 or Prefer using `.isNotEmpty` over `.length != 0`.",
@@ -48,7 +48,7 @@ class _Visitor extends SimpleAstVisitor<void> {
       operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
       rightOperand: IntegerLiteral(value: 0),
     ) when _isLengthAccess(left)) {
-      rule.reportAtNode(expr!, arguments: ['length', '==']);
+      rule.reportAtNode(expr, arguments: ['length', '==']);
     }
   }
 

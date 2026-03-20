@@ -1,5 +1,95 @@
-include: package:lints/recommended.yaml
+include: package:flutter_lints/flutter.yaml
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+formatter:
+  page_width: 120
 
+analyzer:
+  language:
+    strict-casts: true
+    strict-raw-types: false
+
+  errors:
+    dead_code: error
+    unused_element: error
+    missing_required_param: error
+    omit_local_variable_types: ignore
+    include_file_not_found: ignore
+    # name of fixtures in uppercase break this rule
+    non_constant_identifier_names: ignore
+    unnecessary_import: error
+    unused_local_variable: error
+
+linter:
+  rules:
+    avoid_field_initializers_in_const_classes: true
+    avoid_void_async: true
+    unawaited_futures: true
+    cast_nullable_to_non_nullable: true
+    use_super_parameters: true
+
+    avoid_function_literals_in_foreach_calls: false
+    constant_identifier_names: false
+    overridden_fields: false
+    depend_on_referenced_packages: false
+    library_private_types_in_public_api: false
+    use_build_context_synchronously: true
+    unnecessary_breaks: true
+    invalid_case_patterns: true
+    type_literal_in_constant_pattern: true
+    no_literal_bool_comparisons: true
+    prefer_const_declarations: true
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    always_use_package_imports: true
+    sort_child_properties_last: true
+
+    # new rules since workspace migration to keep iso code
+    unnecessary_string_interpolations: false
+    avoid_returning_null_for_void: false
+    prefer_const_literals_to_create_immutables: false
+    curly_braces_in_flow_control_structures: false
+    unnecessary_brace_in_string_interps: false
+    prefer_conditional_assignment: true
+    use_key_in_widget_constructors: false
+    unnecessary_to_list_in_spreads: true
+    unnecessary_this: true
+    exhaustive_cases: false
+    prefer_is_not_operator: true
+    empty_constructor_bodies: false
+    implicit_call_tearoffs: false
+    unnecessary_nullable_for_final_variable_declarations: false
+    prefer_collection_literals: true
+    await_only_futures: false
+    sized_box_for_whitespace: false
+    no_leading_underscores_for_local_identifiers: false
+    unnecessary_constructor_name: false
+    void_checks: false
+    hash_and_equals: false
+    prefer_interpolation_to_compose_strings: false
+    avoid_init_to_null: false
+    prefer_function_declarations_over_variables: false
+    prefer_is_empty: false
+    unnecessary_null_in_if_null_operators: false
+    prefer_final_fields: false
+    dangling_library_doc_comments: false
+    avoid_unnecessary_containers: false
+    unrelated_type_equality_checks: false
+    prefer_null_aware_operators: true
+    prefer_initializing_formals: false
+    prefer_if_null_operators: false
+    type_init_formals: false
+    unnecessary_const: true
+    file_names: false
+    annotate_overrides: false
+    empty_statements: false
+    no_logic_in_create_state: false
+    avoid_renaming_method_parameters: false
+    recursive_getters: false
+    implementation_imports: false
+    use_function_type_syntax_for_parameters: false
+    unnecessary_getters_setters: false
+    prefer_typing_uninitialized_variables: false
+    camel_case_types: false
+    unnecessary_string_escapes: false
+    avoid_types_as_parameter_names: false
+    avoid_redundant_argument_values: true

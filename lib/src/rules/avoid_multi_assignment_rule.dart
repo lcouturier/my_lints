@@ -7,7 +7,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 class AvoidMultiAssignmentRule extends AnalysisRule {
-  static final LintCode code = LintCode(
+  static const LintCode code = LintCode(
     'avoid_multi_assignment',
     'Avoid multiple assignments on the same line.',
     correctionMessage: 'Avoid multiple assignments on the same line.',

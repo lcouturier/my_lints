@@ -10,7 +10,7 @@ class ControllerDisposeRule extends AnalysisRule {
   ControllerDisposeRule()
     : super(name: 'controller_dispose_check', description: 'Controllers should be disposed properly');
 
-  static final LintCode code = LintCode('controller_dispose_check', 'Controller "{0}" is not disposed.');
+  static const LintCode code = LintCode('controller_dispose_check', 'Controller "{0}" is not disposed.');
 
   @override
   DiagnosticCode get diagnosticCode => code;

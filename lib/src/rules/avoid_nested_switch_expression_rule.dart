@@ -7,7 +7,7 @@ import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
 class AvoidNestedSwitchExpressionRule extends AnalysisRule {
-  static final LintCode code = LintCode(
+  static const LintCode code = LintCode(
     'avoid_nested_switch_expression_rule',
     'Avoid using nested switch expressions.',
     severity: DiagnosticSeverity.WARNING,

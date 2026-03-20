@@ -6,7 +6,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 class AvoidNestedRecordRule extends AnalysisRule {
-  static final LintCode code = LintCode('avoid_nested_record_rule', 'Avoid using nested records.');
+  static const LintCode code = LintCode('avoid_nested_record_rule', 'Avoid using nested records.');
 
   AvoidNestedRecordRule() : super(name: code.name, description: code.problemMessage);
 

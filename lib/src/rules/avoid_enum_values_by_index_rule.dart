@@ -7,7 +7,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
 class AvoidEnumValuesByIndexRule extends AnalysisRule {
-  static final code = LintCode(
+  static const code = LintCode(
     'avoid_enum_values_by_index',
     'Avoid accessing enum values by index.',
     correctionMessage: 'Use the enum constant directly or byName() if using a string.',

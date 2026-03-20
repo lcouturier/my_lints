@@ -6,7 +6,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 class AvoidInvertConditionRule extends AnalysisRule {
-  static final LintCode code = LintCode(
+  static const LintCode code = LintCode(
     'avoid_invert_condition',
     'Avoid inverting conditions',
     correctionMessage: 'Avoid inverting conditions',
