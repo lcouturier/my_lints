@@ -1,6 +1,3 @@
-
-
-
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
@@ -9,23 +6,16 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 class AvoidNestedRecordRule extends AnalysisRule {
-  static final LintCode code = LintCode(
-    'avoid_nested_record_rule',
-    'Avoid using nested records.',
-  );
+  static final LintCode code = LintCode('avoid_nested_record_rule', 'Avoid using nested records.');
 
-  AvoidNestedRecordRule()
-    : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidNestedRecordRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
 
   @override
-  void registerNodeProcessors(
-    RuleVisitorRegistry registry,
-    RuleContext context,
-  ) {
-      registry.addVariableDeclaration(this, _Visitor(this));
+  void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
+    registry.addVariableDeclaration(this, _Visitor(this));
   }
 }
 

@@ -13,7 +13,7 @@ class AvoidSelfAssignmentRule extends AnalysisRule {
     correctionMessage: 'Remove the self-assignment.',
   );
 
-  AvoidSelfAssignmentRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidSelfAssignmentRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;

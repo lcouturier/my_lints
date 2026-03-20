@@ -6,7 +6,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 class AvoidUselessAsyncMethodRule extends AnalysisRule {
-  AvoidUselessAsyncMethodRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidUselessAsyncMethodRule() : super(name: code.name, description: code.problemMessage);
 
   static const code = LintCode('avoid_useless_async_method', 'Avoid useless async method.');
 

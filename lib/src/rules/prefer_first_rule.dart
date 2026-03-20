@@ -9,7 +9,7 @@ import 'package:my_lints/src/common/type_checker.dart';
 class PreferFirstRule extends AnalysisRule {
   static final LintCode code = LintCode('prefer_first_rule', 'Prefer using first instead of where().first');
 
-  PreferFirstRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  PreferFirstRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;

@@ -14,17 +14,13 @@ class PreferContainsRule extends AnalysisRule {
     correctionMessage: 'Replace with .contains() for better readability.',
   );
 
-  PreferContainsRule()
-    : super(name: code.lowerCaseName, description: code.problemMessage);
+  PreferContainsRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
 
   @override
-  void registerNodeProcessors(
-    RuleVisitorRegistry registry,
-    RuleContext context,
-  ) {
+  void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
     registry.addBinaryExpression(this, visitor);
   }

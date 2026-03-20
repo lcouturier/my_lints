@@ -13,17 +13,13 @@ class AvoidNestedSwitchExpressionRule extends AnalysisRule {
     severity: DiagnosticSeverity.WARNING,
   );
 
-  AvoidNestedSwitchExpressionRule()
-    : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidNestedSwitchExpressionRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
 
   @override
-  void registerNodeProcessors(
-    RuleVisitorRegistry registry,
-    RuleContext context,
-  ) {
+  void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     registry.addSwitchExpression(this, _Visitor(this));
   }
 }
@@ -35,9 +31,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitSwitchExpression(SwitchExpression node) {
-    final (found, expr) = node.cases.firstWhereOrNot(
-      (e) => e.expression is SwitchExpression,
-    );
+    final (found, expr) = node.cases.firstWhereOrNot((e) => e.expression is SwitchExpression);
 
     if (!found) return;
     rule.reportAtNode(expr);

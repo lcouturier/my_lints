@@ -14,7 +14,7 @@ class PreferLastRule extends AnalysisRule {
     severity: DiagnosticSeverity.WARNING,
   );
 
-  PreferLastRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  PreferLastRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   DiagnosticCode get diagnosticCode => code;

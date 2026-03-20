@@ -7,7 +7,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 class PreferIsEmptyRule extends AnalysisRule {
-  PreferIsEmptyRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  PreferIsEmptyRule() : super(name: code.name, description: code.problemMessage);
 
   static final LintCode code = LintCode(
     'prefer_is_empty',

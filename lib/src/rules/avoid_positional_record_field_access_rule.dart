@@ -13,7 +13,7 @@ class AvoidPositionalRecordFieldAccessRule extends AnalysisRule {
     correctionMessage: 'Avoid positional record field access',
   );
 
-  AvoidPositionalRecordFieldAccessRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidPositionalRecordFieldAccessRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;

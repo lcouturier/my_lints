@@ -12,7 +12,7 @@ class AvoidInvertConditionRule extends AnalysisRule {
     correctionMessage: 'Avoid inverting conditions',
   );
 
-  AvoidInvertConditionRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidInvertConditionRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;

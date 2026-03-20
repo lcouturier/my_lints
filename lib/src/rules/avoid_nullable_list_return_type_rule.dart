@@ -13,7 +13,7 @@ class AvoidNullableListReturnTypeRule extends AnalysisRule {
     correctionMessage: 'Avoid nullable list return type',
   );
 
-  AvoidNullableListReturnTypeRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidNullableListReturnTypeRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;

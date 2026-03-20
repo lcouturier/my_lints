@@ -14,7 +14,7 @@ class AvoidNumericLiteralsRule extends AnalysisRule {
     correctionMessage: 'Avoid numeric literal',
   );
 
-  AvoidNumericLiteralsRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidNumericLiteralsRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;

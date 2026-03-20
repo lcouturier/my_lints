@@ -20,14 +20,17 @@ extension DartTypeExtensions on DartType {
   // Checks if a DartType is a subtype of a given type name.
   bool _isSubtypeOfType(String typeName) {
     return element?.displayName == typeName ||
-        ((this is InterfaceType) &&
-            (this as InterfaceType).allSupertypes.any(
-              (e) => e.element.name == typeName,
-            ));
+        ((this is InterfaceType) && (this as InterfaceType).allSupertypes.any((e) => e.element.name == typeName));
   }
 
   // Returns a cached version of the `_isSubtypeOfType` method.
   bool Function(String) get isSubtypeOfType => _isSubtypeOfType.cache();
+
+  bool shouldBeDisposed() {
+    if (this is! InterfaceType) return false;
+    final element = (this as InterfaceType).element;
+    return element.lookUpMethod(name: 'dispose', library: element.library) != null;
+  }
 }
 
 extension FunctionCacheExtensions<F, R> on R Function(F) {
@@ -43,8 +46,7 @@ extension RecordTypeExtensions on RecordType {
   bool get isMixed => positionalFields.isNotEmpty && namedFields.isNotEmpty;
 }
 
-bool isNullableType(DartType? type) =>
-    type?.nullabilitySuffix == NullabilitySuffix.question;
+bool isNullableType(DartType? type) => type?.nullabilitySuffix == NullabilitySuffix.question;
 
 extension DartTypeNullableExtensions on DartType? {
   bool get isNullable => isNullableType(this);
@@ -53,8 +55,7 @@ extension DartTypeNullableExtensions on DartType? {
   // Checks if a type is nullable.
   // bool get isNullable => isNullableType(this);
   // Checks if a type is a Widget.
-  bool get isWidget =>
-      this?.getDisplayString(withNullability: false) == 'Widget';
+  bool get isWidget => this?.getDisplayString(withNullability: false) == 'Widget';
 
   // Checks if a type is a callback function.
   // bool get isCallbackType {
@@ -63,8 +64,7 @@ extension DartTypeNullableExtensions on DartType? {
 
   // Checks if a type has a constructor with a given name.
   bool hasConstructor(String name) {
-    return (this is InterfaceType) &&
-        (this! as InterfaceType).constructors.any((e) => e.name == name);
+    return (this is InterfaceType) && (this! as InterfaceType).constructors.any((e) => e.name == name);
   }
 
   // Checks if a DartType is a callback type.
@@ -79,8 +79,7 @@ extension DartTypeNullableExtensions on DartType? {
 extension FormalParameterExtension on FormalParameter {
   // Checks if a formal parameter is a boolean.
   bool get isBool =>
-      this is SimpleFormalParameter &&
-      ((this as SimpleFormalParameter).type?.type?.isDartCoreBool ?? false);
+      this is SimpleFormalParameter && ((this as SimpleFormalParameter).type?.type?.isDartCoreBool ?? false);
 
   // Checks if a formal parameter is nullable.
   // bool get isNullable =>
@@ -108,17 +107,14 @@ extension FormalParameterExtension on FormalParameter {
 extension FunctionBodyExtensions on FunctionBody {
   // Returns the expression from a function body.
   Expression? get expression => switch (this) {
-    BlockFunctionBody(:final block) =>
-      block.statements.whereType<ReturnStatement>().firstOrNull?.expression,
+    BlockFunctionBody(:final block) => block.statements.whereType<ReturnStatement>().firstOrNull?.expression,
     ExpressionFunctionBody(:final expression) => expression,
     _ => null,
   };
   // Checks if a function body has a return statement.
   bool get hasReturnStatement {
     return switch (this) {
-      final BlockFunctionBody b => b.block.statements.any(
-        (e) => e is ReturnStatement,
-      ),
+      final BlockFunctionBody b => b.block.statements.any((e) => e is ReturnStatement),
       ExpressionFunctionBody _ => true,
       _ => false,
     };
@@ -127,9 +123,7 @@ extension FunctionBodyExtensions on FunctionBody {
   // Checks if a function body returns `this`.
   bool get hasReturnThis {
     return switch (this) {
-      BlockFunctionBody b =>
-        b.block.statements.whereType<ReturnStatement>().first.expression
-            is ThisExpression,
+      BlockFunctionBody b => b.block.statements.whereType<ReturnStatement>().first.expression is ThisExpression,
       ExpressionFunctionBody e => e.expression is ThisExpression,
       _ => false,
     };
@@ -252,17 +246,21 @@ extension FormalParameterExtensions on FormalParameter {
 extension ExpressionExtensions on Expression {
   bool get isNegativeOne {
     return switch (this) {
-      PrefixExpression(
-        operator: Token(type: TokenType.MINUS),
-        operand: IntegerLiteral(value: 1),
-      ) =>
-        true,
+      PrefixExpression(operator: Token(type: TokenType.MINUS), operand: IntegerLiteral(value: 1)) => true,
       _ => false,
     };
   }
 
   bool get isIndexOfCall {
-    return this is MethodInvocation &&
-        (this as MethodInvocation).methodName.name == 'indexOf';
+    return this is MethodInvocation && (this as MethodInvocation).methodName.name == 'indexOf';
+  }
+}
+
+extension ClassDeclarationExtensions on ClassDeclaration {
+  bool get isStateClass {
+    final extendsClause = this.extendsClause;
+    if (extendsClause == null) return false;
+
+    return extendsClause.superclass.toString().startsWith('State');
   }
 }

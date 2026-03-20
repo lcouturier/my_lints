@@ -13,7 +13,7 @@ class AvoidMultiAssignmentRule extends AnalysisRule {
     correctionMessage: 'Avoid multiple assignments on the same line.',
   );
 
-  AvoidMultiAssignmentRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidMultiAssignmentRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;

@@ -35,7 +35,7 @@ class PreferExplicitFunctionType extends AnalysisRule {
     correctionMessage: 'Try adding explicit return type and parameter list.',
   );
 
-  PreferExplicitFunctionType() : super(name: code.lowerCaseName, description: code.problemMessage);
+  PreferExplicitFunctionType() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;

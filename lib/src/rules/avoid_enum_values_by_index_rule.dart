@@ -13,7 +13,7 @@ class AvoidEnumValuesByIndexRule extends AnalysisRule {
     correctionMessage: 'Use the enum constant directly or byName() if using a string.',
   );
 
-  AvoidEnumValuesByIndexRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidEnumValuesByIndexRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   DiagnosticCode get diagnosticCode => code;

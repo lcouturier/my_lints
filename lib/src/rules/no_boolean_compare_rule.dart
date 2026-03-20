@@ -16,7 +16,7 @@ class NoBooleanLiteralCompareRule extends AnalysisRule {
     severity: DiagnosticSeverity.WARNING,
   );
 
-  NoBooleanLiteralCompareRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  NoBooleanLiteralCompareRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;

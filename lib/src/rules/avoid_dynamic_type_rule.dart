@@ -13,7 +13,7 @@ class AvoidDynamicTypeRule extends AnalysisRule {
     correctionMessage: 'Avoid using dynamic type',
   );
 
-  AvoidDynamicTypeRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidDynamicTypeRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;

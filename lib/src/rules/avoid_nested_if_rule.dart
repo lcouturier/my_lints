@@ -9,7 +9,7 @@ import 'package:my_lints/src/common/extensions.dart';
 class AvoidNestedIfRule extends AnalysisRule {
   static final LintCode code = LintCode('avoid_nested_if', 'Avoid nested if statements.');
 
-  AvoidNestedIfRule() : super(name: code.lowerCaseName, description: code.problemMessage);
+  AvoidNestedIfRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
