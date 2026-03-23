@@ -11,6 +11,7 @@ import 'package:my_lints/src/fixes/prefer_last_fix.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_invert_condition_rule.dart';
+import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_if_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_record_rule.dart';
 import 'package:my_lints/src/rules/avoid_mixing_named_and_positional_fields.dart';
@@ -19,6 +20,7 @@ import 'package:my_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_numeric_literal_rule.dart';
 import 'package:my_lints/src/rules/avoid_positional_record_field_access_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_bool_rule.dart';
+import 'package:my_lints/src/rules/avoid_shadowed_extension_methods_rule.dart';
 import 'package:my_lints/src/rules/avoid_useless_async_method_rule.dart';
 import 'package:my_lints/src/rules/controller_dispose_rule.dart';
 import 'package:my_lints/src/rules/prefer_any_or_every_rule.dart';
@@ -61,6 +63,8 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidNumericLiteralsRule())
       ..registerWarningRule(PreferVoidCallbackRule())
       ..registerWarningRule(AvoidNullableBoolRule())
+      ..registerWarningRule(AvoidMapKeysContainsRule())
+      ..registerWarningRule(AvoidShadowedExtensionMethodsRule())
       ..registerWarningRule(AvoidNestedIfRule());
 
     registry
