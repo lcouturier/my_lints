@@ -20,29 +20,20 @@ class AvoidNullableListReturnTypeRule extends AnalysisRule {
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
-    final visitor = _Visitor(this);
-    registry
-      ..addFunctionDeclaration(this, visitor)
-      ..addMethodDeclaration(this, visitor);
+    final visitor = _ListVisitor(this);
+    registry.addNamedType(this, visitor);
   }
 }
 
-class _Visitor extends SimpleAstVisitor<void> {
+class _ListVisitor extends SimpleAstVisitor<void> {
   final AvoidNullableListReturnTypeRule rule;
 
-  _Visitor(this.rule);
+  _ListVisitor(this.rule);
 
   @override
-  void visitFunctionDeclaration(FunctionDeclaration node) {
-    if (node.returnType case NamedType(element: Element(name: 'List'), question: _?)) {
-      rule.reportAtNode(node.returnType!);
-    }
-  }
-
-  @override
-  void visitMethodDeclaration(MethodDeclaration node) {
-    if (node.returnType case NamedType(element: Element(name: 'List'), question: _?)) {
-      rule.reportAtNode(node.returnType!);
+  void visitNamedType(NamedType node) {
+    if (node case NamedType(element: Element(name: 'List'), question: _?)) {
+      rule.reportAtNode(node);
     }
   }
 }

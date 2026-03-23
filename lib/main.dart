@@ -18,6 +18,7 @@ import 'package:my_lints/src/rules/avoid_nested_switch_expression_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_numeric_literal_rule.dart';
 import 'package:my_lints/src/rules/avoid_positional_record_field_access_rule.dart';
+import 'package:my_lints/src/rules/avoid_nullable_bool_rule.dart';
 import 'package:my_lints/src/rules/avoid_useless_async_method_rule.dart';
 import 'package:my_lints/src/rules/controller_dispose_rule.dart';
 import 'package:my_lints/src/rules/prefer_any_or_every_rule.dart';
@@ -59,6 +60,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(ControllerDisposeRule())
       ..registerWarningRule(AvoidNumericLiteralsRule())
       ..registerWarningRule(PreferVoidCallbackRule())
+      ..registerWarningRule(AvoidNullableBoolRule())
       ..registerWarningRule(AvoidNestedIfRule());
 
     registry

@@ -236,13 +236,6 @@ extension AstNodeExtensions on AstNode {
   }
 }
 
-extension FormalParameterExtensions on FormalParameter {
-  bool get isBuildContext =>
-      this is SimpleFormalParameter &&
-      (this as SimpleFormalParameter).type != null &&
-      (this as SimpleFormalParameter).type.toString() == 'BuildContext';
-}
-
 extension ExpressionExtensions on Expression {
   bool get isNegativeOne {
     return switch (this) {
