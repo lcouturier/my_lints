@@ -6,8 +6,10 @@ import 'package:my_lints/src/fixes/avoid_enum_values_by_index_fix.dart';
 import 'package:my_lints/src/fixes/avoid_invert_condition_fix.dart';
 import 'package:my_lints/src/fixes/prefer_any_or_every_fix.dart';
 import 'package:my_lints/src/fixes/prefer_contains_fix.dart';
+import 'package:my_lints/src/fixes/prefer_explicit_function_type_fix.dart';
 import 'package:my_lints/src/fixes/prefer_first_fix.dart';
 import 'package:my_lints/src/fixes/prefer_last_fix.dart';
+import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_invert_condition_rule.dart';
@@ -30,6 +32,7 @@ import 'package:my_lints/src/rules/prefer_first_rule.dart';
 import 'package:my_lints/src/rules/prefer_is_empty_rule.dart';
 import 'package:my_lints/src/rules/prefer_last_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_spread_rule.dart';
+import 'package:my_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
 import 'package:my_lints/src/rules/prefer_void_callback.dart';
 
 final plugin = MyLintsPlugin();
@@ -65,6 +68,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidNullableBoolRule())
       ..registerWarningRule(AvoidMapKeysContainsRule())
       ..registerWarningRule(AvoidShadowedExtensionMethodsRule())
+      ..registerWarningRule(PreferUsageOfValueGetterRule())
       ..registerWarningRule(AvoidNestedIfRule());
 
     registry
@@ -73,6 +77,8 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(PreferContainsRule.code, PreferContainsFix.new)
       ..registerFixForRule(PreferLastRule.code, PreferLastFix.new)
       ..registerFixForRule(AvoidEnumValuesByIndexRule.code, AvoidEnumValuesByIndexFix.new)
+      ..registerFixForRule(PreferExplicitFunctionType.code, PreferExplicitFunctionTypeFix.new)
+      ..registerFixForRule(PreferUsageOfValueGetterRule.code, PreferUsageOfValueGetterFix.new)
       ..registerFixForRule(PreferFirstRule.code, PreferFirstFix.new);
   }
 }
