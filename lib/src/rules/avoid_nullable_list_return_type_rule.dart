@@ -3,8 +3,8 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/extensions.dart';
 
 class AvoidNullableListReturnTypeRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -34,21 +34,15 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
-    if (node case FunctionDeclaration(returnType: var returnType?)) {
-      final type = returnType.type;
-      if (type?.isNullableList ?? false) {
-        rule.reportAtNode(returnType);
-      }
+    if (node.returnType case NamedType(element: Element(name: 'List'), question: _?)) {
+      rule.reportAtNode(node.returnType!);
     }
   }
 
   @override
   void visitMethodDeclaration(MethodDeclaration node) {
-    if (node case MethodDeclaration(returnType: var returnType?)) {
-      final type = returnType.type;
-      if (type?.isNullableList ?? false) {
-        rule.reportAtNode(returnType);
-      }
+    if (node.returnType case NamedType(element: Element(name: 'List'), question: _?)) {
+      rule.reportAtNode(node.returnType!);
     }
   }
 }

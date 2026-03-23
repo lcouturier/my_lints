@@ -10,4 +10,8 @@ class MyClass {
   List<int> bar2() {
     return [];
   }
+
+  int? foo() {
+    return null;
+  }
 }

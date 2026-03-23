@@ -31,7 +31,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitNamedType(NamedType node) {
-    if (node case NamedType(name: Token(lexeme: final lexeme)) when lexeme == 'dynamic') {
+    if (node case NamedType(name: Token(lexeme: 'dynamic'))) {
       rule.reportAtNode(node);
     }
   }

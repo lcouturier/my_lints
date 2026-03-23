@@ -2,7 +2,9 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
 /// Warns when a `Function` type does not specify the return type and arguments.
@@ -54,15 +56,8 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitNamedType(NamedType node) {
-    final typeName = node.name;
-    if (typeName.lexeme != 'Function') return;
-
-    final element = node.element;
-    if (element == null) return;
-
-    final library = element.library;
-    if (library?.isDartCore != true) return;
-
-    rule.reportAtNode(node);
+    if (node case NamedType(element: Element(name: 'Function', library: LibraryElement(isDartCore: true)))) {
+      rule.reportAtNode(node);
+    }
   }
 }
