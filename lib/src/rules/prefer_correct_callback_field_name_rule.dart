@@ -53,23 +53,21 @@ class _Visitor extends SimpleAstVisitor<void> {
       if (name.startsWith('_')) continue;
 
       if (!name.startsWith('on')) {
-        rule.reportAtNode(variable, arguments: [name]);
+        rule.reportAtToken(variable.name, arguments: [name]);
       }
     }
   }
 
   bool _isCallbackType(TypeAnnotation type) {
+    if (type is GenericFunctionType) return true;
+
     final dartType = type.type;
     if (dartType == null) return false;
 
     if (dartType is FunctionType) return true;
 
     final alias = dartType.alias;
-    if (alias != null && alias.element.aliasedType is FunctionType) {
-      return true;
-    }
-
-    return false;
+    return alias?.element.aliasedType is FunctionType;
   }
 
   bool isWidget(ClassDeclaration node) {
