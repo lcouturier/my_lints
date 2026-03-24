@@ -67,13 +67,16 @@ extension DartTypeNullableExtensions on DartType? {
     return (this is InterfaceType) && (this! as InterfaceType).constructors.any((e) => e.name == name);
   }
 
+  // Checks if a type is a callback function.
+  bool get isCallbackType {
+    return toString().startsWith('Null') || _isCallbackType(this);
+  }
+
   // Checks if a DartType is a callback type.
-  // bool _isCallbackType(DartType? type) {
-  //   return (type is FunctionType &&
-  //       (type.returnType is VoidType ||
-  //           type.returnType is DynamicType ||
-  //           type.parameters.isEmpty));
-  // }
+  bool _isCallbackType(DartType? type) {
+    return (type is FunctionType &&
+        (type.returnType is VoidType || type.returnType is DynamicType || type.formalParameters.isEmpty));
+  }
 }
 
 extension FormalParameterExtension on FormalParameter {

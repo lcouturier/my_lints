@@ -27,6 +27,7 @@ import 'package:my_lints/src/rules/avoid_useless_async_method_rule.dart';
 import 'package:my_lints/src/rules/controller_dispose_rule.dart';
 import 'package:my_lints/src/rules/prefer_any_or_every_rule.dart';
 import 'package:my_lints/src/rules/prefer_contains_rule.dart';
+import 'package:my_lints/src/rules/prefer_correct_callback_field_name_rule.dart';
 import 'package:my_lints/src/rules/prefer_explicit_function_type_rule.dart';
 import 'package:my_lints/src/rules/prefer_first_rule.dart';
 import 'package:my_lints/src/rules/prefer_is_empty_rule.dart';
@@ -69,6 +70,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidMapKeysContainsRule())
       ..registerWarningRule(AvoidShadowedExtensionMethodsRule())
       ..registerWarningRule(PreferUsageOfValueGetterRule())
+      ..registerWarningRule(PreferCorrectCallbackFieldNameRule())
       ..registerWarningRule(AvoidNestedIfRule());
 
     registry

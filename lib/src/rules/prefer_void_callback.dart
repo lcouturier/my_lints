@@ -39,13 +39,5 @@ class _Visitor extends SimpleAstVisitor<void> {
     )) {
       rule.reportAtNode(node);
     }
-
-    // if (node case GenericFunctionType(
-    //   typeParameters: null,
-    //   parameters: FormalParameterList(parameters: []),
-    //   returnType: final returnType,
-    // ) when returnType is NamedType && returnType.name.lexeme != 'void') {
-    //   rule.reportAtNode(node);
-    // }
   }
 }

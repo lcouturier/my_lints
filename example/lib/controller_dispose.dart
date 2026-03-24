@@ -11,8 +11,9 @@ class MyController extends ChangeNotifier {
 
 class MyWidget extends StatefulWidget {
   final MyController controller;
+  final VoidCallback? tap;
 
-  const MyWidget({super.key, required this.controller});
+  const MyWidget({super.key, required this.controller, this.tap});
 
   @override
   State<MyWidget> createState() => _MyWidgetState();
