@@ -9,7 +9,7 @@ class PreferUsageOfValueGetterFix extends ResolvedCorrectionProducer {
   static const _fixKind = FixKind(
     'my_lints.fix.prefer_usage_of_value_getter',
     DartFixKindPriority.standard,
-    'Use value getter',
+    'Replace by ValueGetter<T>',
   );
 
   PreferUsageOfValueGetterFix({required super.context});
@@ -27,9 +27,9 @@ class PreferUsageOfValueGetterFix extends ResolvedCorrectionProducer {
 
     final returnType = targetNode.returnType;
     final typeName = (returnType! as NamedType).name.lexeme;
-    // final isNullable = (returnType as NamedType).question != null;
+    final isNullable = (returnType as NamedType).question != null;
 
-    final replacement = 'ValueGetter<$typeName>${isNodeNullable ? '?' : ''}';
+    final replacement = 'ValueGetter<${isNullable ? '$typeName?' : typeName}>${isNodeNullable ? '?' : ''}';
 
     await builder.addDartFileEdit(file, (builder) {
       builder

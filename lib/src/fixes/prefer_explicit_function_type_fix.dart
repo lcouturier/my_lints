@@ -8,7 +8,7 @@ class PreferExplicitFunctionTypeFix extends ResolvedCorrectionProducer {
   static const _fixKind = FixKind(
     'my_lints.fix.prefer_explicit_function_type',
     DartFixKindPriority.standard,
-    'Add explicit function type',
+    'Replace by VoidCallback',
   );
 
   PreferExplicitFunctionTypeFix({required super.context});
