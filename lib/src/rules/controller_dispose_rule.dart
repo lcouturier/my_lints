@@ -3,6 +3,7 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
@@ -17,14 +18,14 @@ class ControllerDisposeRule extends AnalysisRule {
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
-    registry.addClassDeclaration(this, _ControllerDisposeVisitor(this));
+    registry.addClassDeclaration(this, _Visitor(this));
   }
 }
 
-class _ControllerDisposeVisitor extends RecursiveAstVisitor<void> {
+class _Visitor extends SimpleAstVisitor<void> {
   final ControllerDisposeRule rule;
 
-  _ControllerDisposeVisitor(this.rule);
+  _Visitor(this.rule);
 
   static const _controllerTypes = {
     'TextEditingController',
@@ -35,80 +36,83 @@ class _ControllerDisposeVisitor extends RecursiveAstVisitor<void> {
     'PageController',
   };
 
-  final Set<String> _disposedControllers = {};
   final Set<String> _controllers = {};
+  final Set<String> _disposed = {};
+  final Map<String, FieldElement> _fields = {};
   MethodDeclaration? _disposeMethod;
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    _controllers.clear();
-    _disposedControllers.clear();
-    _disposeMethod = null;
-
     if (!node.isStateClass) return;
 
-    super.visitClassDeclaration(node);
+    _controllers.clear();
+    _disposed.clear();
+    _disposeMethod = null;
 
-    if (_disposeMethod == null) return;
+    for (final member in node.members.whereType<FieldDeclaration>()) {
+      final type = member.fields.type?.type;
+      if (type == null) continue;
 
-    for (final controller in _controllers.where((e) => !_disposedControllers.contains(e))) {
-      rule.reportAtNode(_disposeMethod!, arguments: [controller]);
-    }
-  }
+      final typeName = type.element?.name;
 
-  @override
-  void visitFieldDeclaration(FieldDeclaration node) {
-    final fieldType = node.fields.type;
-    if (fieldType == null) return;
+      final isController = _controllerTypes.contains(typeName) || type.shouldBeDisposed();
 
-    if (fieldType is NamedType) {
-      final typeName = fieldType.name.lexeme;
-      if ((_controllerTypes.contains(typeName)) || (fieldType.type?.shouldBeDisposed() ?? false)) {
-        for (final variable in node.fields.variables) {
-          final name = variable.name.lexeme;
-          if (variable.initializer != null) {
-            _controllers.add(name);
-          }
+      if (!isController) continue;
+
+      for (final variable in member.fields.variables) {
+        final element = variable.declaredFragment?.element;
+        if (element is FieldElement) {
+          _fields[element.name ?? ''] = element;
+          _controllers.add(element.name ?? '');
         }
       }
     }
 
-    super.visitFieldDeclaration(node);
-  }
+    for (final member in node.members) {
+      if (member is MethodDeclaration && member.name.lexeme == 'dispose') {
+        _disposeMethod = member;
+        member.body.visitChildren(_DisposeVisitor(_disposed));
+      }
 
-  @override
-  void visitMethodDeclaration(MethodDeclaration node) {
-    if (node.name.lexeme == 'initState') {
-      final visitor = _InitStateVisitor(_controllers);
-      node.accept(visitor);
+      if (member is MethodDeclaration && member.name.lexeme == 'initState') {
+        member.body.visitChildren(
+          _InitStateVisitor(fields: _fields, controllers: _controllers, controllerTypes: _controllerTypes),
+        );
+      }
     }
 
-    if (node.name.lexeme == 'dispose') {
-      _disposeMethod = node;
-
-      final visitor = _DisposeVisitor();
-      node.accept(visitor);
-
-      _disposedControllers.addAll(visitor.disposedControllers);
+    if (_disposeMethod != null) {
+      for (final c in _controllers.difference(_disposed)) {
+        rule.reportAtNode(_disposeMethod!, arguments: [c]);
+      }
     }
   }
 }
 
 class _InitStateVisitor extends RecursiveAstVisitor<void> {
+  final Map<String, FieldElement> fields;
   final Set<String> controllers;
+  final Set<String> controllerTypes;
 
-  _InitStateVisitor(this.controllers);
+  _InitStateVisitor({required this.fields, required this.controllers, required this.controllerTypes});
 
   @override
   void visitAssignmentExpression(AssignmentExpression node) {
     final left = node.leftHandSide;
     final right = node.rightHandSide;
 
-    if (left is SimpleIdentifier && right is InstanceCreationExpression) {
-      final name = left.name;
+    final name = left.getName();
+    if (name == null) return;
 
-      final shouldBeDisposed = left.staticType?.shouldBeDisposed() ?? false;
-      if (controllers.contains(name) || shouldBeDisposed) {
+    final field = fields[name];
+    if (field == null) return; // 🔒 garantit que c’est un field
+
+    if (right is InstanceCreationExpression) {
+      final typeName = right.constructorName.type.name.lexeme;
+
+      final shouldTrack = controllerTypes.contains(typeName) || (right.staticType?.shouldBeDisposed() ?? false);
+
+      if (shouldTrack) {
         controllers.add(name);
       }
     }
@@ -118,18 +122,17 @@ class _InitStateVisitor extends RecursiveAstVisitor<void> {
 }
 
 class _DisposeVisitor extends RecursiveAstVisitor<void> {
-  final Set<String> disposedControllers = {};
+  final Set<String> disposed;
+
+  _DisposeVisitor(this.disposed);
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node.methodName.name == 'dispose' && node.target != null) {
-      final target = node.target;
+    if (node.methodName.name != 'dispose') return;
 
-      if (target is SimpleIdentifier) {
-        disposedControllers.add(target.name);
-      } else if (target is PrefixedIdentifier) {
-        disposedControllers.add(target.identifier.name);
-      }
+    final name = node.realTarget?.getName();
+    if (name != null) {
+      disposed.add(name);
     }
 
     super.visitMethodInvocation(node);

@@ -250,6 +250,13 @@ extension ExpressionExtensions on Expression {
   bool get isIndexOfCall {
     return this is MethodInvocation && (this as MethodInvocation).methodName.name == 'indexOf';
   }
+
+  String? getName() {
+    if (this is SimpleIdentifier) return (this as SimpleIdentifier).name;
+    if (this is PropertyAccess) return (this as PropertyAccess).propertyName.name;
+    if (this is PrefixedIdentifier) return (this as PrefixedIdentifier).identifier.name;
+    return null;
+  }
 }
 
 extension ClassDeclarationExtensions on ClassDeclaration {
@@ -258,5 +265,22 @@ extension ClassDeclarationExtensions on ClassDeclaration {
     if (extendsClause == null) return false;
 
     return extendsClause.superclass.toString().startsWith('State');
+  }
+
+  /// Checks if the class is a data class.
+  ///
+  /// A data class is defined as a class that:
+  /// - Has at least one final field
+  /// - Has a copyWith method
+  /// - Has at least one constructor
+  bool get isDataClass {
+    final fields = members.whereType<FieldDeclaration>().toList();
+    if (fields.isEmpty) return false;
+
+    final hasFinalFields = fields.any((f) => f.fields.isFinal);
+    final hasCopyWith = members.whereType<MethodDeclaration>().any((m) => m.name.lexeme == 'copyWith');
+    final hasConstructor = members.whereType<ConstructorDeclaration>().isNotEmpty;
+
+    return hasFinalFields && hasConstructor && hasCopyWith;
   }
 }
