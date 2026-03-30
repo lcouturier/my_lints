@@ -11,7 +11,7 @@ class AvoidShadowedExtensionMethodsRule extends AnalysisRule {
   static LintCode code = const LintCode(
     'avoid_shadowed_extension_methods',
     'Avoid shadowing extension methods.',
-    correctionMessage: 'Use a different method name to avoid shadowing.',
+    correctionMessage: 'Use a different method name for {0} to avoid shadowing.',
     severity: DiagnosticSeverity.WARNING,
   );
 
@@ -44,7 +44,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
       for (var element in extensionMethods) {
         if (methods.any((m) => m.name == element.name.lexeme)) {
-          rule.reportAtNode(element);
+          rule.reportAtToken(element.name, arguments: [element.name.lexeme]);
         }
       }
     }

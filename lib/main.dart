@@ -12,7 +12,6 @@ import 'package:my_lints/src/fixes/prefer_last_fix.dart';
 import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
-import 'package:my_lints/src/rules/avoid_incomplete_copy_with_rule.dart';
 import 'package:my_lints/src/rules/avoid_invert_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_if_rule.dart';
@@ -23,6 +22,7 @@ import 'package:my_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_numeric_literal_rule.dart';
 import 'package:my_lints/src/rules/avoid_positional_record_field_access_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_bool_rule.dart';
+import 'package:my_lints/src/rules/avoid_reduce_usage_rule.dart';
 import 'package:my_lints/src/rules/avoid_shadowed_extension_methods_rule.dart';
 import 'package:my_lints/src/rules/avoid_useless_async_method_rule.dart';
 import 'package:my_lints/src/rules/controller_dispose_rule.dart';
@@ -72,7 +72,8 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidShadowedExtensionMethodsRule())
       ..registerWarningRule(PreferUsageOfValueGetterRule())
       ..registerWarningRule(PreferCorrectCallbackFieldNameRule())
-      ..registerWarningRule(AvoidIncompleteCopyWithRule())
+      // ..registerWarningRule(AvoidIncompleteCopyWithRule())
+      ..registerWarningRule(AvoidReduceUsageRule())
       ..registerWarningRule(AvoidNestedIfRule());
 
     registry

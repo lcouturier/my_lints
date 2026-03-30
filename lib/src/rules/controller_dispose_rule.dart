@@ -54,7 +54,6 @@ class _Visitor extends SimpleAstVisitor<void> {
       if (type == null) continue;
 
       final typeName = type.element?.name;
-
       final isController = _controllerTypes.contains(typeName) || type.shouldBeDisposed();
 
       if (!isController) continue;
@@ -82,8 +81,8 @@ class _Visitor extends SimpleAstVisitor<void> {
     }
 
     if (_disposeMethod != null) {
-      for (final c in _controllers.difference(_disposed)) {
-        rule.reportAtNode(_disposeMethod!, arguments: [c]);
+      for (final item in _controllers.difference(_disposed)) {
+        rule.reportAtNode(_disposeMethod!, arguments: [item]);
       }
     }
   }

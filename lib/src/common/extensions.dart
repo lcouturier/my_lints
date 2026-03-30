@@ -251,6 +251,11 @@ extension ExpressionExtensions on Expression {
     return this is MethodInvocation && (this as MethodInvocation).methodName.name == 'indexOf';
   }
 
+  /// Returns the name of the expression if it is a simple identifier, property access or prefixed identifier.
+  /// Returns null otherwise.
+  /// this.items.reduce(...)
+  /// items.reduce(...)
+  /// widget.items.reduce(...)
   String? getName() {
     if (this is SimpleIdentifier) return (this as SimpleIdentifier).name;
     if (this is PropertyAccess) return (this as PropertyAccess).propertyName.name;

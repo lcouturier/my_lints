@@ -9,6 +9,7 @@ import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
+@Deprecated('Work in progress...')
 class AvoidIncompleteCopyWithRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_incomplete_copy_with',
