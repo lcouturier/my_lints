@@ -7,6 +7,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that detects when a parameter's field or setter is reassigned.
 class AvoidMutatingParametersRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_mutating_parameters',
@@ -37,37 +38,40 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitMethodDeclaration(MethodDeclaration node) {
     final parameters = node.parameters?.parameters
         .map((e) => e.declaredFragment?.element)
-        .whereType<FormalParameterElement>()
-        .toSet();
+        .whereType<FormalParameterElement>();
     if (parameters?.isEmpty ?? true) return;
 
-    node.body.accept(_MutationVisitor(parameters!, rule));
+    node.body.accept(_MutationVisitor(parameters!.toList(), rule));
   }
 
   @override
   void visitFunctionDeclaration(FunctionDeclaration node) {
     final parameters = node.functionExpression.parameters?.parameters
         .map((e) => e.declaredFragment?.element)
-        .whereType<FormalParameterElement>()
-        .toSet();
+        .whereType<FormalParameterElement>();
     if (parameters?.isEmpty ?? true) return;
 
-    node.functionExpression.body.accept(_MutationVisitor(parameters!, rule));
+    node.functionExpression.body.accept(_MutationVisitor(parameters!.toList(), rule));
   }
 }
 
 class _MutationVisitor extends RecursiveAstVisitor<void> {
   _MutationVisitor(this.parameters, this.rule);
 
-  final Set<FormalParameterElement> parameters;
+  final List<FormalParameterElement> parameters;
   final AvoidMutatingParametersRule rule;
+  bool _shouldStop = false;
 
   @override
   void visitAssignmentExpression(AssignmentExpression node) {
+    if (_shouldStop) return;
+
     if (node case AssignmentExpression(
       leftHandSide: SimpleIdentifier(element: final element),
     ) when parameters.contains(element)) {
       rule.reportAtNode(node);
+      _shouldStop = true;
+      return;
     }
 
     super.visitAssignmentExpression(node);
@@ -75,22 +79,28 @@ class _MutationVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitPrefixExpression(PrefixExpression node) {
+    if (_shouldStop) return;
+
     if (node case PrefixExpression(
       operator: Token(type: TokenType.PLUS_PLUS) || Token(type: TokenType.MINUS_MINUS),
       operand: SimpleIdentifier(element: final element),
     ) when parameters.contains(element)) {
       rule.reportAtNode(node);
+      _shouldStop = true;
     }
     super.visitPrefixExpression(node);
   }
 
   @override
   void visitPostfixExpression(PostfixExpression node) {
+    if (_shouldStop) return;
+
     if (node case PostfixExpression(
       operator: Token(type: TokenType.PLUS_PLUS) || Token(type: TokenType.MINUS_MINUS),
       operand: SimpleIdentifier(element: final element),
     ) when parameters.contains(element)) {
       rule.reportAtNode(node);
+      _shouldStop = true;
     }
     super.visitPostfixExpression(node);
   }
