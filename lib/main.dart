@@ -14,12 +14,12 @@ import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_invert_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
+import 'package:my_lints/src/rules/avoid_mutating_parameter_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_if_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_record_rule.dart';
 import 'package:my_lints/src/rules/avoid_mixing_named_and_positional_fields.dart';
 import 'package:my_lints/src/rules/avoid_nested_switch_expression_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
-import 'package:my_lints/src/rules/avoid_numeric_literal_rule.dart';
 import 'package:my_lints/src/rules/avoid_positional_record_field_access_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_bool_rule.dart';
 import 'package:my_lints/src/rules/avoid_reduce_usage_rule.dart';
@@ -65,7 +65,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidDynamicTypeRule())
       ..registerWarningRule(AvoidEnumValuesByIndexRule())
       ..registerWarningRule(ControllerDisposeRule())
-      ..registerWarningRule(AvoidNumericLiteralsRule())
+      // ..registerWarningRule(AvoidNumericLiteralsRule())
       ..registerWarningRule(PreferVoidCallbackRule())
       ..registerWarningRule(AvoidNullableBoolRule())
       ..registerWarningRule(AvoidMapKeysContainsRule())
@@ -73,6 +73,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferUsageOfValueGetterRule())
       ..registerWarningRule(PreferCorrectCallbackFieldNameRule())
       // ..registerWarningRule(AvoidIncompleteCopyWithRule())
+      ..registerWarningRule(AvoidMutatingParametersRule())
       ..registerWarningRule(AvoidReduceUsageRule())
       ..registerWarningRule(AvoidNestedIfRule());
 

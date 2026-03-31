@@ -7,3 +7,16 @@ void bar(Function f) {
   other();
   f();
 }
+
+void test(int x) {
+  x = 3; // doit être détecté
+  x++; // doit être détecté
+}
+
+class TestClass {
+  void test(int x, int z) {
+    x = 3; // doit être détecté
+    x++; // doit être détecté
+    print(z);
+  }
+}
