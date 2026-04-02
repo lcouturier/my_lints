@@ -6,38 +6,38 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-class PreferContainsRule extends AnalysisRule {
+class AvoidCompareSameValueRule extends AnalysisRule {
   static const LintCode code = LintCode(
-    'prefer_contains_over_indexOf',
-    'Use .contains() instead of .indexOf() compared to -1.',
-    correctionMessage: 'Replace with .contains() for better readability.',
+    'avoid_compare_same_value',
+    'Avoid comparing the same value.',
+    correctionMessage: 'Remove the comparison.',
+    severity: DiagnosticSeverity.ERROR,
   );
 
-  PreferContainsRule() : super(name: code.name, description: code.problemMessage);
+  AvoidCompareSameValueRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
-    final visitor = _Visitor(this);
-    registry.addBinaryExpression(this, visitor);
+    registry.addBinaryExpression(this, _Visitor(this));
   }
 }
 
 class _Visitor extends SimpleAstVisitor<void> {
-  final PreferContainsRule rule;
+  final AvoidCompareSameValueRule rule;
 
   _Visitor(this.rule);
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
     if (node case BinaryExpression(
-      leftOperand: MethodInvocation(methodName: SimpleIdentifier(name: 'indexOf')),
+      leftOperand: SimpleIdentifier(name: final left),
       operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
-      rightOperand: IntegerLiteral(value: -1),
+      rightOperand: SimpleIdentifier(name: final right),
     )) {
-      rule.reportAtNode(node);
+      if (left == right) rule.reportAtNode(node);
     }
   }
 }

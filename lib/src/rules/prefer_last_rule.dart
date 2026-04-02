@@ -2,9 +2,9 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/type_checker.dart';
 
 class PreferLastRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -35,23 +35,31 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    final target = node.realTarget;
-    if (node.methodName.name == 'elementAt') {
-      final arg = node.argumentList.arguments.first;
-
-      if (arg is BinaryExpression && isLastElementAccess(arg, target.toString())) {
-        rule.reportAtNode(node);
-      }
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(name: 'elementAt'),
+      argumentList: ArgumentList(
+        arguments: [
+          BinaryExpression(
+            leftOperand: Identifier(name: final name),
+            operator: Token(type: TokenType.MINUS),
+            rightOperand: IntegerLiteral(value: 1),
+          ),
+        ],
+      ),
+    ) when name.contains('length')) {
+      rule.reportAtNode(node);
     }
   }
 
   @override
   void visitIndexExpression(IndexExpression node) {
-    final target = node.realTarget;
-
-    final index = node.index;
-
-    if (index is BinaryExpression && isLastElementAccess(index, target.toString())) {
+    if (node case IndexExpression(
+      index: BinaryExpression(
+        leftOperand: Identifier(name: final name),
+        operator: Token(type: TokenType.MINUS),
+        rightOperand: IntegerLiteral(value: 1),
+      ),
+    ) when name.contains('length')) {
       rule.reportAtNode(node);
     }
   }

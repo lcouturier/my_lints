@@ -31,7 +31,6 @@ class PreferNullAwareNotationRule extends AnalysisRule {
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
-    // Implementation of node processors to detect explicit null checks and suggest using null-aware notation.
     registry.addBinaryExpression(this, _Visitor(this));
   }
 }
@@ -43,20 +42,20 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
-    if (!([() => (node.leftOperand is PropertyAccess), () => (node.leftOperand is SimpleIdentifier)]).any((e) => e())) {
-      return;
+    if (node
+        case BinaryExpression(
+          leftOperand: final expr,
+          operator: Token(type: final operatorType),
+          rightOperand: BooleanLiteral(value: final rightValue),
+        )
+        when (operatorType == TokenType.EQ_EQ || operatorType == TokenType.BANG_EQ) &&
+            (expr.staticType?.isNullable ?? false)) {
+      final isCheckingTrue = rightValue;
+      final message =
+          'Use ${isCheckingTrue ? '${expr} ?? false' : '!(${expr} ?? false)'} instead of ${node.toSource()}.';
+
+      rule.reportAtNode(node, arguments: [message]);
     }
-
-    if ((node.operator.type != TokenType.EQ_EQ) && (node.operator.type != TokenType.BANG_EQ)) return;
-    if (node.rightOperand is! BooleanLiteral) return;
-    final leftOperand = node.leftOperand;
-    if (leftOperand.staticType != null && !leftOperand.staticType.isNullable) return;
-
-    final isCheckingTrue = (node.rightOperand as BooleanLiteral).value;
-    final condition = node.toSource();
-    final message =
-        'Use ${isCheckingTrue ? '$leftOperand ?? false' : '!($leftOperand ?? false)'} instead of $condition.';
-    rule.reportAtNode(node, arguments: [message]);
   }
 }
 

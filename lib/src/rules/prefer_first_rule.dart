@@ -30,23 +30,17 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node.methodName.name == 'elementAt') {
-      final args = node.argumentList.arguments;
-      if (args.isEmpty) return;
-
-      final arg = args.first;
-
-      if (arg is IntegerLiteral && arg.value == 0) {
-        rule.reportAtNode(node);
-      }
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(name: 'elementAt'),
+      argumentList: ArgumentList(arguments: [IntegerLiteral(value: 0)]),
+    )) {
+      rule.reportAtNode(node);
     }
   }
 
   @override
   void visitIndexExpression(IndexExpression node) {
-    final index = node.index;
-
-    if (index is IntegerLiteral && index.value == 0) {
+    if (node case IndexExpression(index: IntegerLiteral(value: 0))) {
       rule.reportAtNode(node);
     }
   }

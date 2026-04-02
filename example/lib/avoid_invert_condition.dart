@@ -25,3 +25,17 @@ void foo4() {
     print("value is true");
   }
 }
+
+void foo5() {
+  bool value = false;
+  if (value == value) {
+    print("value is true");
+  }
+}
+
+void foo6() {
+  String value = "test";
+  if ((value != value) == (value != value)) {
+    print("value is true");
+  }
+}

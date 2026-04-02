@@ -10,6 +10,7 @@ import 'package:my_lints/src/fixes/prefer_explicit_function_type_fix.dart';
 import 'package:my_lints/src/fixes/prefer_first_fix.dart';
 import 'package:my_lints/src/fixes/prefer_last_fix.dart';
 import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
+import 'package:my_lints/src/rules/avoid_compare_same_value_rule.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_invert_condition_rule.dart';
@@ -33,6 +34,7 @@ import 'package:my_lints/src/rules/prefer_explicit_function_type_rule.dart';
 import 'package:my_lints/src/rules/prefer_first_rule.dart';
 import 'package:my_lints/src/rules/prefer_is_empty_rule.dart';
 import 'package:my_lints/src/rules/prefer_last_rule.dart';
+import 'package:my_lints/src/rules/prefer_null_aware_notation_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_spread_rule.dart';
 import 'package:my_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
 import 'package:my_lints/src/rules/prefer_void_callback.dart';
@@ -65,15 +67,15 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidDynamicTypeRule())
       ..registerWarningRule(AvoidEnumValuesByIndexRule())
       ..registerWarningRule(ControllerDisposeRule())
-      // ..registerWarningRule(AvoidNumericLiteralsRule())
+      ..registerWarningRule(PreferNullAwareNotationRule())
       ..registerWarningRule(PreferVoidCallbackRule())
       ..registerWarningRule(AvoidNullableBoolRule())
       ..registerWarningRule(AvoidMapKeysContainsRule())
       ..registerWarningRule(AvoidShadowedExtensionMethodsRule())
       ..registerWarningRule(PreferUsageOfValueGetterRule())
       ..registerWarningRule(PreferCorrectCallbackFieldNameRule())
-      // ..registerWarningRule(AvoidIncompleteCopyWithRule())
       ..registerWarningRule(AvoidMutatingParametersRule())
+      ..registerWarningRule(AvoidCompareSameValueRule())
       ..registerWarningRule(AvoidReduceUsageRule())
       ..registerWarningRule(AvoidNestedIfRule());
 
