@@ -24,6 +24,7 @@ import 'package:my_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_positional_record_field_access_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_bool_rule.dart';
 import 'package:my_lints/src/rules/avoid_reduce_usage_rule.dart';
+import 'package:my_lints/src/rules/avoid_returning_value_from_cubit_methods_rule.dart';
 import 'package:my_lints/src/rules/avoid_shadowed_extension_methods_rule.dart';
 import 'package:my_lints/src/rules/avoid_useless_async_method_rule.dart';
 import 'package:my_lints/src/rules/controller_dispose_rule.dart';
@@ -36,8 +37,10 @@ import 'package:my_lints/src/rules/prefer_is_empty_rule.dart';
 import 'package:my_lints/src/rules/prefer_last_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_notation_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_spread_rule.dart';
+import 'package:my_lints/src/rules/prefer_throw_exception_or_error_rule.dart';
 import 'package:my_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
 import 'package:my_lints/src/rules/prefer_void_callback.dart';
+import 'package:my_lints/src/rules/use_join_on_strings_rule.dart';
 
 final plugin = MyLintsPlugin();
 
@@ -77,6 +80,9 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidMutatingParametersRule())
       ..registerWarningRule(AvoidCompareSameValueRule())
       ..registerWarningRule(AvoidReduceUsageRule())
+      ..registerWarningRule(UseJoinOnStringsRule())
+      ..registerWarningRule(AvoidReturningValueFromCubitMethodsRule())
+      ..registerWarningRule(PreferThrowExceptionOrErrorRule())
       ..registerWarningRule(AvoidNestedIfRule());
 
     registry

@@ -43,7 +43,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.isStateClass) return;
+    if (!node.isFlutterStateClass) return;
 
     _controllers.clear();
     _disposed.clear();

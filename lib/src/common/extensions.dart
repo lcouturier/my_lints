@@ -264,12 +264,36 @@ extension ExpressionExtensions on Expression {
   }
 }
 
-extension ClassDeclarationExtensions on ClassDeclaration {
-  bool get isStateClass {
-    final extendsClause = this.extendsClause;
-    if (extendsClause == null) return false;
+extension on InterfaceType {
+  bool get isFlutterState {
+    final allTypes = [this, ...allSupertypes];
 
-    return extendsClause.superclass.toString().startsWith('State');
+    return allTypes.any((t) {
+      final element = t.element;
+
+      return element.name == 'State' && element.library.identifier.contains('framework');
+    });
+  }
+
+  bool get isCubitLike {
+    final allTypes = [this, ...allSupertypes];
+
+    return allTypes.any((t) {
+      final name = t.element.name;
+      return name == 'Cubit' && t.element.library.identifier.contains('bloc');
+    });
+  }
+}
+
+extension ClassDeclarationExtensions on ClassDeclaration {
+  bool get isFlutterStateClass {
+    final type = extendsClause?.superclass.type;
+    return type is InterfaceType && type.isFlutterState;
+  }
+
+  bool get isCubitClass {
+    final type = extendsClause?.superclass.type;
+    return type is InterfaceType && type.isCubitLike;
   }
 
   /// Checks if the class is a data class.
