@@ -36,12 +36,12 @@ class _Visitor extends SimpleAstVisitor<void> {
     // if (localSet != null) ...localSet
     if (node case IfElement(
       expression: BinaryExpression(
-        leftOperand: SimpleIdentifier(),
+        leftOperand: SimpleIdentifier(name: final leftName),
         operator: Token(type: TokenType.BANG_EQ),
         rightOperand: NullLiteral(),
       ),
-      thenElement: SpreadElement(),
-    )) {
+      thenElement: SpreadElement(expression: SimpleIdentifier(name: final spreadName)),
+    ) when leftName == spreadName) {
       rule.reportAtNode(node);
       return;
     }
