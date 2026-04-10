@@ -19,7 +19,6 @@ class AvoidEnumValuesByIndexRule extends AnalysisRule {
   DiagnosticCode get diagnosticCode => code;
 
   @override
-  @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     registry.addIndexExpression(this, _Visitor(this));
   }
