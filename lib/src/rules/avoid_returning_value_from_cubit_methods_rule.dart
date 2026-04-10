@@ -18,6 +18,7 @@ class AvoidReturningValueFromCubitMethodsRule extends AnalysisRule {
   @override
   DiagnosticCode get diagnosticCode => code;
 
+  @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
     registry.addClassDeclaration(this, visitor);

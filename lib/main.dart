@@ -14,6 +14,7 @@ import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
 import 'package:my_lints/src/rules/avoid_compare_same_value_rule.dart';
 import 'package:my_lints/src/rules/avoid_complex_loop_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
+import 'package:my_lints/src/rules/avoid_empty_set_state_rule.dart';
 import 'package:my_lints/src/rules/avoid_empty_spread_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_invert_condition_rule.dart';
@@ -90,6 +91,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidComplexLoopConditionsRule())
       ..registerWarningRule(AvoidNestedIfRule())
       ..registerWarningRule(AvoidEmptySpreadRule())
+      ..registerWarningRule(AvoidEmptySetStateRule())
       ..registerWarningRule(PreferAdditionSubtractionAssignmentsRule());
 
     registry
