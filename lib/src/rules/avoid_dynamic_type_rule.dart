@@ -9,8 +9,8 @@ import 'package:analyzer/error/error.dart';
 class AvoidDynamicTypeRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_dynamic_type',
-    'Avoid using dynamic type',
-    correctionMessage: 'Avoid using dynamic type',
+    'Using dynamic is considered unsafe since it can easily result in runtime errors.',
+    correctionMessage: 'Try replacing it with a different type.',
   );
 
   AvoidDynamicTypeRule() : super(name: code.name, description: code.problemMessage);
