@@ -7,7 +7,10 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 class PreferNullAwareSpreadRule extends AnalysisRule {
-  static const LintCode code = LintCode('prefer_null_aware_spread', 'Prefer null-aware spread operator.');
+  static const LintCode code = LintCode(
+    'prefer_null_aware_spread',
+    'a collection literal can be replaced with a null-aware spread (...?)',
+  );
 
   PreferNullAwareSpreadRule() : super(name: code.name, description: code.problemMessage);
 
@@ -16,7 +19,10 @@ class PreferNullAwareSpreadRule extends AnalysisRule {
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
-    registry.addListLiteral(this, _Visitor(this));
+    final visitor = _Visitor(this);
+    registry
+      ..addSpreadElement(this, visitor)
+      ..addIfElement(this, visitor);
   }
 }
 
@@ -26,40 +32,37 @@ class _Visitor extends SimpleAstVisitor<void> {
   final PreferNullAwareSpreadRule rule;
 
   @override
-  void visitListLiteral(ListLiteral node) {
-    // ...localSet ?? {},
-    for (var element in node.elements.whereType<SpreadElement>().where((e) => e.expression is BinaryExpression)) {
-      if (element.expression case BinaryExpression(
-        operator: Token(type: TokenType.QUESTION_QUESTION),
-        rightOperand: TypedLiteral(),
-      )) {
-        rule.reportAtNode(element);
-      }
-    }
-
-    // ...localSet != null ? localSet : <String>{},
-    for (var element in node.elements.whereType<SpreadElement>().where((e) => e.expression is ConditionalExpression)) {
-      if (element.expression case ConditionalExpression(
-        condition: BinaryExpression(operator: Token(type: TokenType.BANG_EQ), rightOperand: NullLiteral()),
-      )) {
-        rule.reportAtNode(element);
-      }
-    }
-
-    // if (localSet != null) ...localSet,
-    for (var element in node.elements.whereType<IfElement>()) {
-      if (element.expression case BinaryExpression(
+  void visitIfElement(IfElement node) {
+    // if (localSet != null) ...localSet
+    if (node case IfElement(
+      expression: BinaryExpression(
+        leftOperand: SimpleIdentifier(),
         operator: Token(type: TokenType.BANG_EQ),
-        leftOperand: SimpleIdentifier(name: final name),
         rightOperand: NullLiteral(),
-      )) {
-        if (element.thenElement case SpreadElement(expression: SimpleIdentifier())) {
-          final then = ((element.thenElement as SpreadElement).expression as SimpleIdentifier);
-          if (then.name == name) {
-            rule.reportAtNode(element);
-          }
-        }
-      }
+      ),
+      thenElement: SpreadElement(),
+    )) {
+      rule.reportAtNode(node);
+      return;
+    }
+  }
+
+  @override
+  void visitSpreadElement(SpreadElement node) {
+    // Spread avec ?? operator
+    if (node case SpreadElement(expression: BinaryExpression(operator: Token(type: TokenType.QUESTION_QUESTION)))) {
+      rule.reportAtNode(node);
+      return;
+    }
+
+    // ...localSet != null ? localSet : <String>{}
+    if (node case SpreadElement(
+      expression: ConditionalExpression(
+        condition: BinaryExpression(operator: Token(type: TokenType.BANG_EQ), rightOperand: NullLiteral()),
+      ),
+    )) {
+      rule.reportAtNode(node);
+      return;
     }
   }
 }

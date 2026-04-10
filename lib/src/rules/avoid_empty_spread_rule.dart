@@ -5,6 +5,10 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/src/dart/ast/ast.dart';
 
+/// A rule that prevents empty spreads in Dart collections.
+/// This rule detects cases where a spread operator is used with an empty collection,
+/// which is redundant and can be removed.
+/// https://dcm.dev/docs/rules/common/avoid-empty-spread/
 class AvoidEmptySpreadRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_empty_spread',
