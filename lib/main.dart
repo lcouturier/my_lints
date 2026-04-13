@@ -11,7 +11,7 @@ import 'package:my_lints/src/fixes/prefer_explicit_function_type_fix.dart';
 import 'package:my_lints/src/fixes/prefer_first_fix.dart';
 import 'package:my_lints/src/fixes/prefer_last_fix.dart';
 import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
-import 'package:my_lints/src/rules/avoid_cascade_after_if_null.dart';
+import 'package:my_lints/src/rules/avoid_cascade_after_if_null_rule.dart';
 import 'package:my_lints/src/rules/avoid_compare_same_value_rule.dart';
 import 'package:my_lints/src/rules/avoid_complex_loop_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
@@ -94,7 +94,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferThrowExceptionOrErrorRule())
       ..registerWarningRule(AvoidComplexLoopConditionsRule())
       ..registerWarningRule(AvoidNestedIfRule())
-      ..registerWarningRule(AvoidCascadeAfterIfNull())
+      ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySpreadRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
       ..registerWarningRule(AvoidIgnoringReturnValuesRule())

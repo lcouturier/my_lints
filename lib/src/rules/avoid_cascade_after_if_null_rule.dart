@@ -6,14 +6,14 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-class AvoidCascadeAfterIfNull extends AnalysisRule {
+class AvoidCascadeAfterIfNullRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_cascade_after_if_null',
     'Avoid using cascade operator after if-null operator.',
     correctionMessage: 'Add parentheses around the cascade expression.',
   );
 
-  AvoidCascadeAfterIfNull() : super(name: code.name, description: code.problemMessage);
+  AvoidCascadeAfterIfNullRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
@@ -26,7 +26,7 @@ class AvoidCascadeAfterIfNull extends AnalysisRule {
 }
 
 class _Visitor extends SimpleAstVisitor<void> {
-  final AvoidCascadeAfterIfNull rule;
+  final AvoidCascadeAfterIfNullRule rule;
 
   _Visitor(this.rule);
 
