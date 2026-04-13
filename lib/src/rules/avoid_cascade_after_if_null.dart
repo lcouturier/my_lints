@@ -21,9 +21,7 @@ class AvoidCascadeAfterIfNull extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry
-      ..addCascadeExpression(this, visitor)
-      ..addBinaryExpression(this, visitor);
+    registry.addCascadeExpression(this, visitor);
   }
 }
 
@@ -34,22 +32,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitCascadeExpression(CascadeExpression node) {
-    if (node case CascadeExpression(target: final target)) {
-      if (target is ParenthesizedExpression) return;
-      if (target is BinaryExpression &&
-          target.operator.type == TokenType.QUESTION_QUESTION &&
-          target.rightOperand is ParenthesizedExpression)
-        return;
-      rule.reportAtNode(node);
-    }
-  }
-
-  @override
-  void visitBinaryExpression(BinaryExpression node) {
-    if (node case BinaryExpression(
-      operator: Token(type: TokenType.QUESTION_QUESTION),
-      rightOperand: CascadeExpression(),
-    )) {
+    if (node case CascadeExpression(target: BinaryExpression(operator: Token(type: TokenType.QUESTION_QUESTION)))) {
       rule.reportAtNode(node);
     }
   }
