@@ -11,6 +11,7 @@ import 'package:my_lints/src/fixes/prefer_explicit_function_type_fix.dart';
 import 'package:my_lints/src/fixes/prefer_first_fix.dart';
 import 'package:my_lints/src/fixes/prefer_last_fix.dart';
 import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
+import 'package:my_lints/src/rules/avoid_cascade_after_if_null.dart';
 import 'package:my_lints/src/rules/avoid_compare_same_value_rule.dart';
 import 'package:my_lints/src/rules/avoid_complex_loop_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
@@ -20,6 +21,7 @@ import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_ignoring_return_values_rule.dart';
 import 'package:my_lints/src/rules/avoid_invert_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
+import 'package:my_lints/src/rules/avoid_multi_assignment_rule.dart';
 import 'package:my_lints/src/rules/avoid_mutating_parameter_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_if_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_record_rule.dart';
@@ -79,6 +81,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferNullAwareNotationRule())
       ..registerWarningRule(PreferVoidCallbackRule())
       ..registerWarningRule(AvoidNullableBoolRule())
+      ..registerWarningRule(AvoidMultiAssignmentRule())
       ..registerWarningRule(AvoidMapKeysContainsRule())
       ..registerWarningRule(AvoidShadowedExtensionMethodsRule())
       ..registerWarningRule(PreferUsageOfValueGetterRule())
@@ -91,6 +94,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferThrowExceptionOrErrorRule())
       ..registerWarningRule(AvoidComplexLoopConditionsRule())
       ..registerWarningRule(AvoidNestedIfRule())
+      ..registerWarningRule(AvoidCascadeAfterIfNull())
       ..registerWarningRule(AvoidEmptySpreadRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
       ..registerWarningRule(AvoidIgnoringReturnValuesRule())

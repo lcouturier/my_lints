@@ -9,8 +9,8 @@ import 'package:analyzer/error/error.dart';
 class AvoidMultiAssignmentRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_multi_assignment',
-    'Avoid multiple assignments on the same line.',
-    correctionMessage: 'Avoid multiple assignments on the same line.',
+    'Multiple assignments on the same line can lead to confusion or indicate an incorrect operator (= instead of ==).',
+    correctionMessage: 'Try moving each assignment to its own line.',
   );
 
   AvoidMultiAssignmentRule() : super(name: code.name, description: code.problemMessage);
