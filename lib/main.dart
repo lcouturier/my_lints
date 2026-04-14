@@ -21,6 +21,7 @@ import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_ignoring_return_values_rule.dart';
 import 'package:my_lints/src/rules/avoid_invert_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
+import 'package:my_lints/src/rules/avoid_mounted_in_setstate.dart';
 import 'package:my_lints/src/rules/avoid_multi_assignment_rule.dart';
 import 'package:my_lints/src/rules/avoid_mutating_parameter_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_if_rule.dart';
@@ -98,6 +99,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidEmptySpreadRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
       ..registerWarningRule(AvoidIgnoringReturnValuesRule())
+      ..registerWarningRule(AvoidMountedInSetStateRule())
       ..registerWarningRule(PreferAdditionSubtractionAssignmentsRule());
 
     registry

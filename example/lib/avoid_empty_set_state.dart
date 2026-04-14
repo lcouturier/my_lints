@@ -8,7 +8,11 @@ class _FooState extends State<StatefulWidget> {
       onPressed: () {
         // LINT: Avoid calling 'setState' with an empty callback.
         //  Try updating the callback or removing this invocation.
-        setState(() {});
+        setState(() {
+          if (context.mounted) {
+            // do something
+          }
+        });
       },
     );
   }

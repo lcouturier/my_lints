@@ -3,6 +3,7 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
@@ -30,17 +31,27 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   final AvoidReturningValueFromCubitMethodsRule rule;
 
+  bool _isPublicMethod(MethodDeclaration m) => !m.isGetter && !m.name.lexeme.startsWith('_');
+
+  bool _isVoidOrFutureVoid(DartType? type) {
+    if (type is VoidType) return true;
+
+    if (type?.isFutureVoid ?? false) {
+      return true;
+    }
+
+    return false;
+  }
+
   @override
   void visitClassDeclaration(ClassDeclaration node) {
     if (!node.isCubitClass) return;
 
-    for (final member
-        in node.members
-            .whereType<MethodDeclaration>()
-            .where((e) => !e.isGetter)
-            .where((e) => !e.name.lexeme.startsWith('_'))) {
-      if (member.returnType?.toString() != 'void' && member.returnType?.toString() != 'Future<void>') {
-        rule.reportAtToken(member.name);
+    for (final member in node.members.whereType<MethodDeclaration>()) {
+      if (_isPublicMethod(member)) {
+        if (!_isVoidOrFutureVoid(member.returnType?.type)) {
+          rule.reportAtToken(member.name);
+        }
       }
     }
   }

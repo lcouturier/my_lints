@@ -31,6 +31,16 @@ extension DartTypeExtensions on DartType {
     final element = (this as InterfaceType).element;
     return element.lookUpMethod(name: 'dispose', library: element.library) != null;
   }
+
+  bool get isFutureVoid {
+    if (this is InterfaceType &&
+        (this as InterfaceType).element.name == 'Future' &&
+        (this as InterfaceType).typeArguments.length == 1 &&
+        (this as InterfaceType).typeArguments.first is VoidType) {
+      return true;
+    }
+    return false;
+  }
 }
 
 extension FunctionCacheExtensions<F, R> on R Function(F) {
