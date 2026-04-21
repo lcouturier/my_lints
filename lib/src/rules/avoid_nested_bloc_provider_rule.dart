@@ -1,5 +1,3 @@
-//Avoid nested BlocProvider. Consider flattening the structure.
-
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
@@ -36,12 +34,19 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     if (node case InstanceCreationExpression(
       constructorName: ConstructorName(type: NamedType(name: Token(lexeme: 'BlocProvider'))),
+      :final argumentList,
     )) {
-      final parent = node.thisOrAncestorOfType<InstanceCreationExpression>();
-      if (parent case InstanceCreationExpression(
-        constructorName: ConstructorName(type: NamedType(name: Token(lexeme: 'BlocProvider'))),
-      )) {
-        rule.reportAtNode(node);
+      for (final argument in argumentList.arguments) {
+        if (argument is NamedExpression && argument.name.label.name == 'child') {
+          final expression = argument.expression;
+          if (expression case InstanceCreationExpression(
+            constructorName: ConstructorName(type: NamedType(name: Token(lexeme: 'BlocProvider'))),
+          )) {
+            rule
+              ..reportAtNode(expression)
+              ..reportAtNode(node);
+          }
+        }
       }
     }
   }
