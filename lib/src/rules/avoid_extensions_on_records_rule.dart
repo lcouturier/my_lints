@@ -33,7 +33,6 @@ class _Visitor extends SimpleAstVisitor<void> {
   @override
   void visitExtensionDeclaration(ExtensionDeclaration node) {
     if (node case ExtensionDeclaration(onClause: ExtensionOnClause(extendedType: TypeAnnotation(type: RecordType())))) {
-      // TODO: Check if the extended type is a record
       rule.reportAtNode(node);
     }
   }
