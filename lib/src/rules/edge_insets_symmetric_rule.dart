@@ -56,11 +56,11 @@ class _Visitor extends RecursiveAstVisitor<void> {
     final top = args['top'];
     final bottom = args['bottom'];
 
-    if (left != null && right != null && _isSameValue(left, right) && top == null && bottom == null) {
+    if (left != null && right != null && _sameNumericValue(left, right) && top == null && bottom == null) {
       rule.reportAtNode(node);
     }
 
-    if (top != null && bottom != null && _isSameValue(top, bottom) && left == null && right == null) {
+    if (top != null && bottom != null && _sameNumericValue(top, bottom) && left == null && right == null) {
       rule.reportAtNode(node);
     }
   }
@@ -73,9 +73,11 @@ class _Visitor extends RecursiveAstVisitor<void> {
     final top = args['top'];
     final bottom = args['bottom'];
 
-    final sameHorizontal = _isSameValue(left!, right!);
-    final sameVertical = _isSameValue(top!, bottom!);
-    final allEqual = _isSameValue(left, top) && _isSameValue(top, right) && _isSameValue(right, bottom);
+    if (left == null || right == null || top == null || bottom == null) return;
+
+    final sameHorizontal = _sameNumericValue(left, right);
+    final sameVertical = _sameNumericValue(top, bottom);
+    final allEqual = _sameNumericValue(left, top) && _sameNumericValue(top, right) && _sameNumericValue(right, bottom);
 
     if (allEqual) {
       rule.reportAtNode(node);
@@ -89,10 +91,28 @@ class _Visitor extends RecursiveAstVisitor<void> {
   }
 }
 
-bool _isSameValue(NamedExpression a, NamedExpression b) {
-  return a.expression.toSource() == b.expression.toSource();
+bool _sameNumericValue(NamedExpression a, NamedExpression b) {
+  final aVal = _extractNumeric(a.expression);
+  final bVal = _extractNumeric(b.expression);
+
+  if (aVal == null || bVal == null) return false;
+
+  return aVal.toDouble() == bVal.toDouble();
+}
+
+num? _extractNumeric(Expression expr) {
+  if (expr is IntegerLiteral) return expr.value;
+  if (expr is DoubleLiteral) return expr.value;
+
+  return null;
 }
 
 extension on Expression? {
-  bool get isZero => this != null && (this?.toSource() == '0' || this?.toSource() == '0.0');
+  bool get isZero {
+    return switch (this) {
+      IntegerLiteral(:final value) => value == 0,
+      DoubleLiteral(:final value) => value == 0.0,
+      _ => false,
+    };
+  }
 }
