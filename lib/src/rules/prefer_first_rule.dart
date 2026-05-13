@@ -4,6 +4,7 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/type_checker.dart';
 
 class PreferFirstRule extends AnalysisRule {
   static const LintCode code = LintCode('prefer_first_over_index', 'prefer first over index 0');
@@ -13,7 +14,6 @@ class PreferFirstRule extends AnalysisRule {
   @override
   LintCode get diagnosticCode => code;
 
-  @override
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
@@ -34,14 +34,17 @@ class _Visitor extends SimpleAstVisitor<void> {
       methodName: SimpleIdentifier(name: 'elementAt'),
       argumentList: ArgumentList(arguments: [IntegerLiteral(value: 0)]),
     )) {
-      rule.reportAtNode(node);
+      rule.reportAtOffset(node.methodName.offset, node.methodName.length);
     }
   }
 
   @override
   void visitIndexExpression(IndexExpression node) {
-    if (node case IndexExpression(index: IntegerLiteral(value: 0))) {
-      rule.reportAtNode(node);
+    if (node case IndexExpression(
+      index: IntegerLiteral(value: 0),
+      target: Expression(staticType: final targetType?),
+    ) when iterableChecker.isAssignableFromType(targetType)) {
+      rule.reportAtOffset(node.leftBracket.offset, node.rightBracket.end - node.leftBracket.offset);
     }
   }
 }

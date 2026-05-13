@@ -21,9 +21,7 @@ class PreferIsEmptyRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry
-      ..addVariableDeclaration(this, visitor)
-      ..addIfStatement(this, visitor);
+    registry.addBinaryExpression(this, visitor);
   }
 }
 
@@ -33,23 +31,20 @@ class _Visitor extends SimpleAstVisitor<void> {
   _Visitor(this.rule);
 
   @override
-  void visitVariableDeclaration(VariableDeclaration node) {
-    _check(node.initializer);
-  }
-
-  @override
-  void visitIfStatement(IfStatement node) {
-    _check(node.expression);
-  }
-
-  void _check(Expression? expr) {
-    if (expr case BinaryExpression(
+  void visitBinaryExpression(BinaryExpression node) {
+    if (node case BinaryExpression(
       leftOperand: final left,
       operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
-      rightOperand: IntegerLiteral(value: 0),
-    ) when _isLengthAccess(left)) {
-      rule.reportAtNode(expr, arguments: ['length', '==']);
+      rightOperand: final right,
+    )) {
+      if (_isLengthAccess(left) && _isZeroLiteral(right)) {
+        rule.reportAtNode(node, arguments: ['length', '==']);
+      }
     }
+  }
+
+  bool _isZeroLiteral(Expression expr) {
+    return expr is IntegerLiteral && expr.value == 0;
   }
 
   /// list.length → PrefixedIdentifier

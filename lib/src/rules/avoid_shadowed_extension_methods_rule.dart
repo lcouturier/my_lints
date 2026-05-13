@@ -10,9 +10,8 @@ import 'package:analyzer/error/error.dart';
 class AvoidShadowedExtensionMethodsRule extends AnalysisRule {
   static LintCode code = const LintCode(
     'avoid_shadowed_extension_methods',
-    'Avoid shadowing extension methods.',
-    correctionMessage: 'Use a different method name for {0} to avoid shadowing.',
-    severity: DiagnosticSeverity.WARNING,
+    'Avoid shadowing extension methods. Method "{0}" is already defined in the extended class.',
+    correctionMessage: 'Use a different method name for "{0}" to avoid shadowing.',
   );
 
   AvoidShadowedExtensionMethodsRule() : super(name: code.name, description: code.problemMessage);
@@ -35,10 +34,8 @@ class _Visitor extends SimpleAstVisitor<void> {
   @override
   void visitExtensionDeclaration(ExtensionDeclaration node) {
     if (node case ExtensionDeclaration(
-      members: final members,
-      onClause: ExtensionOnClause(
-        extendedType: TypeAnnotation(type: DartType(element: ClassElement(methods: final methods))),
-      ),
+      :final members,
+      onClause: ExtensionOnClause(extendedType: TypeAnnotation(type: DartType(element: ClassElement(:final methods)))),
     )) {
       final extensionMethods = members.whereType<MethodDeclaration>();
 

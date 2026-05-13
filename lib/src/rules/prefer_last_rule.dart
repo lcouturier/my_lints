@@ -5,13 +5,13 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/type_checker.dart';
 
 class PreferLastRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_last_over_index',
-    "Use '.last' instead of '.lastWhere' when you just want the last element.",
+    "Use '.last' instead of accessing the last element by index.",
     correctionMessage: "Replace with '.last'.",
-    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferLastRule() : super(name: code.name, description: code.problemMessage);
@@ -59,7 +59,8 @@ class _Visitor extends SimpleAstVisitor<void> {
         operator: Token(type: TokenType.MINUS),
         rightOperand: IntegerLiteral(value: 1),
       ),
-    ) when name.contains('length')) {
+      target: Expression(staticType: final targetType?),
+    ) when iterableChecker.isAssignableFromType(targetType) && name.contains('length')) {
       rule.reportAtNode(node);
     }
   }

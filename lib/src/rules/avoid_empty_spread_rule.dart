@@ -13,6 +13,7 @@ class AvoidEmptySpreadRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_empty_spread',
     'This spread has no elements. Try adding elements or removing it.',
+    correctionMessage: 'Try adding elements or removing the spread.',
   );
 
   AvoidEmptySpreadRule() : super(name: code.name, description: code.problemMessage);
@@ -27,8 +28,6 @@ class AvoidEmptySpreadRule extends AnalysisRule {
   }
 }
 
-typedef _Result = ({bool found, Expression? expression});
-
 class _Visitor extends SimpleAstVisitor<void> {
   final AvoidEmptySpreadRule rule;
 
@@ -36,30 +35,18 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitSpreadElement(SpreadElement node) {
-    if (node case SpreadElement(expression: ListLiteral(elements: final elements)) when elements.isEmpty) {
-      rule.reportAtNode(node);
-      return;
-    }
+    final expression = _unwrapParentheses(node.expression);
 
-    final v = _ParenthesizedExpressionVisitor();
-    node.accept(v);
-    final expr = v.expression;
-    if (!expr.found) return;
-
-    if (expr.expression! case ListLiteral(elements: final elements) when elements.isEmpty) {
+    if (expression case ListLiteral(elements: final elements) when elements.isEmpty) {
       rule.reportAtNode(node);
     }
   }
-}
 
-class _ParenthesizedExpressionVisitor extends RecursiveAstVisitor<void> {
-  _Result expression = (found: false, expression: null);
-
-  @override
-  void visitParenthesizedExpression(ParenthesizedExpression node) {
-    if (node.expression is! ParenthesizedExpression) {
-      expression = (found: true, expression: node.expression);
+  /// Unwrap all nested parentheses to get the actual expression.
+  Expression _unwrapParentheses(Expression expr) {
+    while (expr is ParenthesizedExpression) {
+      expr = expr.expression;
     }
-    super.visitParenthesizedExpression(node);
+    return expr;
   }
 }

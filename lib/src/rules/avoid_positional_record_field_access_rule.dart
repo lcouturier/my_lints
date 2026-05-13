@@ -9,8 +9,8 @@ import 'package:analyzer/error/error.dart';
 class AvoidPositionalRecordFieldAccessRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_positional_record_field_access',
-    'Avoid positional record field access',
-    correctionMessage: 'Avoid positional record field access',
+    'Avoid positional record field access.',
+    correctionMessage: 'Use named record field access instead of positional access.',
   );
 
   AvoidPositionalRecordFieldAccessRule() : super(name: code.name, description: code.problemMessage);
@@ -32,12 +32,10 @@ class _Visitor extends SimpleAstVisitor<void> {
   @override
   void visitPropertyAccess(PropertyAccess node) {
     if (node case PropertyAccess(
-      propertyName: SimpleIdentifier(name: final propertyName),
+      propertyName: SimpleIdentifier(:final name),
       realTarget: SimpleIdentifier(staticType: RecordType()),
-    )) {
-      if (propertyName.startsWith(r'$')) {
-        rule.reportAtNode(node);
-      }
+    ) when (name.startsWith(r'$'))) {
+      rule.reportAtNode(node);
     }
   }
 }

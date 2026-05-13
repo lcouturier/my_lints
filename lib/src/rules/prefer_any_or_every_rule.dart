@@ -6,16 +6,14 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
-class PreferAnyOrEvery extends AnalysisRule {
+class PreferAnyRule extends AnalysisRule {
   static const LintCode code = LintCode(
-    'prefer_any_or_every',
+    'prefer_any',
     'Use .{0}() instead of .where().{1}.',
     correctionMessage: 'Replace with .{0}() for better readability and performance.',
-    severity: DiagnosticSeverity.WARNING,
   );
 
-  PreferAnyOrEvery()
-    : super(name: 'prefer_any_or_every', description: 'Use .any() or .every() instead of .where().isEmpty/isNotEmpty.');
+  PreferAnyRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
@@ -28,7 +26,7 @@ class PreferAnyOrEvery extends AnalysisRule {
 }
 
 class _Visitor extends SimpleAstVisitor<void> {
-  final PreferAnyOrEvery rule;
+  final PreferAnyRule rule;
 
   _Visitor(this.rule);
 
@@ -39,11 +37,11 @@ class _Visitor extends SimpleAstVisitor<void> {
       target: MethodInvocation(
         target: Expression(staticType: final targetType?),
         methodName: SimpleIdentifier(name: 'where'),
-        argumentList: ArgumentList(arguments: [_]),
+        argumentList: ArgumentList(:final arguments),
       ),
-    ) when iterableChecker.isAssignableFromType(targetType)) {
+    ) when iterableChecker.isAssignableFromType(targetType) && arguments.length == 1) {
       final isNotEmpty = property == 'isNotEmpty';
-      rule.reportAtNode(node, arguments: [isNotEmpty ? 'any' : 'every', property]);
+      rule.reportAtNode(node, arguments: [isNotEmpty ? 'any' : '!any', property]);
     }
   }
 }
