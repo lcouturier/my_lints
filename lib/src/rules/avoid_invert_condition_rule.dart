@@ -30,7 +30,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
-    if (node.leftOperand is Literal) {
+    if (node.leftOperand is Literal && node.rightOperand is! Literal) {
       rule.reportAtNode(node);
     }
   }

@@ -7,6 +7,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 class EdgeInsetsSymmetricRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -19,17 +20,42 @@ class EdgeInsetsSymmetricRule extends AnalysisRule {
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
-    registry.addInstanceCreationExpression(this, _Visitor(this));
+    // registry.addInstanceCreationExpression(this, _Visitor(this));
+    registry.addClassDeclaration(this, _Visitor(this));
   }
 
   @override
   DiagnosticCode get diagnosticCode => code;
 }
 
-class _Visitor extends RecursiveAstVisitor<void> {
+class _Visitor extends SimpleAstVisitor<void> {
   final EdgeInsetsSymmetricRule rule;
 
   _Visitor(this.rule);
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!node.isFlutterStateClass) return;
+
+    final visitor = _EdgeInsetsOnlyVisitor();
+
+    for (var element in node.members.whereType<MethodDeclaration>()) {
+      element.body.accept(visitor);
+      if (visitor.matches.isNotEmpty) {
+        for (var item in visitor.matches) {
+          rule.reportAtNode(item);
+        }
+      }
+    }
+
+    super.visitClassDeclaration(node);
+  }
+}
+
+class _EdgeInsetsOnlyVisitor extends RecursiveAstVisitor<void> {
+  final List<InstanceCreationExpression> matches = [];
+
+  _EdgeInsetsOnlyVisitor();
 
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
@@ -52,26 +78,26 @@ class _Visitor extends RecursiveAstVisitor<void> {
     final args = {for (final arg in node.argumentList.arguments.whereType<NamedExpression>()) arg.name.label.name: arg};
 
     final left = args['left'];
-    final right = args['right'];
     final top = args['top'];
+    final right = args['right'];
     final bottom = args['bottom'];
 
     if (left != null && right != null && _sameNumericValue(left, right) && top == null && bottom == null) {
-      rule.reportAtNode(node);
+      matches.add(node);
     }
 
     if (top != null && bottom != null && _sameNumericValue(top, bottom) && left == null && right == null) {
-      rule.reportAtNode(node);
+      matches.add(node);
     }
   }
 
   void _handleEdgeInsetsFromLTRB(InstanceCreationExpression node) {
-    final args = {for (final arg in node.argumentList.arguments.whereType<NamedExpression>()) arg.name.label.name: arg};
+    final args = {for (final arg in node.argumentList.arguments.whereType<NamedExpression>().indexed) arg.$1: arg.$2};
 
-    final left = args['left'];
-    final right = args['right'];
-    final top = args['top'];
-    final bottom = args['bottom'];
+    final left = args[0];
+    final top = args[1];
+    final right = args[2];
+    final bottom = args[3];
 
     if (left == null || right == null || top == null || bottom == null) return;
 
@@ -80,13 +106,13 @@ class _Visitor extends RecursiveAstVisitor<void> {
     final allEqual = _sameNumericValue(left, top) && _sameNumericValue(top, right) && _sameNumericValue(right, bottom);
 
     if (allEqual) {
-      rule.reportAtNode(node);
+      matches.add(node);
     } else if (sameHorizontal && sameVertical) {
-      rule.reportAtNode(node);
+      matches.add(node);
     } else if (sameHorizontal && top.isZero && bottom.isZero) {
-      rule.reportAtNode(node);
+      matches.add(node);
     } else if (sameVertical && left.isZero && right.isZero) {
-      rule.reportAtNode(node);
+      matches.add(node);
     }
   }
 }

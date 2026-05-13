@@ -13,7 +13,7 @@ class AvoidThrowLiteralRule extends AnalysisRule {
     severity: DiagnosticSeverity.WARNING,
   );
 
-  AvoidThrowLiteralRule() : super(name: 'avoid_throw_literal', description: 'Avoid throwing literals.');
+  AvoidThrowLiteralRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;

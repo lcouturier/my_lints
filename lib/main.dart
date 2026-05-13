@@ -33,6 +33,7 @@ import 'package:my_lints/src/rules/avoid_nullable_bool_rule.dart';
 import 'package:my_lints/src/rules/avoid_reduce_usage_rule.dart';
 import 'package:my_lints/src/rules/avoid_returning_value_from_cubit_methods_rule.dart';
 import 'package:my_lints/src/rules/avoid_shadowed_extension_methods_rule.dart';
+import 'package:my_lints/src/rules/avoid_throw_literal_rule.dart';
 import 'package:my_lints/src/rules/avoid_unnecessary_gesture_detector_rule.dart';
 import 'package:my_lints/src/rules/avoid_useless_async_method_rule.dart';
 import 'package:my_lints/src/rules/controller_dispose_rule.dart';
@@ -96,6 +97,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySpreadRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
+      ..registerWarningRule(AvoidThrowLiteralRule())
       // ..registerWarningRule(AvoidIgnoringReturnValuesRule())
       ..registerWarningRule(AvoidMountedInSetStateRule())
       ..registerWarningRule(AvoidExtensionsOnRecordsRule())
