@@ -9,14 +9,14 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-class EdgeInsetsSymmetricRule extends AnalysisRule {
+class EdgeInsetsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_edge_insets_symmetric',
     'Prefer using EdgeInsets.symmetric instead of EdgeInsets.only when left and right (or top and bottom) values are the same.',
     correctionMessage: 'Use EdgeInsets.symmetric instead of EdgeInsets.only.',
   );
 
-  EdgeInsetsSymmetricRule() : super(name: code.name, description: code.problemMessage);
+  EdgeInsetsRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
@@ -29,7 +29,7 @@ class EdgeInsetsSymmetricRule extends AnalysisRule {
 }
 
 class _Visitor extends SimpleAstVisitor<void> {
-  final EdgeInsetsSymmetricRule rule;
+  final EdgeInsetsRule rule;
 
   _Visitor(this.rule);
 
@@ -92,7 +92,7 @@ class _EdgeInsetsOnlyVisitor extends RecursiveAstVisitor<void> {
   }
 
   void _handleEdgeInsetsFromLTRB(InstanceCreationExpression node) {
-    final args = {for (final arg in node.argumentList.arguments.whereType<NamedExpression>().indexed) arg.$1: arg.$2};
+    final args = {for (final arg in node.argumentList.arguments.whereType<IntegerLiteral>().indexed) arg.$1: arg.$2};
 
     final left = args[0];
     final top = args[1];
@@ -100,10 +100,9 @@ class _EdgeInsetsOnlyVisitor extends RecursiveAstVisitor<void> {
     final bottom = args[3];
 
     if (left == null || right == null || top == null || bottom == null) return;
-
-    final sameHorizontal = _sameNumericValue(left, right);
-    final sameVertical = _sameNumericValue(top, bottom);
-    final allEqual = _sameNumericValue(left, top) && _sameNumericValue(top, right) && _sameNumericValue(right, bottom);
+    final sameHorizontal = (left.value == right.value);
+    final sameVertical = (top.value == bottom.value);
+    final allEqual = (left.value == top.value) && (top.value == right.value) && (right.value == bottom.value);
 
     if (allEqual) {
       matches.add(node);

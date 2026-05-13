@@ -13,8 +13,11 @@ void foo2() {
 }
 
 void foo3() {
+  const int borne = 50;
+  int result = 0 + borne;
+  print(result.toString());
   String value = "";
-  if ("" == value) {
+  if ((0 != result) && ("" == value)) {
     print('value is equal to 1');
   }
 }
