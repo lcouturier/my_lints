@@ -29,3 +29,5 @@ linter:
     - parameter_assignments
     - unnecessary_this
     - unnecessary_new
+    - prefer_const_constructors
+    

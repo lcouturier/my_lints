@@ -136,8 +136,8 @@ extension FunctionBodyExtensions on FunctionBody {
   // Checks if a function body returns `this`.
   bool get hasReturnThis {
     return switch (this) {
-      BlockFunctionBody b => b.block.statements.whereType<ReturnStatement>().first.expression is ThisExpression,
-      ExpressionFunctionBody e => e.expression is ThisExpression,
+      final BlockFunctionBody b => b.block.statements.whereType<ReturnStatement>().first.expression is ThisExpression,
+      final ExpressionFunctionBody e => e.expression is ThisExpression,
       _ => false,
     };
   }
