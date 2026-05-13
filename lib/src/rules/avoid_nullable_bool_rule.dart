@@ -28,8 +28,42 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitNamedType(NamedType node) {
-    if (node case NamedType(element: Element(name: 'bool', library: LibraryElement()), question: _?)) {
+    if (node case NamedType(element: Element(name: 'bool', library: LibraryElement(isDartCore: true)), question: _?)) {
+      if (_isInsideCopyWith(node)) {
+        return;
+      }
+
+      if (!_isRelevantUsage(node)) {
+        return;
+      }
+
       rule.reportAtNode(node);
     }
+  }
+
+  bool _isInsideCopyWith(AstNode node) {
+    final method = node.thisOrAncestorOfType<MethodDeclaration>();
+
+    if (method?.name.lexeme == 'copyWith') {
+      return true;
+    }
+
+    final function = node.thisOrAncestorOfType<FunctionDeclaration>();
+
+    if (function?.name.lexeme == 'copyWith') {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _isRelevantUsage(NamedType node) {
+    final parent = node.parent;
+
+    return [
+      parent is SimpleFormalParameter,
+      parent is VariableDeclarationList,
+      parent is FieldDeclaration,
+    ].any((element) => element);
   }
 }

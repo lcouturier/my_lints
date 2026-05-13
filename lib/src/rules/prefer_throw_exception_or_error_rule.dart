@@ -31,20 +31,13 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitThrowExpression(ThrowExpression node) {
-    if (node case ThrowExpression(expression: Literal())) {
+    if (node case ThrowExpression(
+      expression: InstanceCreationExpression(
+        constructorName: ConstructorName(name: SimpleIdentifier(name: 'Exception')),
+        argumentList: ArgumentList(arguments: [Literal()]),
+      ),
+    )) {
       rule.reportAtNode(node);
-      return;
-    }
-
-    if (node case ThrowExpression(expression: Expression(staticType: final type)) when type is InterfaceType) {
-      if (type.isCoreExceptionOrError) {
-        rule.reportAtNode(node);
-        return;
-      }
-      if (!type.isExceptionOrError) {
-        rule.reportAtNode(node);
-        return;
-      }
     }
   }
 }
@@ -52,6 +45,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 extension on InterfaceType {
   bool get isCoreExceptionOrError =>
       (element.name == 'Exception' || element.name == 'Error') && element.library.isDartCore;
+  // ignore: unused_element
   bool get isExceptionOrError {
     final allTypes = [this, ...allSupertypes];
 

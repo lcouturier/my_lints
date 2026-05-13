@@ -48,6 +48,8 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (!node.isCubitClass) return;
 
     for (final member in node.members.whereType<MethodDeclaration>()) {
+      if (member.metadata.any((annotation) => annotation.name.name == 'visibleForTesting')) return;
+
       if (_isPublicMethod(member)) {
         if (!_isVoidOrFutureVoid(member.returnType?.type)) {
           rule.reportAtToken(member.name);

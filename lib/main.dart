@@ -19,12 +19,10 @@ import 'package:my_lints/src/rules/avoid_empty_set_state_rule.dart';
 import 'package:my_lints/src/rules/avoid_empty_spread_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_extensions_on_records_rule.dart';
-import 'package:my_lints/src/rules/avoid_ignoring_return_values_rule.dart';
 import 'package:my_lints/src/rules/avoid_invert_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
 import 'package:my_lints/src/rules/avoid_mounted_in_setstate.dart';
 import 'package:my_lints/src/rules/avoid_multi_assignment_rule.dart';
-import 'package:my_lints/src/rules/avoid_mutating_parameter_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_if_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_record_rule.dart';
 import 'package:my_lints/src/rules/avoid_mixing_named_and_positional_fields.dart';
@@ -49,7 +47,6 @@ import 'package:my_lints/src/rules/prefer_is_empty_rule.dart';
 import 'package:my_lints/src/rules/prefer_last_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_notation_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_spread_rule.dart';
-import 'package:my_lints/src/rules/prefer_throw_exception_or_error_rule.dart';
 import 'package:my_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
 import 'package:my_lints/src/rules/prefer_void_callback.dart';
 import 'package:my_lints/src/rules/use_join_on_strings_rule.dart';
@@ -88,23 +85,23 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidShadowedExtensionMethodsRule())
       ..registerWarningRule(PreferUsageOfValueGetterRule())
       ..registerWarningRule(PreferCorrectCallbackFieldNameRule())
-      ..registerWarningRule(AvoidMutatingParametersRule())
+      // ..registerWarningRule(AvoidMutatingParametersRule())
       ..registerWarningRule(AvoidCompareSameValueRule())
       ..registerWarningRule(AvoidReduceUsageRule())
       ..registerWarningRule(UseJoinOnStringsRule())
       ..registerWarningRule(AvoidReturningValueFromCubitMethodsRule())
-      ..registerWarningRule(PreferThrowExceptionOrErrorRule())
+      // ..registerWarningRule(PreferThrowExceptionOrErrorRule())
       ..registerWarningRule(AvoidComplexLoopConditionsRule())
       ..registerWarningRule(AvoidNestedIfRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySpreadRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
-      ..registerWarningRule(AvoidIgnoringReturnValuesRule())
+      // ..registerWarningRule(AvoidIgnoringReturnValuesRule())
       ..registerWarningRule(AvoidMountedInSetStateRule())
       ..registerWarningRule(AvoidExtensionsOnRecordsRule())
       ..registerWarningRule(EdgeInsetsSymmetricRule())
-      ..registerWarningRule(AvoidUnnecessaryGestureDetectorRule())
-      ..registerWarningRule(PreferAdditionSubtractionAssignmentsRule());
+      ..registerWarningRule(AvoidUnnecessaryGestureDetectorRule());
+    // ..registerWarningRule(PreferAdditionSubtractionAssignmentsRule());
 
     registry
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)

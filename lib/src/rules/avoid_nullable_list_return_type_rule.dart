@@ -33,7 +33,40 @@ class _ListVisitor extends SimpleAstVisitor<void> {
   @override
   void visitNamedType(NamedType node) {
     if (node case NamedType(element: Element(name: 'List'), question: _?)) {
+      if (_isInsideCopyWith(node)) {
+        return;
+      }
+
+      if (!_isRelevantUsage(node)) {
+        return;
+      }
       rule.reportAtNode(node);
     }
+  }
+
+  bool _isInsideCopyWith(AstNode node) {
+    final method = node.thisOrAncestorOfType<MethodDeclaration>();
+
+    if (method?.name.lexeme == 'copyWith') {
+      return true;
+    }
+
+    final function = node.thisOrAncestorOfType<FunctionDeclaration>();
+
+    if (function?.name.lexeme == 'copyWith') {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _isRelevantUsage(NamedType node) {
+    final parent = node.parent;
+
+    return [
+      parent is SimpleFormalParameter,
+      parent is VariableDeclarationList,
+      parent is FieldDeclaration,
+    ].any((element) => element);
   }
 }
