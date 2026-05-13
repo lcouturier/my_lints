@@ -51,8 +51,7 @@ class _Visitor extends SimpleAstVisitor<void> {
         when (operatorType == TokenType.EQ_EQ || operatorType == TokenType.BANG_EQ) &&
             (expr.staticType?.isNullable ?? false)) {
       final isCheckingTrue = rightValue;
-      final message =
-          'Use ${isCheckingTrue ? '${expr} ?? false' : '!(${expr} ?? false)'} instead of ${node.toSource()}.';
+      final message = 'Use ${isCheckingTrue ? '$expr ?? false' : '!($expr ?? false)'} instead of ${node.toSource()}.';
 
       rule.reportAtNode(node, arguments: [message]);
     }

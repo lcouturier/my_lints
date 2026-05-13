@@ -36,7 +36,7 @@ class _Visitor extends RecursiveAstVisitor<void> {
     super.visitInstanceCreationExpression(node);
 
     if (node case InstanceCreationExpression(
-      constructorName: ConstructorName(type: NamedType(name: var typeName), name: var constructorName?),
+      constructorName: ConstructorName(type: NamedType(name: final typeName), name: final constructorName?),
     )) {
       if (typeName.lexeme == 'EdgeInsets' && constructorName.token.lexeme == 'only') {
         _handleEdgeInsetsOnly(node);

@@ -3,7 +3,7 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:analyzer/src/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 
 /// A rule that prevents empty spreads in Dart collections.
 /// This rule detects cases where a spread operator is used with an empty collection,
@@ -44,9 +44,10 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   /// Unwrap all nested parentheses to get the actual expression.
   Expression _unwrapParentheses(Expression expr) {
-    while (expr is ParenthesizedExpression) {
-      expr = expr.expression;
+    var current = expr;
+    while (current is ParenthesizedExpression) {
+      current = current.expression;
     }
-    return expr;
+    return current;
   }
 }

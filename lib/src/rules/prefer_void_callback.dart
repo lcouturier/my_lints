@@ -4,7 +4,7 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:analyzer/src/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 
 class PreferVoidCallbackRule extends AnalysisRule {
   static const LintCode code = LintCode(

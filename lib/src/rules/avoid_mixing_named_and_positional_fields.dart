@@ -32,7 +32,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitRecordLiteral(RecordLiteral node) {
-    bool isMixed = node.fields.any((e) => e is NamedExpression) && node.fields.any((e) => e is! NamedExpression);
+    final bool isMixed = node.fields.any((e) => e is NamedExpression) && node.fields.any((e) => e is! NamedExpression);
     if (!isMixed) return;
 
     rule.reportAtNode(node);
