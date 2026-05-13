@@ -66,7 +66,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferExplicitFunctionType())
       ..registerWarningRule(PreferFirstRule())
       ..registerWarningRule(PreferLastRule())
-      ..registerWarningRule(PreferAnyOrEvery())
+      ..registerWarningRule(PreferAnyRule())
       ..registerWarningRule(PreferNullAwareSpreadRule())
       ..registerWarningRule(AvoidMixingNamedAndPositionalFields())
       ..registerWarningRule(AvoidNestedSwitchExpressionRule())
@@ -107,7 +107,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferAdditionSubtractionAssignmentsRule());
 
     registry
-      ..registerFixForRule(PreferAnyOrEvery.code, PreferAnyOrEveryFix.new)
+      ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)
       ..registerFixForRule(AvoidInvertConditionRule.code, AvoidInvertConditionFix.new)
       ..registerFixForRule(PreferContainsRule.code, PreferContainsFix.new)
       ..registerFixForRule(PreferLastRule.code, PreferLastFix.new)
