@@ -35,19 +35,12 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitSpreadElement(SpreadElement node) {
-    final expression = _unwrapParentheses(node.expression);
+    final expression = node.expression.unParenthesized;
 
     if (expression case ListLiteral(elements: final elements) when elements.isEmpty) {
       rule.reportAtNode(node);
     }
   }
 
-  /// Unwrap all nested parentheses to get the actual expression.
-  Expression _unwrapParentheses(Expression expr) {
-    var current = expr;
-    while (current is ParenthesizedExpression) {
-      current = current.expression;
-    }
-    return current;
-  }
+  
 }

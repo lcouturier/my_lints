@@ -188,6 +188,8 @@ extension ListExtensions<E> on List<E> {
 }
 
 extension TokenTypeExtensions on TokenType {
+  // Returns the inverted token type and a boolean indicating whether the token was inverted.
+  // For example, `==` becomes `!=`, `>` becomes `<=`, and so on. If the token type is not a comparison operator, it returns itself and false.
   (TokenType, bool) get invert {
     return switch (this) {
       TokenType.EQ_EQ => (TokenType.BANG_EQ, true),
@@ -199,6 +201,20 @@ extension TokenTypeExtensions on TokenType {
       TokenType.AMPERSAND_AMPERSAND => (TokenType.BAR_BAR, true),
       TokenType.BAR_BAR => (TokenType.AMPERSAND_AMPERSAND, true),
       _ => (this, false),
+    };
+  }
+
+  /// Checks if the token type is a comparison operator.
+  /// Comparison operators include: `==`, `!=`, `>`, `<`, `>=`, `<=`.
+  bool get isComparisonOperator {
+    return switch (this) {
+      TokenType.EQ_EQ ||
+      TokenType.BANG_EQ ||
+      TokenType.GT ||
+      TokenType.GT_EQ ||
+      TokenType.LT ||
+      TokenType.LT_EQ => true,
+      _ => false,
     };
   }
 }
@@ -250,6 +266,27 @@ extension AstNodeExtensions on AstNode {
 }
 
 extension ExpressionExtensions on Expression {
+  /// Returns the innermost expression by unwrapping any parenthesized expressions.
+  /// For example, for the expression `((a + b))`, this getter will return `a + b`.
+  Expression get unWrap {
+    var current = this;
+    while (current is ParenthesizedExpression) {
+      current = current.expression;
+    }
+    return current;
+  }
+
+
+  
+  bool get isSimpleLiteral {
+    return this is IntegerLiteral ||
+        this is DoubleLiteral ||
+        this is BooleanLiteral ||
+        this is NullLiteral ||
+        this is SimpleStringLiteral;
+  }
+
+  
   bool get isNegativeOne {
     return switch (this) {
       PrefixExpression(operator: Token(type: TokenType.MINUS), operand: IntegerLiteral(value: 1)) => true,

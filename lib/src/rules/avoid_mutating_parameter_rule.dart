@@ -8,6 +8,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
 /// A rule that detects when a parameter's field or setter is reassigned.
+@Deprecated('Do not use.')
 class AvoidMutatingParametersRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_mutating_parameters',

@@ -14,12 +14,15 @@ import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
 import 'package:my_lints/src/rules/avoid_cascade_after_if_null_rule.dart';
 import 'package:my_lints/src/rules/avoid_compare_same_value_rule.dart';
 import 'package:my_lints/src/rules/avoid_complex_loop_conditions_rule.dart';
+import 'package:my_lints/src/rules/avoid_complicated_conditional_rule.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_empty_set_state_rule.dart';
 import 'package:my_lints/src/rules/avoid_empty_spread_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_extensions_on_records_rule.dart';
-import 'package:my_lints/src/rules/avoid_invert_condition_rule.dart';
+import 'package:my_lints/src/rules/avoid_negative_boolean_rule.dart';
+import 'package:my_lints/src/rules/avoid_nested_ternary_rule.dart';
+import 'package:my_lints/src/rules/avoid_yoda_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
 import 'package:my_lints/src/rules/avoid_mounted_in_setstate.dart';
 import 'package:my_lints/src/rules/avoid_multi_assignment_rule.dart';
@@ -70,7 +73,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidNestedSwitchExpressionRule())
       ..registerWarningRule(AvoidNestedRecordRule())
       ..registerWarningRule(AvoidUselessAsyncMethodRule())
-      ..registerWarningRule(AvoidInvertConditionRule())
+      ..registerWarningRule(AvoidYodaConditionsRule())
       ..registerWarningRule(PreferContainsRule())
       ..registerWarningRule(AvoidNullableListReturnTypeRule())
       ..registerWarningRule(PreferIsEmptyRule())
@@ -86,28 +89,27 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidShadowedExtensionMethodsRule())
       ..registerWarningRule(PreferUsageOfValueGetterRule())
       ..registerWarningRule(PreferCorrectCallbackFieldNameRule())
-      // ..registerWarningRule(AvoidMutatingParametersRule())
       ..registerWarningRule(AvoidCompareSameValueRule())
       ..registerWarningRule(AvoidReduceUsageRule())
       ..registerWarningRule(UseJoinOnStringsRule())
       ..registerWarningRule(AvoidReturningValueFromCubitMethodsRule())
-      // ..registerWarningRule(PreferThrowExceptionOrErrorRule())
       ..registerWarningRule(AvoidComplexLoopConditionsRule())
       ..registerWarningRule(AvoidNestedIfRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySpreadRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
       ..registerWarningRule(AvoidThrowLiteralRule())
-      // ..registerWarningRule(AvoidIgnoringReturnValuesRule())
+      ..registerWarningRule(AvoidNestedTernaryRule())
       ..registerWarningRule(AvoidMountedInSetStateRule())
       ..registerWarningRule(AvoidExtensionsOnRecordsRule())
       ..registerWarningRule(EdgeInsetsRule())
-      ..registerWarningRule(AvoidUnnecessaryGestureDetectorRule());
-    // ..registerWarningRule(PreferAdditionSubtractionAssignmentsRule());
+      ..registerWarningRule(AvoidUnnecessaryGestureDetectorRule())
+      ..registerWarningRule(AvoidNegativeBooleanRule())
+      ..registerWarningRule(AvoidComplicatedConditionalRule());
 
     registry
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)
-      ..registerFixForRule(AvoidInvertConditionRule.code, AvoidInvertConditionFix.new)
+      ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidInvertConditionFix.new)
       ..registerFixForRule(PreferContainsRule.code, PreferContainsFix.new)
       ..registerFixForRule(PreferLastRule.code, PreferLastFix.new)
       ..registerFixForRule(AvoidEnumValuesByIndexRule.code, AvoidEnumValuesByIndexFix.new)
