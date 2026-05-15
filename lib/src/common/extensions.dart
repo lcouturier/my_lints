@@ -174,6 +174,13 @@ extension StringExtensions on String {
   String get firstLowerCase => substring(0, 1).toLowerCase() + substring(1);
   // Splits a string on uppercase letters.
   List<String> splitOnUppercase() => split(RegExp(r'(?=[A-Z])'));
+
+  // Checks if a string contains any negative patterns.
+  // Negative patterns include: "not", "no", "disable", "disabled", "cannot", "cant", "without".
+  bool get isNegativeName {
+    final words = splitOnUppercase().map((e) => e.toLowerCase());
+    return words.any((word) => ['not', 'no', 'disable', 'disabled', 'cannot', 'cant', 'without'].contains(word));
+  }
 }
 
 extension ListExtensions<E> on List<E> {
@@ -276,8 +283,6 @@ extension ExpressionExtensions on Expression {
     return current;
   }
 
-
-  
   bool get isSimpleLiteral {
     return this is IntegerLiteral ||
         this is DoubleLiteral ||
@@ -286,7 +291,6 @@ extension ExpressionExtensions on Expression {
         this is SimpleStringLiteral;
   }
 
-  
   bool get isNegativeOne {
     return switch (this) {
       PrefixExpression(operator: Token(type: TokenType.MINUS), operand: IntegerLiteral(value: 1)) => true,
