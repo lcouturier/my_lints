@@ -1,12 +1,29 @@
 void foo() {
   final items = [1, 2, 3, 4];
+
   final value = items.reduce((a, b) => a + b); // LINT
+  print(value);
+}
+
+void bar2() {
+  final items = [1, 2, 3, 4];
+  final value = items.where((e) => e.isEven).reduce((a, b) => a + b); // LINT
   print(value);
 }
 
 void bar() {
   final items = [1, 2, 3, 4];
-  final value = items.where((e) => e.isEven).reduce((a, b) => a + b); // LINT
+  assert(items.isNotEmpty);
+
+  final value = items.reduce((a, b) => a + b);
+  print(value);
+}
+
+void bar3() {
+  final items = [1, 2, 3, 4];
+  if (items.isEmpty) return;
+
+  final value = items.reduce((a, b) => a + b);
   print(value);
 }
 

@@ -35,7 +35,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (node case BinaryExpression(
       leftOperand: MethodInvocation(methodName: SimpleIdentifier(name: 'indexOf')),
       operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
-      rightOperand: IntegerLiteral(value: -1),
+      rightOperand: PrefixExpression(operator: Token(type: TokenType.MINUS), operand: IntegerLiteral(value: 1)),
     )) {
       rule.reportAtNode(node);
     }

@@ -42,24 +42,3 @@ void foo6() {
     print("value is true");
   }
 }
-
-int bar() {
-  return 42;
-}
-
-bool baz(int x) {
-  return x > 0;
-}
-
-
-void foo7() {
-  bool a = true;
-  bool b = false;
-  bool c = true;
-  bool d = false;
-  bool e = true;
-  // ignore: dead_code
-  if (!(a && b) && (c || d && e) && baz(bar())) {
-    print("complicated condition");
-  }
-}

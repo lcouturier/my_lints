@@ -6,14 +6,14 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-class AvoidMultiAssignmentRule extends AnalysisRule {
+class AvoidNestedAssignmentRule extends AnalysisRule {
   static const LintCode code = LintCode(
-    'avoid_multi_assignment',
-    'Multiple assignments on the same line can lead to confusion or indicate an incorrect operator (= instead of ==).',
+    'avoid_nested_assignment',
+    'Nested assignments can lead to confusion or indicate an incorrect operator (= instead of ==).',
     correctionMessage: 'Try moving each assignment to its own line.',
   );
 
-  AvoidMultiAssignmentRule() : super(name: code.name, description: code.problemMessage);
+  AvoidNestedAssignmentRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
@@ -25,16 +25,13 @@ class AvoidMultiAssignmentRule extends AnalysisRule {
 }
 
 class _Visitor extends SimpleAstVisitor<void> {
-  final AvoidMultiAssignmentRule rule;
+  final AvoidNestedAssignmentRule rule;
 
   _Visitor(this.rule);
 
   @override
   void visitAssignmentExpression(AssignmentExpression node) {
-    if (node case AssignmentExpression(
-      operator: Token(type: TokenType.EQ),
-      rightHandSide: AssignmentExpression(),
-    )) {
+    if (node case AssignmentExpression(operator: Token(type: TokenType.EQ), rightHandSide: AssignmentExpression())) {
       rule.reportAtNode(node);
     }
   }

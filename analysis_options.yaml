@@ -17,6 +17,7 @@ analyzer:
     # name of fixtures in uppercase break this rule
     non_constant_identifier_names: ignore
     unnecessary_import: error
+    unnecessary_cast: error
     unused_local_variable: error
     deprecated_member_use: ignore
 
@@ -30,5 +31,3 @@ linter:
     - unnecessary_this
     - unnecessary_new
     - prefer_const_constructors
-    
-    

@@ -20,9 +20,10 @@ class AvoidNegativeBooleanRule extends AnalysisRule {
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
+    final visitor = _Visitor(this);
     registry
-      ..addVariableDeclaration(this, _Visitor(this))
-      ..addFormalParameterList(this, _Visitor(this));
+      ..addVariableDeclaration(this, visitor)
+      ..addFormalParameterList(this, visitor);
   }
 }
 
