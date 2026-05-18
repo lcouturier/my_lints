@@ -10,6 +10,7 @@ import 'package:my_lints/src/fixes/prefer_contains_fix.dart';
 import 'package:my_lints/src/fixes/prefer_explicit_function_type_fix.dart';
 import 'package:my_lints/src/fixes/prefer_first_fix.dart';
 import 'package:my_lints/src/fixes/prefer_last_fix.dart';
+import 'package:my_lints/src/fixes/prefer_ternary_over_if_else_fix.dart';
 import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
 import 'package:my_lints/src/rules/avoid_assignation_in_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_cascade_after_if_null_rule.dart';
@@ -57,7 +58,7 @@ import 'package:my_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
 import 'package:my_lints/src/rules/prefer_void_callback.dart';
 import 'package:my_lints/src/rules/use_join_on_strings_rule.dart';
 import 'package:my_lints/src/rules/prefer_map_over_map_indexed_rule.dart';
-import 'package:my_lints/src/rules/use_ternary_instead_of_ifelse_rule.dart';
+import 'package:my_lints/src/rules/prefer_ternary_over_if_else_rule.dart';
 
 final plugin = MyLintsPlugin();
 
@@ -113,13 +114,14 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidIdenticalIfBranchRule())
       ..registerWarningRule(AvoidIncompleteCopyWithRule())
       ..registerWarningRule(PreferMapOverMapIndexedRule())
-      ..registerWarningRule(UseTernaryInsteadOfIfelseRule())
+      ..registerWarningRule(PreferTernaryOverIfElseRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 4));
 
     registry
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)
       ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidInvertConditionFix.new)
       ..registerFixForRule(PreferContainsRule.code, PreferContainsFix.new)
+      ..registerFixForRule(PreferTernaryOverIfElseRule.code, PreferTernaryOverIfElseFix.new)
       ..registerFixForRule(PreferLastRule.code, PreferLastFix.new)
       ..registerFixForRule(AvoidEnumValuesByIndexRule.code, AvoidEnumValuesByIndexFix.new)
       ..registerFixForRule(PreferExplicitFunctionType.code, PreferExplicitFunctionTypeFix.new)

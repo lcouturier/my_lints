@@ -5,14 +5,14 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-class UseTernaryInsteadOfIfelseRule extends AnalysisRule {
+class PreferTernaryOverIfElseRule extends AnalysisRule {
   static const LintCode code = LintCode(
-    'use_ternary_instead_of_ifelse',
+    'prefer_ternary_over_if_else',
     "Use a ternary operator instead of an if-else statement.",
     correctionMessage: "Try using a ternary operator instead of an if-else statement.",
   );
 
-  UseTernaryInsteadOfIfelseRule() : super(name: code.name, description: code.problemMessage);
+  PreferTernaryOverIfElseRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   DiagnosticCode get diagnosticCode => code;
@@ -25,7 +25,7 @@ class UseTernaryInsteadOfIfelseRule extends AnalysisRule {
 }
 
 class _Visitor extends SimpleAstVisitor<void> {
-  final UseTernaryInsteadOfIfelseRule rule;
+  final PreferTernaryOverIfElseRule rule;
 
   _Visitor(this.rule);
 
@@ -62,5 +62,10 @@ class _Visitor extends SimpleAstVisitor<void> {
       expression is PrefixedIdentifier,
       expression is PropertyAccess,
     ].any((e) => e);
+  }
+
+  @override
+  String toString() {
+    return '_Visitor{rule=$rule}';
   }
 }
