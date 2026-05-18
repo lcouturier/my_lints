@@ -24,18 +24,20 @@ class AvoidNestedTernaryRule extends AnalysisRule {
   }
 }
 
-class AvoidNestedTernaryVisitor extends SimpleAstVisitor<void> {
+class AvoidNestedTernaryVisitor extends RecursiveAstVisitor<void> {
   final AvoidNestedTernaryRule rule;
 
   AvoidNestedTernaryVisitor(this.rule);
 
   @override
   void visitConditionalExpression(ConditionalExpression node) {
-    if (node case ConditionalExpression(
-      :final thenExpression,
-      :final elseExpression,
-    ) when thenExpression is ConditionalExpression || elseExpression is ConditionalExpression) {
+    final thenExpr = node.thenExpression.unParenthesized;
+    final elseExpr = node.elseExpression.unParenthesized;
+
+    if (thenExpr is ConditionalExpression || elseExpr is ConditionalExpression) {
       rule.reportAtNode(node);
     }
+
+    super.visitConditionalExpression(node);
   }
 }

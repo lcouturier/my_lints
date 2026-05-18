@@ -34,9 +34,7 @@ import 'package:my_lints/src/rules/avoid_nested_if_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_record_rule.dart';
 import 'package:my_lints/src/rules/avoid_mixing_named_and_positional_fields.dart';
 import 'package:my_lints/src/rules/avoid_nested_switch_expression_rule.dart';
-import 'package:my_lints/src/rules/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_positional_record_field_access_rule.dart';
-import 'package:my_lints/src/rules/avoid_nullable_bool_rule.dart';
 import 'package:my_lints/src/rules/avoid_unsafe_reduce_rule.dart';
 import 'package:my_lints/src/rules/avoid_returning_value_from_cubit_methods_rule.dart';
 import 'package:my_lints/src/rules/avoid_shadowed_extension_methods_rule.dart';
@@ -58,6 +56,8 @@ import 'package:my_lints/src/rules/prefer_null_aware_spread_rule.dart';
 import 'package:my_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
 import 'package:my_lints/src/rules/prefer_void_callback.dart';
 import 'package:my_lints/src/rules/use_join_on_strings_rule.dart';
+import 'package:my_lints/src/rules/prefer_map_over_map_indexed_rule.dart';
+import 'package:my_lints/src/rules/use_ternary_instead_of_ifelse_rule.dart';
 
 final plugin = MyLintsPlugin();
 
@@ -79,7 +79,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidUselessAsyncMethodRule())
       ..registerWarningRule(AvoidYodaConditionsRule())
       ..registerWarningRule(PreferContainsRule())
-      ..registerWarningRule(AvoidNullableListReturnTypeRule())
+      // ..registerWarningRule(AvoidNullableListReturnTypeRule())
       ..registerWarningRule(PreferIsEmptyRule())
       ..registerWarningRule(AvoidPositionalRecordFieldAccessRule())
       ..registerWarningRule(AvoidDynamicTypeRule())
@@ -87,7 +87,6 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(ControllerDisposeRule())
       ..registerWarningRule(PreferNullAwareNotationRule())
       ..registerWarningRule(PreferVoidCallbackRule())
-      ..registerWarningRule(AvoidNullableBoolRule())
       ..registerWarningRule(AvoidNestedAssignmentRule())
       ..registerWarningRule(AvoidMapKeysContainsRule())
       ..registerWarningRule(AvoidShadowedExtensionMethodsRule())
@@ -113,7 +112,9 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidDoubleNegationConditionsRule())
       ..registerWarningRule(AvoidIdenticalIfBranchRule())
       ..registerWarningRule(AvoidIncompleteCopyWithRule())
-      ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 3));
+      ..registerWarningRule(PreferMapOverMapIndexedRule())
+      ..registerWarningRule(UseTernaryInsteadOfIfelseRule())
+      ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 4));
 
     registry
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)

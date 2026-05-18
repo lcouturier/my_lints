@@ -41,23 +41,6 @@ class _IfVisitor extends SimpleAstVisitor<void> {
   }
 
   bool _sameAst(AstNode a, AstNode b) {
-    if (a.runtimeType != b.runtimeType) {
-      return false;
-    }
-
-    final aChildren = a.childEntities.whereType<AstNode>().toList();
-    final bChildren = b.childEntities.whereType<AstNode>().toList();
-
-    if (aChildren.length != bChildren.length) {
-      return false;
-    }
-
-    for (var i = 0; i < aChildren.length; i++) {
-      if (!_sameAst(aChildren[i], bChildren[i])) {
-        return false;
-      }
-    }
-
-    return true;
+    return a.toSource() == b.toSource();
   }
 }

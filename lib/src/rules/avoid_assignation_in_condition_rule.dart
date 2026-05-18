@@ -21,10 +21,7 @@ class AvoidAssignationInConditionRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry
-      ..addIfStatement(this, visitor)
-      ..addReturnStatement(this, visitor)
-      ..addWhileStatement(this, visitor);
+    registry.addAssignmentExpression(this, visitor);
   }
 }
 
@@ -33,35 +30,16 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   _Visitor(this.rule);
 
-  void _check(Expression expr) {
-    expr.accept(_AssignmentVisitor(rule));
+  bool _isInsideCondition(AstNode node) {
+    return node.thisOrAncestorOfType<IfStatement>()?.expression == node ||
+        node.thisOrAncestorOfType<WhileStatement>()?.condition == node ||
+        node.thisOrAncestorOfType<DoStatement>()?.condition == node;
   }
-
-  @override
-  void visitIfStatement(IfStatement node) {
-    _check(node.expression);
-  }
-
-  @override
-  void visitWhileStatement(WhileStatement node) {
-    _check(node.condition);
-  }
-
-  @override
-  void visitReturnStatement(ReturnStatement node) {
-    if (node.expression != null) {
-      _check(node.expression!);
-    }
-  }
-}
-
-class _AssignmentVisitor extends RecursiveAstVisitor<void> {
-  _AssignmentVisitor(this.rule);
-
-  final AvoidAssignationInConditionRule rule;
 
   @override
   void visitAssignmentExpression(AssignmentExpression node) {
-    rule.reportAtNode(node);
+    if (_isInsideCondition(node)) {
+      rule.reportAtNode(node);
+    }
   }
 }
