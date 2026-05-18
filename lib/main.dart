@@ -23,6 +23,7 @@ import 'package:my_lints/src/rules/avoid_empty_spread_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_extensions_on_records_rule.dart';
 import 'package:my_lints/src/rules/avoid_identical_if_branch_rule.dart';
+import 'package:my_lints/src/rules/avoid_incomplete_copy_with_rule.dart';
 import 'package:my_lints/src/rules/avoid_negative_boolean_names_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_ternary_rule.dart';
 import 'package:my_lints/src/rules/avoid_yoda_condition_rule.dart';
@@ -111,6 +112,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidNegativeBooleanRule())
       ..registerWarningRule(AvoidDoubleNegationConditionsRule())
       ..registerWarningRule(AvoidIdenticalIfBranchRule())
+      ..registerWarningRule(AvoidIncompleteCopyWithRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 3));
 
     registry

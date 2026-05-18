@@ -1,12 +1,31 @@
-class Person {
+class User {
   final String name;
-  final String lastName;
-  final String email;
+  final String firstName;
   final int age;
 
-  Person(this.name, this.lastName, this.email, this.age);
+  User({required this.name, required this.firstName, required this.age});
 
-  Person copyWith({String? name, String? lastName, int? age}) {
-    return Person(name ?? this.name, lastName ?? this.lastName, this.email, age ?? this.age);
+  User copyWith({String? name, String? firstName, int? age}) {
+    return User(
+      name: name ?? this.name,
+      firstName: firstName ?? this.firstName,
+      age: age ?? this.age,
+    );
+  }
+}
+
+class User2 {
+  final String name;
+  final String firstName;
+  final int age;
+
+  User2({required this.name, required this.firstName, required this.age});
+
+  User2 copyWith({String? name, String? firstName}) {
+    return User2(
+      name: name ?? this.name,
+      firstName: firstName ?? this.firstName,
+      age: age, // Missing age field
+    );
   }
 }
