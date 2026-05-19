@@ -117,7 +117,7 @@ class MyLintsPlugin extends Plugin {
       // ..registerWarningRule(AvoidIncompleteCopyWithRule())
       ..registerWarningRule(PreferMapOverMapIndexedRule())
       ..registerWarningRule(PreferTernaryOverIfElseRule())
-      ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 4));
+      ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)

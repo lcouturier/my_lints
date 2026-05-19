@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
@@ -22,18 +24,19 @@ class AvoidComplicatedConditionalRule extends AnalysisRule {
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
-    final visitor = _IfVisitor(this);
+    final visitor = _Visitor(this);
     registry
       ..addIfStatement(this, visitor)
       ..addWhileStatement(this, visitor)
+      ..addConditionalExpression(this, visitor)
       ..addDoStatement(this, visitor);
   }
 }
 
-class _IfVisitor extends SimpleAstVisitor<void> {
+class _Visitor extends SimpleAstVisitor<void> {
   final AvoidComplicatedConditionalRule rule;
 
-  _IfVisitor(this.rule);
+  _Visitor(this.rule);
 
   @override
   void visitIfStatement(IfStatement node) {
@@ -45,63 +48,79 @@ class _IfVisitor extends SimpleAstVisitor<void> {
     _verify(node.condition);
   }
 
-  void _verify(Expression condition) {
-    int operatorCount = 0;
-    int methodCallCount = 0;
-    int negationCount = 0;
-
-    condition.accept(
-      _SimpleConditionVisitor(
-        onOperator: () => operatorCount++,
-        onMethodCall: () => methodCallCount++,
-        onNegation: () => negationCount++,
-      ),
-    );
-
-    final isTooComplex = operatorCount + methodCallCount + negationCount >= rule.threshold;
-
-    if (isTooComplex) {
-      rule.reportAtNode(condition);
-    }
-  }
-}
-
-class _SimpleConditionVisitor extends RecursiveAstVisitor<void> {
-  final void Function() onOperator;
-  final void Function() onMethodCall;
-  final void Function() onNegation;
-
-  _SimpleConditionVisitor({required this.onOperator, required this.onMethodCall, required this.onNegation});
-
   @override
-  void visitBinaryExpression(BinaryExpression node) {
-    final op = node.operator.type;
-
-    if (op == TokenType.AMPERSAND_AMPERSAND || op == TokenType.BAR_BAR) {
-      onOperator();
-    }
-
-    super.visitBinaryExpression(node);
+  void visitDoStatement(DoStatement node) {
+    _verify(node.condition);
   }
 
   @override
   void visitConditionalExpression(ConditionalExpression node) {
-    onOperator(); // ternary adds a branch
-    super.visitConditionalExpression(node);
+    _verify(node.condition);
   }
 
-  @override
-  void visitPrefixExpression(PrefixExpression node) {
-    if (node.operator.type == TokenType.BANG) {
-      onNegation();
+  void _verify(Expression expression) {
+    final condition = expression.unParenthesized;
+
+    final metrics = _Metrics();
+    metrics.analyze(condition);
+
+    final score =
+        metrics.logicalOps +
+        metrics.negations +
+        metrics.ternaries +
+        (metrics.maxDepth >= 3 ? (metrics.maxDepth - 3 + 1) * 2 : 0);
+
+    if (score >= rule.threshold) {
+      rule.reportAtNode(expression);
     }
-
-    super.visitPrefixExpression(node);
-  }
-
-  @override
-  void visitMethodInvocation(MethodInvocation node) {
-    onMethodCall();
-    super.visitMethodInvocation(node);
   }
 }
+
+class _Metrics {
+  int logicalOps = 0;
+  int negations = 0;
+  int ternaries = 0;
+  int maxDepth = 0;
+
+  void analyze(Expression expression) {
+    _visit(expression.unParenthesized, 0);
+  }
+
+  void _visit(Expression e, int depth) {
+    // ignore: parameter_assignments
+    e = e.unParenthesized;
+
+    maxDepth = math.max(maxDepth, depth);
+
+    switch (e) {
+      case BinaryExpression(operator: final op, leftOperand: final left, rightOperand: final right):
+        if (op.type == TokenType.AMPERSAND_AMPERSAND || op.type == TokenType.BAR_BAR) {
+          logicalOps++;
+        }
+
+        _visit(left, depth + 1);
+        _visit(right, depth + 1);
+        return;
+
+      case PrefixExpression(operator: final op, operand: final operand):
+        if (op.type == TokenType.BANG) {
+          negations++;
+        }
+
+        _visit(operand, depth + 1);
+        return;
+
+      case ConditionalExpression(condition: final cond, thenExpression: final thenExpr, elseExpression: final elseExpr):
+        ternaries++;
+
+        _visit(cond, depth + 1);
+        _visit(thenExpr, depth + 1);
+        _visit(elseExpr, depth + 1);
+        return;
+
+      default:
+        return;
+    }
+  }
+}
+
