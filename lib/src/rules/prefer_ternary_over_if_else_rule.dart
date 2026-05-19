@@ -64,8 +64,5 @@ class _Visitor extends SimpleAstVisitor<void> {
     ].any((e) => e);
   }
 
-  @override
-  String toString() {
-    return '_Visitor{rule=$rule}';
-  }
+  
 }

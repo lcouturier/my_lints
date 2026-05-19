@@ -6,7 +6,6 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:my_lints/src/common/extensions.dart';
 
 class AvoidUnsafeReduceRule extends AnalysisRule {
   static const LintCode code = LintCode(

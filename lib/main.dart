@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 library;
 
 import 'package:analysis_server_plugin/plugin.dart';
@@ -70,22 +72,22 @@ class MyLintsPlugin extends Plugin {
   void register(PluginRegistry registry) {
     registry
       ..registerWarningRule(PreferExplicitFunctionType())
-      ..registerWarningRule(PreferFirstRule())
-      ..registerWarningRule(PreferLastRule())
+      // ..registerWarningRule(PreferFirstRule())
+      // ..registerWarningRule(PreferLastRule())
       ..registerWarningRule(PreferAnyRule())
       ..registerWarningRule(PreferNullAwareSpreadRule())
       ..registerWarningRule(AvoidMixingNamedAndPositionalFields())
       ..registerWarningRule(AvoidNestedSwitchExpressionRule())
       ..registerWarningRule(AvoidNestedRecordRule())
-      ..registerWarningRule(AvoidUselessAsyncMethodRule())
+      // ..registerWarningRule(AvoidUselessAsyncMethodRule())
       ..registerWarningRule(AvoidYodaConditionsRule())
       ..registerWarningRule(PreferContainsRule())
       // ..registerWarningRule(AvoidNullableListReturnTypeRule())
       ..registerWarningRule(PreferIsEmptyRule())
       ..registerWarningRule(AvoidPositionalRecordFieldAccessRule())
       ..registerWarningRule(AvoidDynamicTypeRule())
-      ..registerWarningRule(AvoidEnumValuesByIndexRule())
-      ..registerWarningRule(ControllerDisposeRule())
+      // ..registerWarningRule(AvoidEnumValuesByIndexRule())
+      // ..registerWarningRule(ControllerDisposeRule())
       ..registerWarningRule(PreferNullAwareNotationRule())
       ..registerWarningRule(PreferVoidCallbackRule())
       ..registerWarningRule(AvoidNestedAssignmentRule())
@@ -95,8 +97,8 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferCorrectCallbackFieldNameRule())
       ..registerWarningRule(AvoidCompareSameValueRule())
       ..registerWarningRule(AvoidUnsafeReduceRule())
-      ..registerWarningRule(UseJoinOnStringsRule())
-      ..registerWarningRule(AvoidReturningValueFromCubitMethodsRule())
+      // ..registerWarningRule(UseJoinOnStringsRule())
+      // ..registerWarningRule(AvoidReturningValueFromCubitMethodsRule())
       ..registerWarningRule(AvoidComplexLoopConditionsRule())
       ..registerWarningRule(AvoidNestedIfRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
@@ -104,7 +106,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidEmptySetStateRule())
       ..registerWarningRule(AvoidThrowLiteralRule())
       ..registerWarningRule(AvoidNestedTernaryRule())
-      ..registerWarningRule(AvoidMountedInSetStateRule())
+      // ..registerWarningRule(AvoidMountedInSetStateRule())
       ..registerWarningRule(AvoidExtensionsOnRecordsRule())
       ..registerWarningRule(EdgeInsetsRule())
       ..registerWarningRule(AvoidAssignationInConditionRule())
@@ -112,7 +114,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidNegativeBooleanRule())
       ..registerWarningRule(AvoidDoubleNegationConditionsRule())
       ..registerWarningRule(AvoidIdenticalIfBranchRule())
-      ..registerWarningRule(AvoidIncompleteCopyWithRule())
+      // ..registerWarningRule(AvoidIncompleteCopyWithRule())
       ..registerWarningRule(PreferMapOverMapIndexedRule())
       ..registerWarningRule(PreferTernaryOverIfElseRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 4));
