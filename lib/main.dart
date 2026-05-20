@@ -33,7 +33,6 @@ import 'package:my_lints/src/rules/avoid_yoda_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
 import 'package:my_lints/src/rules/avoid_mounted_in_setstate.dart';
 import 'package:my_lints/src/rules/avoid_nested_assignment_rule.dart';
-import 'package:my_lints/src/rules/avoid_nested_if_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_record_rule.dart';
 import 'package:my_lints/src/rules/avoid_mixing_named_and_positional_fields.dart';
 import 'package:my_lints/src/rules/avoid_nested_switch_expression_rule.dart';
@@ -87,7 +86,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidPositionalRecordFieldAccessRule())
       ..registerWarningRule(AvoidDynamicTypeRule())
       // ..registerWarningRule(AvoidEnumValuesByIndexRule())
-      // ..registerWarningRule(ControllerDisposeRule())
+      ..registerWarningRule(ControllerDisposeRule())
       ..registerWarningRule(PreferNullAwareNotationRule())
       ..registerWarningRule(PreferVoidCallbackRule())
       ..registerWarningRule(AvoidNestedAssignmentRule())
@@ -97,10 +96,10 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferCorrectCallbackFieldNameRule())
       ..registerWarningRule(AvoidCompareSameValueRule())
       ..registerWarningRule(AvoidUnsafeReduceRule())
-      // ..registerWarningRule(UseJoinOnStringsRule())
+      ..registerWarningRule(UseJoinOnStringsRule())
       // ..registerWarningRule(AvoidReturningValueFromCubitMethodsRule())
       ..registerWarningRule(AvoidComplexLoopConditionsRule())
-      ..registerWarningRule(AvoidNestedIfRule())
+      // ..registerWarningRule(AvoidNestedIfRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySpreadRule())
       ..registerWarningRule(AvoidEmptySetStateRule())

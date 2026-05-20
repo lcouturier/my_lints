@@ -1,13 +1,13 @@
 void foo() {
-  final map = {'hello': 'world'};
+  final d = {'hello': 'world'};
 
-  final result = map.keys.contains('hello'); // LINT
+  final result = d.keys.contains('hello'); // LINT
   print(result);
 }
 
 void bar() {
-  final map = {'hello': 'world'};
+  final d = {'hello': 'world'};
 
-  final result = map.containsKey('hello');
+  final result = d.containsKey('hello');
   print(result);
 }
