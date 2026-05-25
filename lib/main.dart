@@ -32,6 +32,7 @@ import 'package:my_lints/src/rules/avoid_magic_duration_rule.dart';
 import 'package:my_lints/src/rules/avoid_negative_boolean_names_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_ternary_rule.dart';
 import 'package:my_lints/src/rules/avoid_redundant_duration_rule.dart';
+import 'package:my_lints/src/rules/avoid_redundant_map_from_rule.dart';
 import 'package:my_lints/src/rules/avoid_redundant_single_item_spread_rule.dart';
 import 'package:my_lints/src/rules/avoid_yoda_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
@@ -123,7 +124,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferNamedBooleanParametersRule())
       ..registerWarningRule(PreferMapOverMapIndexedRule())
       ..registerWarningRule(PreferFunctionTypedefsRule())
-      // ..registerWarningRule(PreferNamedRecordFieldsRule())
+      ..registerWarningRule(AvoidRedundantMapFromRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry
