@@ -12,6 +12,7 @@ import 'package:my_lints/src/fixes/prefer_contains_fix.dart';
 import 'package:my_lints/src/fixes/prefer_explicit_function_type_fix.dart';
 import 'package:my_lints/src/fixes/prefer_first_fix.dart';
 import 'package:my_lints/src/fixes/prefer_last_fix.dart';
+import 'package:my_lints/src/fixes/prefer_null_aware_elements_fix.dart';
 import 'package:my_lints/src/fixes/prefer_ternary_over_if_else_fix.dart';
 import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
 import 'package:my_lints/src/rules/avoid_assignation_in_condition_rule.dart';
@@ -27,8 +28,11 @@ import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_extensions_on_records_rule.dart';
 import 'package:my_lints/src/rules/avoid_identical_if_branch_rule.dart';
 import 'package:my_lints/src/rules/avoid_incomplete_copy_with_rule.dart';
+import 'package:my_lints/src/rules/avoid_magic_duration_rule.dart';
 import 'package:my_lints/src/rules/avoid_negative_boolean_names_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_ternary_rule.dart';
+import 'package:my_lints/src/rules/avoid_redundant_duration_rule.dart';
+import 'package:my_lints/src/rules/avoid_redundant_single_item_spread_rule.dart';
 import 'package:my_lints/src/rules/avoid_yoda_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
 import 'package:my_lints/src/rules/avoid_mounted_in_setstate.dart';
@@ -47,12 +51,17 @@ import 'package:my_lints/src/rules/controller_dispose_rule.dart';
 import 'package:my_lints/src/rules/edge_insets_rule.dart';
 import 'package:my_lints/src/rules/prefer_addition_subtraction_assignments_rule.dart';
 import 'package:my_lints/src/rules/prefer_any_or_every_rule.dart';
+import 'package:my_lints/src/rules/prefer_collection_if_for_conditional_elements_rule.dart';
 import 'package:my_lints/src/rules/prefer_contains_rule.dart';
 import 'package:my_lints/src/rules/prefer_correct_callback_field_name_rule.dart';
 import 'package:my_lints/src/rules/prefer_explicit_function_type_rule.dart';
 import 'package:my_lints/src/rules/prefer_first_rule.dart';
+import 'package:my_lints/src/rules/prefer_function_typedefs_rule.dart';
 import 'package:my_lints/src/rules/prefer_is_empty_rule.dart';
 import 'package:my_lints/src/rules/prefer_last_rule.dart';
+import 'package:my_lints/src/rules/prefer_named_bool_parameters_rule.dart';
+import 'package:my_lints/src/rules/prefer_named_record_fields_rule.dart';
+import 'package:my_lints/src/rules/prefer_null_aware_elements_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_notation_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_spread_rule.dart';
 import 'package:my_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
@@ -60,6 +69,7 @@ import 'package:my_lints/src/rules/prefer_void_callback.dart';
 import 'package:my_lints/src/rules/use_join_on_strings_rule.dart';
 import 'package:my_lints/src/rules/prefer_map_over_map_indexed_rule.dart';
 import 'package:my_lints/src/rules/prefer_ternary_over_if_else_rule.dart';
+import 'package:my_lints/src/rules/prefer_if_elements_to_ternary_spread_rule.dart';
 
 final plugin = MyLintsPlugin();
 
@@ -71,21 +81,18 @@ class MyLintsPlugin extends Plugin {
   void register(PluginRegistry registry) {
     registry
       ..registerWarningRule(PreferExplicitFunctionType())
-      // ..registerWarningRule(PreferFirstRule())
-      // ..registerWarningRule(PreferLastRule())
       ..registerWarningRule(PreferAnyRule())
       ..registerWarningRule(PreferNullAwareSpreadRule())
       ..registerWarningRule(AvoidMixingNamedAndPositionalFields())
       ..registerWarningRule(AvoidNestedSwitchExpressionRule())
       ..registerWarningRule(AvoidNestedRecordRule())
-      // ..registerWarningRule(AvoidUselessAsyncMethodRule())
       ..registerWarningRule(AvoidYodaConditionsRule())
       ..registerWarningRule(PreferContainsRule())
-      // ..registerWarningRule(AvoidNullableListReturnTypeRule())
+      ..registerWarningRule(PreferCollectionIfForConditionalElementsRule())
       ..registerWarningRule(PreferIsEmptyRule())
       ..registerWarningRule(AvoidPositionalRecordFieldAccessRule())
       ..registerWarningRule(AvoidDynamicTypeRule())
-      // ..registerWarningRule(AvoidEnumValuesByIndexRule())
+      ..registerWarningRule(PreferNullAwareElementsRule())
       ..registerWarningRule(ControllerDisposeRule())
       ..registerWarningRule(PreferNullAwareNotationRule())
       ..registerWarningRule(PreferVoidCallbackRule())
@@ -97,15 +104,15 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidCompareSameValueRule())
       ..registerWarningRule(AvoidUnsafeReduceRule())
       ..registerWarningRule(UseJoinOnStringsRule())
-      // ..registerWarningRule(AvoidReturningValueFromCubitMethodsRule())
+      ..registerWarningRule(AvoidMagicDurationRule())
       ..registerWarningRule(AvoidComplexLoopConditionsRule())
-      // ..registerWarningRule(AvoidNestedIfRule())
+      ..registerWarningRule(AvoidRedundantDurationRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySpreadRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
       ..registerWarningRule(AvoidThrowLiteralRule())
       ..registerWarningRule(AvoidNestedTernaryRule())
-      // ..registerWarningRule(AvoidMountedInSetStateRule())
+      ..registerWarningRule(AvoidRedundantSingleItemSpreadRule())
       ..registerWarningRule(AvoidExtensionsOnRecordsRule())
       ..registerWarningRule(EdgeInsetsRule())
       ..registerWarningRule(AvoidAssignationInConditionRule())
@@ -113,13 +120,15 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidNegativeBooleanRule())
       ..registerWarningRule(AvoidDoubleNegationConditionsRule())
       ..registerWarningRule(AvoidIdenticalIfBranchRule())
-      // ..registerWarningRule(AvoidIncompleteCopyWithRule())
+      ..registerWarningRule(PreferNamedBooleanParametersRule())
       ..registerWarningRule(PreferMapOverMapIndexedRule())
-      ..registerWarningRule(PreferTernaryOverIfElseRule())
+      ..registerWarningRule(PreferFunctionTypedefsRule())
+      // ..registerWarningRule(PreferNamedRecordFieldsRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)
+      ..registerFixForRule(PreferNullAwareElementsRule.code, PreferNullAwareElementsFix.new)
       ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidInvertConditionFix.new)
       ..registerFixForRule(PreferContainsRule.code, PreferContainsFix.new)
       ..registerFixForRule(PreferTernaryOverIfElseRule.code, PreferTernaryOverIfElseFix.new)

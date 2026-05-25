@@ -4,6 +4,7 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 class PreferNamedBooleanParametersRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -19,26 +20,27 @@ class PreferNamedBooleanParametersRule extends AnalysisRule {
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
-    final visitor = _Visitor(this);
-    registry.addMethodDeclaration(this, visitor);
+    final visitor = _ParametersVisitor(this);
+    registry.addFormalParameterList(this, visitor);
   }
 }
 
-class _Visitor extends SimpleAstVisitor<void> {
+class _ParametersVisitor extends SimpleAstVisitor<void> {
   final PreferNamedBooleanParametersRule rule;
 
-  _Visitor(this.rule);
+  _ParametersVisitor(this.rule);
 
   @override
-  void visitMethodDeclaration(MethodDeclaration node) {
-    if (node case MethodDeclaration(:final parameters) when parameters != null) {
-      final boolParams = parameters.parameters.whereType<SimpleFormalParameter>().where(
-        (p) => (p.type?.type?.isDartCoreBool ?? false),
-      );
-      if (boolParams.length > 1) {
-        for (final p in boolParams.where((p) => !p.isNamed)) {
-          rule.reportAtNode(p, arguments: [p.name?.lexeme ?? '']);
-        }
+  void visitFormalParameterList(FormalParameterList node) {
+    if (node.parent is MethodDeclaration) {
+      if ((node.parent as MethodDeclaration).metadata.any((m) => m.name.name == 'override')) {
+        return;
+      }
+    }
+    for (final parameter in node.parameters.map((p) => p.unWrapped).whereType<SimpleFormalParameter>()) {
+      final type = parameter.type;
+      if (type?.type?.isDartCoreBool == true && parameter.isPositional) {
+        rule.reportAtNode(parameter);
       }
     }
   }

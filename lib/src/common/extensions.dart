@@ -364,3 +364,13 @@ extension ClassDeclarationExtensions on ClassDeclaration {
     return hasFinalFields && hasConstructor && hasCopyWith;
   }
 }
+
+extension FormalParameterExtensions on FormalParameter {
+  /// Unwraps [DefaultFormalParameter] to get the underlying parameter.
+  /// This is necessary because [DefaultFormalParameter] can wrap another parameter, and we want to analyze the actual parameter type.
+  /// If the parameter is not a [DefaultFormalParameter], it returns itself.
+  FormalParameter get unWrapped => switch (this) {
+    DefaultFormalParameter(:final parameter) => parameter,
+    _ => this,
+  };
+}
