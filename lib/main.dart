@@ -6,6 +6,7 @@ import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
 import 'package:my_lints/src/fixes/avoid_enum_values_by_index_fix.dart';
 import 'package:my_lints/src/fixes/avoid_invert_condition_fix.dart';
+import 'package:my_lints/src/fixes/avoid_redundant_map_from_fix.dart';
 import 'package:my_lints/src/fixes/prefer_addition_subtraction_assignments_fix.dart';
 import 'package:my_lints/src/fixes/prefer_any_or_every_fix.dart';
 import 'package:my_lints/src/fixes/prefer_contains_fix.dart';
@@ -53,6 +54,7 @@ import 'package:my_lints/src/rules/edge_insets_rule.dart';
 import 'package:my_lints/src/rules/prefer_addition_subtraction_assignments_rule.dart';
 import 'package:my_lints/src/rules/prefer_any_or_every_rule.dart';
 import 'package:my_lints/src/rules/prefer_collection_if_for_conditional_elements_rule.dart';
+import 'package:my_lints/src/rules/prefer_const_list_literals_rule.dart';
 import 'package:my_lints/src/rules/prefer_contains_rule.dart';
 import 'package:my_lints/src/rules/prefer_correct_callback_field_name_rule.dart';
 import 'package:my_lints/src/rules/prefer_explicit_function_type_rule.dart';
@@ -60,6 +62,7 @@ import 'package:my_lints/src/rules/prefer_first_rule.dart';
 import 'package:my_lints/src/rules/prefer_function_typedefs_rule.dart';
 import 'package:my_lints/src/rules/prefer_is_empty_rule.dart';
 import 'package:my_lints/src/rules/prefer_last_rule.dart';
+import 'package:my_lints/src/rules/prefer_map_entries_rule.dart';
 import 'package:my_lints/src/rules/prefer_named_bool_parameters_rule.dart';
 import 'package:my_lints/src/rules/prefer_named_record_fields_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_elements_rule.dart';
@@ -125,6 +128,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferMapOverMapIndexedRule())
       ..registerWarningRule(PreferFunctionTypedefsRule())
       ..registerWarningRule(AvoidRedundantMapFromRule())
+      ..registerWarningRule(PreferConstListLiteralsRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry
@@ -138,6 +142,7 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(PreferExplicitFunctionType.code, PreferExplicitFunctionTypeFix.new)
       ..registerFixForRule(PreferUsageOfValueGetterRule.code, PreferUsageOfValueGetterFix.new)
       ..registerFixForRule(PreferAdditionSubtractionAssignmentsRule.code, PreferAdditionSubtractionAssignmentsFix.new)
+      ..registerFixForRule(AvoidRedundantMapFromRule.code, AvoidRedundantMapFromFix.new)
       ..registerFixForRule(PreferFirstRule.code, PreferFirstFix.new);
   }
 }

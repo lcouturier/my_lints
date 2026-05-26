@@ -47,14 +47,5 @@ class _Visitor extends SimpleAstVisitor<void> {
     )) {
       rule.reportAtNode(node);
     }
-
-    // if (node.constructorName.type.name.name == 'Map' &&
-    //     node.constructorName.name?.name == 'from' &&
-    //     node.argumentList.arguments.length == 1) {
-    //   final argument = node.argumentList.arguments.first;
-    //   if (argument is Identifier) {
-    //     rule.reportAtNode(node);
-    //   }
-    // }
   }
 }
