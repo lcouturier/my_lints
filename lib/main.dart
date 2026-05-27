@@ -54,7 +54,6 @@ import 'package:my_lints/src/rules/edge_insets_rule.dart';
 import 'package:my_lints/src/rules/prefer_addition_subtraction_assignments_rule.dart';
 import 'package:my_lints/src/rules/prefer_any_or_every_rule.dart';
 import 'package:my_lints/src/rules/prefer_collection_if_for_conditional_elements_rule.dart';
-import 'package:my_lints/src/rules/prefer_const_list_literals_rule.dart';
 import 'package:my_lints/src/rules/prefer_contains_rule.dart';
 import 'package:my_lints/src/rules/prefer_correct_callback_field_name_rule.dart';
 import 'package:my_lints/src/rules/prefer_explicit_function_type_rule.dart';
@@ -125,10 +124,8 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidDoubleNegationConditionsRule())
       ..registerWarningRule(AvoidIdenticalIfBranchRule())
       ..registerWarningRule(PreferNamedBooleanParametersRule())
-      ..registerWarningRule(PreferMapOverMapIndexedRule())
       ..registerWarningRule(PreferFunctionTypedefsRule())
       ..registerWarningRule(AvoidRedundantMapFromRule())
-      ..registerWarningRule(PreferConstListLiteralsRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry
