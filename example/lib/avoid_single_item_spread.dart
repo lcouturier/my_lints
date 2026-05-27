@@ -11,6 +11,8 @@ void foo() {
     ],
     ...[values.first],
   ];
+
+  final other = [...list];
 }
 
 void foo2() {

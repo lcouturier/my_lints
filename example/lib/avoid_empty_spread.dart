@@ -1,7 +1,12 @@
 // ignore_for_file: unused_local_variable
 
 void foo(bool flag) {
-  final another = [...([]), ...const [], ...<String>[], if (flag) ...<String>[]];
+  final another = [
+    ...([]),
+    ...const [],
+    ...<String>[],
+    if (flag) ...<String>[],
+  ];
 }
 
 void foo2(bool flag) {

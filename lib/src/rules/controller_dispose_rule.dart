@@ -100,7 +100,7 @@ class _InitStateVisitor extends RecursiveAstVisitor<void> {
     final left = node.leftHandSide;
     final right = node.rightHandSide;
 
-    final name = left.getName();
+    final name = left.getNormalizedName();
     if (name == null) return;
 
     final field = fields[name];
@@ -129,7 +129,7 @@ class _DisposeVisitor extends RecursiveAstVisitor<void> {
   void visitMethodInvocation(MethodInvocation node) {
     if (node.methodName.name != 'dispose') return;
 
-    final name = node.realTarget?.getName();
+    final name = node.realTarget?.getNormalizedName();
     if (name != null) {
       disposed.add(name);
     }

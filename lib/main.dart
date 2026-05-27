@@ -35,6 +35,7 @@ import 'package:my_lints/src/rules/avoid_nested_ternary_rule.dart';
 import 'package:my_lints/src/rules/avoid_redundant_duration_rule.dart';
 import 'package:my_lints/src/rules/avoid_redundant_map_from_rule.dart';
 import 'package:my_lints/src/rules/avoid_redundant_single_item_spread_rule.dart';
+import 'package:my_lints/src/rules/avoid_redundant_spread_rule.dart';
 import 'package:my_lints/src/rules/avoid_yoda_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
 import 'package:my_lints/src/rules/avoid_mounted_in_setstate.dart';
@@ -67,6 +68,7 @@ import 'package:my_lints/src/rules/prefer_named_record_fields_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_elements_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_notation_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_spread_rule.dart';
+import 'package:my_lints/src/rules/prefer_try_get_value_rule.dart';
 import 'package:my_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
 import 'package:my_lints/src/rules/prefer_void_callback.dart';
 import 'package:my_lints/src/rules/use_join_on_strings_rule.dart';
@@ -126,6 +128,8 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferNamedBooleanParametersRule())
       ..registerWarningRule(PreferFunctionTypedefsRule())
       ..registerWarningRule(AvoidRedundantMapFromRule())
+      ..registerWarningRule(PreferTryGetValueRule())
+      ..registerWarningRule(AvoidRedundantSpreadRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry

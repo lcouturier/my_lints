@@ -307,7 +307,7 @@ extension ExpressionExtensions on Expression {
   /// this.items.reduce(...)
   /// items.reduce(...)
   /// widget.items.reduce(...)
-  String? getName() {
+  String? getNormalizedName() {
     if (this is SimpleIdentifier) return (this as SimpleIdentifier).name;
     if (this is PropertyAccess) return (this as PropertyAccess).propertyName.name;
     if (this is PrefixedIdentifier) return (this as PrefixedIdentifier).identifier.name;
