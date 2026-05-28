@@ -7,6 +7,27 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+bool isYodaComparison(BinaryExpression node) {
+  if (!node.operator.type.isComparisonOperator) return false;
+
+  final left = node.leftOperand.unParenthesized;
+  final right = node.rightOperand.unParenthesized;
+
+  if (left.isSimpleLiteral && !right.isSimpleLiteral) {
+    return true;
+  }
+
+  return switch (node) {
+    BinaryExpression(
+      leftOperand: PrefixExpression(operand: Literal(), operator: Token(type: TokenType.MINUS)),
+      rightOperand: final rightOperand,
+    )
+        when (!rightOperand.isSimpleLiteral) =>
+      true,
+    _ => false,
+  };
+}
+
 class AvoidYodaConditionsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_yoda_conditions',
@@ -21,18 +42,51 @@ class AvoidYodaConditionsRule extends AnalysisRule {
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
-    registry.addIfStatement(this, _IfVisitor(this));
+    final visitor = _ConditionHostVisitor(this);
+    registry
+      ..addIfStatement(this, visitor)
+      ..addWhileStatement(this, visitor)
+      ..addDoStatement(this, visitor)
+      ..addForStatement(this, visitor)
+      ..addConditionalExpression(this, visitor);
   }
 }
 
-class _IfVisitor extends SimpleAstVisitor<void> {
+class _ConditionHostVisitor extends SimpleAstVisitor<void> {
   final AvoidYodaConditionsRule rule;
 
-  _IfVisitor(this.rule);
+  _ConditionHostVisitor(this.rule);
 
   @override
   void visitIfStatement(IfStatement node) {
     node.expression.accept(_ConditionVisitor(rule));
+  }
+
+  @override
+  void visitWhileStatement(WhileStatement node) {
+    node.condition.accept(_ConditionVisitor(rule));
+  }
+
+  @override
+  void visitDoStatement(DoStatement node) {
+    node.condition.accept(_ConditionVisitor(rule));
+  }
+
+  @override
+  void visitForStatement(ForStatement node) {
+    final forLoopParts = node.forLoopParts;
+    final condition = switch (forLoopParts) {
+      ForPartsWithExpression() => forLoopParts.condition,
+      ForPartsWithDeclarations() => forLoopParts.condition,
+      _ => null,
+    };
+
+    condition?.accept(_ConditionVisitor(rule));
+  }
+
+  @override
+  void visitConditionalExpression(ConditionalExpression node) {
+    node.condition.accept(_ConditionVisitor(rule));
   }
 }
 
@@ -45,21 +99,7 @@ class _ConditionVisitor extends RecursiveAstVisitor<void> {
   void visitBinaryExpression(BinaryExpression node) {
     super.visitBinaryExpression(node);
 
-    if (!node.operator.type.isComparisonOperator) return;
-
-    final left = node.leftOperand.unParenthesized;
-    final right = node.rightOperand.unParenthesized;
-
-    if (left.isSimpleLiteral && !right.isSimpleLiteral) {
-      rule.reportAtNode(node);
-      return;
-    }
-
-    /// Covers cases like `-1 == list.indexOf(5)`.
-    if (node case BinaryExpression(
-      leftOperand: PrefixExpression(operand: Literal(), operator: Token(type: TokenType.MINUS)),
-      rightOperand: final rightOperand,
-    ) when (!rightOperand.isSimpleLiteral)) {
+    if (isYodaComparison(node)) {
       rule.reportAtNode(node);
     }
   }

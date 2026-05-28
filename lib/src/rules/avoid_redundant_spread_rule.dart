@@ -53,10 +53,5 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (elements.length == 1 && elements.first is SpreadElement) {
       rule.reportAtNode(elements.first);
     }
-    // for (final element in elements) {
-    //   if (element is SpreadElement && element.expression is SpreadElement) {
-    //     rule.reportAtNode(element);
-    //   }
-    // }
   }
 }
