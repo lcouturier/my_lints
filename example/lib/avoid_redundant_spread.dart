@@ -34,6 +34,14 @@ void foo() {
   ];
 
   final last = [
-    ...[...other],
+    ...[
+      ...[
+        ...[...other],
+      ],
+    ],
   ];
 }
+
+final map1 = {'a': 1, 'b': 2};
+final map2 = {'c': 3, 'd': 4};
+final map3 = Map.from(map1)..addAll(map2);

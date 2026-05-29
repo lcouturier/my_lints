@@ -43,28 +43,28 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   final AvoidRedundantSpreadRule rule;
 
-  @override
-  void visitListLiteral(ListLiteral node) {
-    if (node case ListLiteral(elements: [SpreadElement()])) {
-      rule.reportAtNode(node);
-    }
-  }
+  // @override
+  // void visitListLiteral(ListLiteral node) {
+  //   if (node case ListLiteral(elements: [SpreadElement()])) {
+  //     rule.reportAtNode(node);
+  //   }
+  // }
 
-  @override
-  void visitSetOrMapLiteral(SetOrMapLiteral node) {
-    if (node case SetOrMapLiteral(elements: [SpreadElement()])) {
-      rule.reportAtNode(node);
-    }
-  }
+  // @override
+  // void visitSetOrMapLiteral(SetOrMapLiteral node) {
+  //   if (node case SetOrMapLiteral(elements: [SpreadElement()])) {
+  //     rule.reportAtNode(node);
+  //   }
+  // }
 
   @override
   void visitSpreadElement(SpreadElement node) {
     final expression = node.expression.unParenthesized;
 
-    if (_isInlineLiteral(expression)) {
-      rule.reportAtNode(node);
-      return;
-    }
+    // if (_isInlineLiteral(expression)) {
+    //   rule.reportAtNode(node);
+    //   return;
+    // }
 
     if (_isEmptyLiteral(expression)) {
       rule.reportAtNode(node);
@@ -76,41 +76,42 @@ class _Visitor extends SimpleAstVisitor<void> {
       return;
     }
 
-    if (_isNestedSpread(expression)) {
+    if (_unwrapNestedSpread(expression) != null) {
       rule.reportAtNode(node);
       return;
     }
   }
-}
 
-bool _isInlineLiteral(Expression expression) {
-  return switch (expression) {
-    ListLiteral() => true,
-    SetOrMapLiteral() => true,
-    _ => false,
-  };
-}
+  // ignore: unused_element
+  bool _isInlineLiteral(Expression expression) {
+    return switch (expression) {
+      ListLiteral() => true,
+      SetOrMapLiteral() => true,
+      _ => false,
+    };
+  }
 
-bool _isEmptyLiteral(Expression expression) {
-  return switch (expression) {
-    ListLiteral(elements: final elements) => elements.isEmpty,
-    SetOrMapLiteral(elements: final elements) => elements.isEmpty,
-    _ => false,
-  };
-}
+  bool _isEmptyLiteral(Expression expression) {
+    return switch (expression) {
+      ListLiteral(elements: final elements) => elements.isEmpty,
+      SetOrMapLiteral(elements: final elements) => elements.isEmpty,
+      _ => false,
+    };
+  }
 
-bool _isSingleItemLiteral(Expression expression) {
-  return switch (expression) {
-    ListLiteral(elements: final elements) => elements.length == 1,
-    SetOrMapLiteral(elements: final elements) => elements.length == 1,
-    _ => false,
-  };
-}
+  bool _isSingleItemLiteral(Expression expression) {
+    return switch (expression) {
+      ListLiteral(elements: final elements) => elements.length == 1,
+      SetOrMapLiteral(elements: final elements) => elements.length == 1,
+      _ => false,
+    };
+  }
 
-bool _isNestedSpread(Expression expression) {
-  return switch (expression) {
-    ListLiteral(elements: final elements) => elements.length == 1 && elements.first is SpreadElement,
-    SetOrMapLiteral(elements: final elements) => elements.length == 1 && elements.first is SpreadElement,
-    _ => false,
-  };
+  Expression? _unwrapNestedSpread(Expression expression) {
+    return switch (expression) {
+      ListLiteral(elements: [SpreadElement(expression: final inner)]) => _unwrapNestedSpread(inner) ?? inner,
+      SetOrMapLiteral(elements: [SpreadElement(expression: final inner)]) => _unwrapNestedSpread(inner) ?? inner,
+      _ => null,
+    };
+  }
 }
