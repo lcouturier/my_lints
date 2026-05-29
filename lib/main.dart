@@ -24,7 +24,6 @@ import 'package:my_lints/src/rules/avoid_complicated_conditional_rule.dart';
 import 'package:my_lints/src/rules/avoid_double_negation_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_empty_set_state_rule.dart';
-import 'package:my_lints/src/rules/spread/avoid_empty_spread_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_extensions_on_records_rule.dart';
 import 'package:my_lints/src/rules/avoid_identical_if_branch_rule.dart';
@@ -34,7 +33,6 @@ import 'package:my_lints/src/rules/avoid_negative_boolean_names_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_ternary_rule.dart';
 import 'package:my_lints/src/rules/avoid_redundant_duration_rule.dart';
 import 'package:my_lints/src/rules/avoid_redundant_map_from_rule.dart';
-import 'package:my_lints/src/rules/spread/avoid_redundant_single_item_spread_rule.dart';
 import 'package:my_lints/src/rules/spread/avoid_redundant_spread_rule.dart';
 import 'package:my_lints/src/rules/avoid_yoda_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
@@ -113,11 +111,9 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidComplexLoopConditionsRule())
       ..registerWarningRule(AvoidRedundantDurationRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
-      ..registerWarningRule(AvoidEmptySpreadRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
       ..registerWarningRule(AvoidThrowLiteralRule())
       ..registerWarningRule(AvoidNestedTernaryRule())
-      ..registerWarningRule(AvoidRedundantSingleItemSpreadRule())
       ..registerWarningRule(AvoidExtensionsOnRecordsRule())
       ..registerWarningRule(EdgeInsetsRule())
       ..registerWarningRule(AvoidAssignationInConditionRule())

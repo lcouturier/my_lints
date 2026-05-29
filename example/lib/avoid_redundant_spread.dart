@@ -16,4 +16,24 @@ void foo() {
   ];
 
   final otherList = [...list]; // LINT
+  final otherDic = {...list}; // LINT
+
+  final list1 = [
+    ...[1, 2],
+  ];
+  final list2 = [...[]];
+
+  final item = 42;
+  final list3 = [
+    ...[item],
+  ];
+
+  final other = [1, 2, 3];
+  final list4 = [
+    ...[...other],
+  ];
+
+  final last = [
+    ...[...other],
+  ];
 }
