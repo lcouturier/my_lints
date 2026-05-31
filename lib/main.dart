@@ -21,6 +21,7 @@ import 'package:my_lints/src/rules/avoid_cascade_after_if_null_rule.dart';
 import 'package:my_lints/src/rules/avoid_compare_same_value_rule.dart';
 import 'package:my_lints/src/rules/avoid_complex_loop_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_complicated_conditional_rule.dart';
+import 'package:my_lints/src/rules/avoid_context_in_initState_rule.dart';
 import 'package:my_lints/src/rules/avoid_double_negation_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_empty_set_state_rule.dart';
@@ -126,6 +127,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidRedundantMapFromRule())
       ..registerWarningRule(PreferTryGetValueRule())
       ..registerWarningRule(AvoidRedundantSpreadRule())
+      ..registerWarningRule(AvoidContextInInitStateRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry
