@@ -4,6 +4,14 @@
 //   super.initState();
 //   Navigator.of(context).push(...);
 // }
+//- Good
+// @override
+// void initState() {
+//   super.initState();
+//   WidgetsBinding.instance.addPostFrameCallback((_) {
+//     Navigator.of(context).push(...);
+//   });
+// }
 
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
@@ -14,7 +22,7 @@ import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
 class AvoidContextInInitStateRule extends AnalysisRule {
-  static LintCode code = const LintCode('avoid_context_in_initState', "Don't use 'context' in 'initState'.");
+  static LintCode code = const LintCode('avoid_context_in_initState', "Don't use 'context' in this method.");
 
   AvoidContextInInitStateRule() : super(name: code.name, description: code.problemMessage);
 
@@ -46,6 +54,14 @@ class _Visitor extends SimpleAstVisitor<void> {
           rule.reportAtNode(node);
         }
       }
+      if (member is MethodDeclaration && member.name.lexeme == 'dispose') {
+        final visitor = _ContextInDisposeVisitor();
+        member.body.visitChildren(visitor);
+        final (found, node) = visitor.foundContext;
+        if (found) {
+          rule.reportAtNode(node);
+        }
+      }
     }
   }
 }
@@ -68,6 +84,24 @@ class _ContextInInitStateVisitor extends RecursiveAstVisitor<void> {
 
     super.visitMethodInvocation(node);
   }
+
+  @override
+  void visitSimpleIdentifier(SimpleIdentifier node) {
+    final type = node.staticType;
+
+    if (type == null) return;
+
+    if (type.getDisplayString() == 'BuildContext') {
+      foundContext = (true, node);
+    }
+  }
+}
+
+class _ContextInDisposeVisitor extends RecursiveAstVisitor<void> {
+  _ContextInDisposeVisitor();
+  bool insideSafeAsync = false;
+
+  (bool, AstNode?) foundContext = (false, null);
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {

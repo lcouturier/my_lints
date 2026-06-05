@@ -28,19 +28,16 @@ class _MyWidgetState extends State<MyWidget> {
   @override
   void initState() {
     super.initState();
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => Container())); // Lint
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => Container())); // Lint
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => Container()));
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => Container()));
     });
     controller = widget.controller;
   }
 
   @override
   void dispose() {
+    Navigator.of(context).pop();
     _controller.dispose();
     super.dispose();
   }
