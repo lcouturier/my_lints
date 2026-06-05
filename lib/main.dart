@@ -142,7 +142,6 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(AvoidEnumValuesByIndexRule.code, AvoidEnumValuesByIndexFix.new)
       ..registerFixForRule(PreferExplicitFunctionType.code, PreferExplicitFunctionTypeFix.new)
       ..registerFixForRule(PreferUsageOfValueGetterRule.code, PreferUsageOfValueGetterFix.new)
-      ..registerFixForRule(PreferAdditionSubtractionAssignmentsRule.code, PreferAdditionSubtractionAssignmentsFix.new)
       ..registerFixForRule(AvoidRedundantMapFromRule.code, AvoidRedundantMapFromFix.new)
       ..registerFixForRule(PreferFirstRule.code, PreferFirstFix.new);
   }

@@ -66,14 +66,16 @@ class _TryStatementVisitor extends RecursiveAstVisitor<void> {
   void visitTryStatement(TryStatement node) {
     if (node.catchClauses.isEmpty) return;
 
-    final returnFinder = _ReturnFinderVisitor();
-    node.body.accept(returnFinder);
+    final visitor = _ReturnFinderVisitor();
+    node.body.visitChildren(visitor); // Lire que le premier niveau de return dans le try
 
-    for (final returnNode in returnFinder.returnNodes) {
-      final expression = returnNode.expression;
-      final type = expression?.staticType;
-      if (expression is! AwaitExpression && (type?.isDartAsyncFuture == true || type?.isDartAsyncFutureOr == true)) {
-        rule.reportAtNode(returnNode);
+    for (final returnNode
+        in visitor.returnNodes.where((e) => e.expression != null).where((e) => e.expression is! AwaitExpression)) {
+      final expr = returnNode.expression;
+      final type = expr?.staticType;
+      final isFutureLike = type?.isDartAsyncFuture == true || type?.isDartAsyncFutureOr == true;
+      if (isFutureLike) {
+        rule.reportAtNode(expr);
       }
     }
 
@@ -88,5 +90,20 @@ class _ReturnFinderVisitor extends RecursiveAstVisitor<void> {
   void visitReturnStatement(ReturnStatement node) {
     returnNodes.add(node);
     super.visitReturnStatement(node);
+  }
+
+  @override
+  void visitFunctionExpression(FunctionExpression node) {
+    // 🚫 Ne pas descendre dans les fonctions locales
+  }
+
+  @override
+  void visitFunctionDeclaration(FunctionDeclaration node) {
+    // 🚫 idem si jamais rencontré imbriqué
+  }
+
+  @override
+  void visitMethodDeclaration(MethodDeclaration node) {
+    // 🚫 sécurité supplémentaire si tu traverses trop large
   }
 }
