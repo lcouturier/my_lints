@@ -87,6 +87,8 @@ extension DartTypeNullableExtensions on DartType? {
     return (type is FunctionType &&
         (type.returnType is VoidType || type.returnType is DynamicType || type.formalParameters.isEmpty));
   }
+
+  bool get isFutureLike => this?.isDartAsyncFuture == true || this?.isDartAsyncFutureOr == true;
 }
 
 extension FormalParameterExtension on FormalParameter {

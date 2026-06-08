@@ -26,6 +26,7 @@ import 'package:my_lints/src/rules/avoid_double_negation_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_empty_set_state_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
+import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
 import 'package:my_lints/src/rules/prefer_return_await_rule.dart';
 import 'package:my_lints/src/rules/record/avoid_extensions_on_records_rule.dart';
 import 'package:my_lints/src/rules/avoid_identical_if_branch_rule.dart';
@@ -109,7 +110,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidCompareSameValueRule())
       ..registerWarningRule(AvoidUnsafeReduceRule())
       ..registerWarningRule(UseJoinOnStringsRule())
-      ..registerWarningRule(AvoidMagicDurationRule())
+      ..registerWarningRule(AvoidMagicNumbersRule())
       ..registerWarningRule(AvoidComplexLoopConditionsRule())
       ..registerWarningRule(AvoidRedundantDurationRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())

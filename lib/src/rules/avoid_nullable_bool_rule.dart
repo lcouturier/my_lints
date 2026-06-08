@@ -17,7 +17,10 @@ class AvoidNullableBoolRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry.addNamedType(this, visitor);
+    registry
+      ..addFieldDeclaration(this, visitor)
+      ..addVariableDeclarationList(this, visitor)
+      ..addSimpleFormalParameter(this, visitor);
   }
 }
 
@@ -33,37 +36,21 @@ class _Visitor extends SimpleAstVisitor<void> {
         return;
       }
 
-      if (!_isRelevantUsage(node)) {
-        return;
-      }
-
       rule.reportAtNode(node);
     }
   }
 
   bool _isInsideCopyWith(AstNode node) {
     final method = node.thisOrAncestorOfType<MethodDeclaration>();
-
     if (method?.name.lexeme == 'copyWith') {
       return true;
     }
 
     final function = node.thisOrAncestorOfType<FunctionDeclaration>();
-
     if (function?.name.lexeme == 'copyWith') {
       return true;
     }
 
     return false;
-  }
-
-  bool _isRelevantUsage(NamedType node) {
-    final parent = node.parent;
-
-    return [
-      parent is SimpleFormalParameter,
-      parent is VariableDeclarationList,
-      parent is FieldDeclaration,
-    ].any((element) => element);
   }
 }

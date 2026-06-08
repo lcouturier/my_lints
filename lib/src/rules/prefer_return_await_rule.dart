@@ -4,6 +4,7 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 class PreferReturnAwaitRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -73,8 +74,7 @@ class _TryStatementVisitor extends RecursiveAstVisitor<void> {
         in visitor.returnNodes.where((e) => e.expression != null).where((e) => e.expression is! AwaitExpression)) {
       final expr = returnNode.expression;
       final type = expr?.staticType;
-      final isFutureLike = type?.isDartAsyncFuture == true || type?.isDartAsyncFutureOr == true;
-      if (isFutureLike) {
+      if (type.isFutureLike) {
         rule.reportAtNode(expr);
       }
     }

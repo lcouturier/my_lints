@@ -9,6 +9,8 @@ enum Status {
   const Status(this.value);
 }
 
+const int Limit = 100;
+
 class Dimens {
   static const int screenWidth = 1024;
   static const int screenHeight = 768;
@@ -33,7 +35,7 @@ void foo() {
   final y = Dimens.pi;
   print(y);
 
-  final duration = Duration(seconds: 5);
+  final duration = const Duration(seconds: 5);
   print(duration);
 
   final date = DateTime(2025, 10, 15);
