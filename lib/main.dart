@@ -72,6 +72,8 @@ import 'package:my_lints/src/rules/spread/prefer_null_aware_spread_rule.dart';
 import 'package:my_lints/src/rules/prefer_try_get_value_rule.dart';
 import 'package:my_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
 import 'package:my_lints/src/rules/prefer_void_callback.dart';
+import 'package:my_lints/src/rules/unnecessary_string_interpolation_rule.dart';
+import 'package:my_lints/src/rules/unnecessary_to_string_in_interpolation_rule.dart';
 import 'package:my_lints/src/rules/use_join_on_strings_rule.dart';
 import 'package:my_lints/src/rules/prefer_map_over_map_indexed_rule.dart';
 import 'package:my_lints/src/rules/prefer_ternary_over_if_else_rule.dart';
@@ -131,6 +133,8 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidRedundantSpreadRule())
       ..registerWarningRule(AvoidContextInInitStateRule())
       ..registerWarningRule(PreferReturnAwaitRule())
+      ..registerWarningRule(UnnecessaryStringInterpolationRule())
+      ..registerWarningRule(UnnecessaryToStringInInterpolationRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry
