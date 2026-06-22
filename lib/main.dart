@@ -27,7 +27,9 @@ import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_empty_set_state_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_for_each_rule.dart';
+import 'package:my_lints/src/rules/avoid_join_on_nullable_item_rule.dart';
 import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
+import 'package:my_lints/src/rules/avoid_tolist_before_join_rule.dart';
 import 'package:my_lints/src/rules/prefer_return_await_rule.dart';
 import 'package:my_lints/src/rules/record/avoid_extensions_on_records_rule.dart';
 import 'package:my_lints/src/rules/avoid_identical_if_branch_rule.dart';
@@ -137,6 +139,8 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(UnnecessaryStringInterpolationRule())
       ..registerWarningRule(UnnecessaryToStringInInterpolationRule())
       ..registerWarningRule(AvoidForEachRule())
+      ..registerWarningRule(AvoidToListBeforeJoinRule())
+      ..registerWarningRule(AvoidJoinOnNullableItemRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry
