@@ -70,7 +70,7 @@ class _ContextInInitStateVisitor extends RecursiveAstVisitor<void> {
   _ContextInInitStateVisitor();
   bool insideSafeAsync = false;
 
-  static const _safeAsyncMethods = {'addPostFrameCallback', 'scheduleFrameCallback'};
+  static const _safeAsyncMethods = {'addPostFrameCallback', 'scheduleFrameCallback', 'addListener'};
 
   (bool, AstNode?) foundContext = (false, null);
 

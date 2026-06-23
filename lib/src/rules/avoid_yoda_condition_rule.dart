@@ -7,27 +7,6 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-bool isYodaComparison(BinaryExpression node) {
-  if (!node.operator.type.isComparisonOperator) return false;
-
-  final left = node.leftOperand.unParenthesized;
-  final right = node.rightOperand.unParenthesized;
-
-  if (left.isSimpleLiteral && !right.isSimpleLiteral) {
-    return true;
-  }
-
-  return switch (node) {
-    BinaryExpression(
-      leftOperand: PrefixExpression(operand: Literal(), operator: Token(type: TokenType.MINUS)),
-      rightOperand: final rightOperand,
-    )
-        when (!rightOperand.isSimpleLiteral) =>
-      true,
-    _ => false,
-  };
-}
-
 class AvoidYodaConditionsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_yoda_conditions',
@@ -99,8 +78,28 @@ class _ConditionVisitor extends RecursiveAstVisitor<void> {
   void visitBinaryExpression(BinaryExpression node) {
     super.visitBinaryExpression(node);
 
-    if (isYodaComparison(node)) {
+    if (_isYodaComparison(node)) {
       rule.reportAtNode(node);
     }
+  }
+
+  bool _isYodaComparison(BinaryExpression node) {
+    if (!node.operator.type.isComparisonOperator) return false;
+
+    final left = node.leftOperand.unParenthesized;
+    final right = node.rightOperand.unParenthesized;
+
+    if (left.isSimpleLiteral && !right.isSimpleLiteral) {
+      return true;
+    }
+
+    if (node case BinaryExpression(
+      leftOperand: PrefixExpression(operand: Literal(), operator: Token(type: TokenType.MINUS)),
+      rightOperand: final rightOperand,
+    ) when (!rightOperand.isSimpleLiteral)) {
+      return true;
+    }
+
+    return false;
   }
 }
