@@ -13,8 +13,9 @@ import 'package:my_lints/src/common/extensions.dart';
 class PreferTryGetValueRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_try_get_value',
-    "Prefer using tryGetValue instead of containsKey and []",
-    correctionMessage: "Try using tryGetValue instead of containsKey and []",
+    'Prefer using tryGetValue pattern instead of containsKey and []',
+    correctionMessage:
+        "Consider using tryGetValue instead of containsKey and [] for better performance and readability.",
   );
 
   PreferTryGetValueRule() : super(name: code.name, description: code.problemMessage);
