@@ -32,6 +32,7 @@ import 'package:my_lints/src/rules/avoid_join_on_nullable_item_rule.dart';
 import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
 import 'package:my_lints/src/rules/avoid_tolist_before_join_rule.dart';
 import 'package:my_lints/src/rules/prefer_return_await_rule.dart';
+import 'package:my_lints/src/rules/prefer_where_type_rule.dart';
 import 'package:my_lints/src/rules/record/avoid_extensions_on_records_rule.dart';
 import 'package:my_lints/src/rules/avoid_identical_if_branch_rule.dart';
 import 'package:my_lints/src/rules/avoid_incomplete_copy_with_rule.dart';
@@ -143,6 +144,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidToListBeforeJoinRule())
       ..registerWarningRule(AvoidJoinOnNullableItemRule())
       ..registerWarningRule(AvoidConditionalExpressionInParameterRule())
+      ..registerWarningRule(PreferWhereTypeRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry
