@@ -39,22 +39,18 @@ class _Visitor extends SimpleAstVisitor<void> {
       if (callback is! FunctionExpression) return;
       if (callback.parameters != null && callback.parameters!.parameters.length != 1) return;
 
+      final parameter = callback.parameters?.parameters.first.name?.lexeme;
+
       final body = callback.body;
       if (body is! ExpressionFunctionBody) return;
       final expression = body.expression;
       if (expression case BinaryExpression(
-        :final leftOperand,
-        :final rightOperand,
+        leftOperand: SimpleIdentifier(:final name),
         operator: Token(type: TokenType.BANG_EQ),
-      )) {
-        if (_matches(leftOperand, rightOperand, callback.parameters?.parameters.first.name?.lexeme)) {
-          rule.reportAtNode(node);
-        }
+        rightOperand: NullLiteral(),
+      ) when name == parameter) {
+        rule.reportAtNode(node);
       }
     }
-  }
-
-  bool _matches(Expression identifier, Expression other, String? parameter) {
-    return identifier is SimpleIdentifier && identifier.name == parameter && other is NullLiteral;
   }
 }

@@ -8,6 +8,6 @@ void foo() {
 void bar() {
   final items = <String?>['a', 'b', 'c', null, 'd'];
 
-  final result = items.whereType<String>(); //
+  final result = items.whereType<String>();
   print(result);
 }

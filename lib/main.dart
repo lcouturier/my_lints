@@ -16,6 +16,7 @@ import 'package:my_lints/src/fixes/prefer_last_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_elements_fix.dart';
 import 'package:my_lints/src/fixes/prefer_ternary_over_if_else_fix.dart';
 import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
+import 'package:my_lints/src/fixes/prefer_where_type_fix.dart';
 import 'package:my_lints/src/rules/avoid_assignation_in_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_cascade_after_if_null_rule.dart';
 import 'package:my_lints/src/rules/avoid_compare_same_value_rule.dart';
@@ -158,6 +159,7 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(PreferExplicitFunctionType.code, PreferExplicitFunctionTypeFix.new)
       ..registerFixForRule(PreferUsageOfValueGetterRule.code, PreferUsageOfValueGetterFix.new)
       ..registerFixForRule(AvoidRedundantMapFromRule.code, AvoidRedundantMapFromFix.new)
+      ..registerFixForRule(PreferWhereTypeRule.code, PreferWhereTypeFix.new)
       ..registerFixForRule(PreferFirstRule.code, PreferFirstFix.new);
   }
 }
