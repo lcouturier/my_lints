@@ -44,10 +44,20 @@ class _Visitor extends SimpleAstVisitor<void> {
       final body = callback.body;
       if (body is! ExpressionFunctionBody) return;
       final expression = body.expression;
+
+      /// where((e) => e != null)
       if (expression case BinaryExpression(
         leftOperand: SimpleIdentifier(:final name),
         operator: Token(type: TokenType.BANG_EQ),
         rightOperand: NullLiteral(),
+      ) when name == parameter) {
+        rule.reportAtNode(node);
+      }
+
+      /// where((e) => e is String)
+      if (expression case IsExpression(
+        expression: SimpleIdentifier(:final name),
+        isOperator: Token(type: TokenType.IS),
       ) when name == parameter) {
         rule.reportAtNode(node);
       }

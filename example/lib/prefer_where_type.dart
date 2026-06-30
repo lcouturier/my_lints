@@ -5,6 +5,13 @@ void foo() {
   print(result);
 }
 
+void foo2() {
+  final items = <String?>['a', 'b', 'c', null, 'd'];
+
+  final result = items.where((e) => e is String); // LINT
+  print(result);
+}
+
 void bar() {
   final items = <String?>['a', 'b', 'c', null, 'd'];
 
