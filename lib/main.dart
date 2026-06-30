@@ -118,7 +118,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidCompareSameValueRule())
       ..registerWarningRule(AvoidUnsafeReduceRule())
       ..registerWarningRule(UseJoinOnStringsRule())
-      ..registerWarningRule(AvoidMagicNumbersRule())
+      // ..registerWarningRule(AvoidMagicNumbersRule())
       ..registerWarningRule(AvoidComplexLoopConditionsRule())
       ..registerWarningRule(AvoidRedundantDurationRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
