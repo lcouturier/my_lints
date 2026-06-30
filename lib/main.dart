@@ -144,7 +144,6 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidForEachRule())
       ..registerWarningRule(AvoidToListBeforeJoinRule())
       ..registerWarningRule(AvoidJoinOnNullableItemRule())
-      ..registerWarningRule(AvoidConditionalExpressionInParameterRule())
       ..registerWarningRule(PreferWhereTypeRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
