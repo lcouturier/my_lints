@@ -4,14 +4,15 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/type.dart';
+
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 class AvoidI18nCurrentRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_i18n_current',
-    'Avoid using I18n.current. Consider using context.i18n instead.',
-    correctionMessage: 'Replace I18n.current with context.i18n for better readability and maintainability.',
+    'Avoid using I18n.current. Consider using I18n.of(context) instead.',
+    correctionMessage: 'Replace I18n.current with I18n.of(context) for better readability and maintainability.',
   );
 
   AvoidI18nCurrentRule() : super(name: code.name, description: code.problemMessage);
@@ -53,22 +54,14 @@ class _Visitor extends SimpleAstVisitor<void> {
   }
 
   bool _hasBuildContextInScope(AstNode node) {
-    AstNode? current = node;
+    final method = node.thisOrAncestorOfType<MethodDeclaration>();
+    if (method != null) {
+      return _containsBuildContextParameter(method.parameters);
+    }
 
-    while (current != null) {
-      if (current is FunctionDeclaration) {
-        if (_containsBuildContextParameter(current.functionExpression.parameters)) {
-          return true;
-        }
-      }
-
-      if (current is MethodDeclaration) {
-        if (_containsBuildContextParameter(current.parameters)) {
-          return true;
-        }
-      }
-
-      current = current.parent;
+    final function = node.thisOrAncestorOfType<FunctionDeclaration>();
+    if (function != null) {
+      return _containsBuildContextParameter(function.functionExpression.parameters);
     }
 
     return false;
@@ -79,33 +72,16 @@ class _Visitor extends SimpleAstVisitor<void> {
       return false;
     }
 
-    for (final parameter in parameters.parameters) {
-      final formalParameter = switch (parameter) {
-        DefaultFormalParameter() => parameter.parameter,
-        _ => parameter,
-      };
-
-      if (formalParameter case SimpleFormalParameter(type: NamedType(name: Token(lexeme: 'BuildContext')))) {
+    for (final parameter in parameters.parameters.map((e) => e.unWrapped)) {
+      if (parameter case SimpleFormalParameter(type: NamedType(name: Token(lexeme: 'BuildContext')))) {
         return true;
       }
 
-      if (formalParameter case FieldFormalParameter(type: NamedType(name: Token(lexeme: 'BuildContext')))) {
+      if (parameter case FieldFormalParameter(type: NamedType(name: Token(lexeme: 'BuildContext')))) {
         return true;
       }
     }
 
     return false;
-  }
-}
-
-extension on DartType {
-  // ignore: unused_element
-  bool get isBuildContext {
-    if (this is! InterfaceType) {
-      return false;
-    }
-
-    final interfaceType = this as InterfaceType;
-    return interfaceType.element.name == 'BuildContext' && interfaceType.element.library.name == 'widgets';
   }
 }

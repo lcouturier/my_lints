@@ -5,6 +5,7 @@ library;
 import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
 import 'package:my_lints/src/fixes/avoid_enum_values_by_index_fix.dart';
+import 'package:my_lints/src/fixes/avoid_i18n_current_fix.dart';
 import 'package:my_lints/src/fixes/avoid_invert_condition_fix.dart';
 import 'package:my_lints/src/fixes/avoid_redundant_map_from_fix.dart';
 import 'package:my_lints/src/fixes/prefer_addition_subtraction_assignments_fix.dart';
@@ -29,6 +30,7 @@ import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_empty_set_state_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_for_each_rule.dart';
+import 'package:my_lints/src/rules/avoid_i18n_current_rule.dart';
 import 'package:my_lints/src/rules/avoid_join_on_nullable_item_rule.dart';
 import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
 import 'package:my_lints/src/rules/avoid_tolist_before_join_rule.dart';
@@ -145,6 +147,8 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidToListBeforeJoinRule())
       ..registerWarningRule(AvoidJoinOnNullableItemRule())
       ..registerWarningRule(PreferWhereTypeRule())
+      ..registerWarningRule(AvoidI18nCurrentRule())
+      ..registerWarningRule(PreferFirstRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry
@@ -159,6 +163,9 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(PreferUsageOfValueGetterRule.code, PreferUsageOfValueGetterFix.new)
       ..registerFixForRule(AvoidRedundantMapFromRule.code, AvoidRedundantMapFromFix.new)
       ..registerFixForRule(PreferWhereTypeRule.code, PreferWhereTypeFix.new)
-      ..registerFixForRule(PreferFirstRule.code, PreferFirstFix.new);
+      ..registerFixForRule(AvoidI18nCurrentRule.code, AvoidI18nCurrentFix.new)
+      ..registerFixForRule(AvoidI18nCurrentRule.code, AvoidI18nCurrentFixInFile.new)
+      ..registerFixForRule(PreferFirstRule.code, PreferFirstFix.new)
+      ..registerFixForRule(PreferFirstRule.code, PreferFirstFixInFile.new);
   }
 }
