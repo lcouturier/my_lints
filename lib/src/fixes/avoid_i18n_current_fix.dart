@@ -121,17 +121,6 @@ class AvoidI18nCurrentFixInFile extends ResolvedCorrectionProducer with ContextN
 
     if (visitor.occurrences.isEmpty) return;
 
-    // Get the context parameter name from the first occurrence's ancestor
-    // final firstOccurrence = visitor.occurrences.first;
-    // final (hasFix, paramName) = getContextName(
-    //   () => firstOccurrence.thisOrAncestorOfType<MethodDeclaration>(),
-    //   () => firstOccurrence.thisOrAncestorOfType<FunctionDeclaration>(),
-    // );
-
-    // if (!hasFix) return;
-
-    // final replacement = 'I18n.of($paramName)';
-
     await builder.addDartFileEdit(file, (builder) {
       for (final occurrence in visitor.occurrences) {
         builder.addSimpleReplacement(range.node(occurrence.$1), 'I18n.of(${occurrence.$2})');
@@ -140,9 +129,15 @@ class AvoidI18nCurrentFixInFile extends ResolvedCorrectionProducer with ContextN
   }
 }
 
+typedef RetrieveContextName = (bool, String) Function(MethodDeclaration? Function(), FunctionDeclaration? Function());
+
 class _I18nCurrentVisitor extends RecursiveAstVisitor<void> with ContextName {
   final List<(AstNode, String)> occurrences = [];
-  final Map<AstNode, (bool, String)> _contextCache = {};
+  late final RetrieveContextName _retrieveContextName;
+
+  _I18nCurrentVisitor() {
+    _retrieveContextName = _getCachedContextNameCore();
+  }
 
   @override
   void visitPropertyAccess(PropertyAccess node) {
@@ -150,7 +145,7 @@ class _I18nCurrentVisitor extends RecursiveAstVisitor<void> with ContextName {
       target: SimpleIdentifier(name: 'I18n'),
       propertyName: SimpleIdentifier(name: 'current'),
     )) {
-      final (hasFix, paramName) = _getCachedContextName(
+      final (hasFix, paramName) = _retrieveContextName(
         () => node.thisOrAncestorOfType<MethodDeclaration>(),
         () => node.thisOrAncestorOfType<FunctionDeclaration>(),
       );
@@ -164,7 +159,7 @@ class _I18nCurrentVisitor extends RecursiveAstVisitor<void> with ContextName {
   @override
   void visitPrefixedIdentifier(PrefixedIdentifier node) {
     if (node.prefix.name == 'I18n' && node.identifier.name == 'current') {
-      final (hasFix, paramName) = _getCachedContextName(
+      final (hasFix, paramName) = _retrieveContextName(
         () => node.thisOrAncestorOfType<MethodDeclaration>(),
         () => node.thisOrAncestorOfType<FunctionDeclaration>(),
       );
@@ -175,20 +170,20 @@ class _I18nCurrentVisitor extends RecursiveAstVisitor<void> with ContextName {
     super.visitPrefixedIdentifier(node);
   }
 
-  (bool, String) _getCachedContextName(
-    MethodDeclaration? Function() getMethod,
-    FunctionDeclaration? Function() getFunction,
-  ) {
-    final method = getMethod();
-    if (method != null) {
-      return _contextCache.putIfAbsent(method, () => getContextName(getMethod, getFunction));
-    }
+  RetrieveContextName _getCachedContextNameCore() {
+    final Map<AstNode, (bool, String)> cache = {};
+    return (gm, gf) {
+      final method = gm();
+      if (method != null) {
+        return cache.putIfAbsent(method, () => getContextName(gm, gf));
+      }
 
-    final function = getFunction();
-    if (function != null) {
-      return _contextCache.putIfAbsent(function, () => getContextName(getMethod, getFunction));
-    }
+      final function = gf();
+      if (function != null) {
+        return cache.putIfAbsent(function, () => getContextName(gm, gf));
+      }
 
-    return (false, '');
+      return (false, '');
+    };
   }
 }
