@@ -85,6 +85,7 @@ import 'package:my_lints/src/rules/unnecessary_to_string_in_interpolation_rule.d
 import 'package:my_lints/src/rules/use_join_on_strings_rule.dart';
 import 'package:my_lints/src/rules/prefer_map_over_map_indexed_rule.dart';
 import 'package:my_lints/src/rules/prefer_ternary_over_if_else_rule.dart';
+import 'package:my_lints/src/rules/prefer_keyed_widgets_rule.dart';
 import 'package:my_lints/src/rules/spread/prefer_if_elements_to_ternary_spread_rule.dart';
 
 final plugin = MyLintsPlugin();
@@ -150,6 +151,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidI18nCurrentRule())
       ..registerWarningRule(PreferFirstRule())
       ..registerWarningRule(PreferLastRule())
+      ..registerWarningRule(PreferKeyedWidgetsRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry
