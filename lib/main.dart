@@ -149,6 +149,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferWhereTypeRule())
       ..registerWarningRule(AvoidI18nCurrentRule())
       ..registerWarningRule(PreferFirstRule())
+      ..registerWarningRule(PreferLastRule())
       ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
 
     registry
@@ -158,6 +159,7 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(PreferContainsRule.code, PreferContainsFix.new)
       ..registerFixForRule(PreferTernaryOverIfElseRule.code, PreferTernaryOverIfElseFix.new)
       ..registerFixForRule(PreferLastRule.code, PreferLastFix.new)
+      ..registerFixForRule(PreferLastRule.code, PreferLastFixInFile.new)
       ..registerFixForRule(AvoidEnumValuesByIndexRule.code, AvoidEnumValuesByIndexFix.new)
       ..registerFixForRule(PreferExplicitFunctionType.code, PreferExplicitFunctionTypeFix.new)
       ..registerFixForRule(PreferUsageOfValueGetterRule.code, PreferUsageOfValueGetterFix.new)

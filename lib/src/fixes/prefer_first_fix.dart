@@ -20,14 +20,26 @@ class PreferFirstFix extends ResolvedCorrectionProducer {
   @override
   Future<void> compute(ChangeBuilder builder) async {
     final targetNode = node;
-    if (targetNode is! IndexExpression) return;
-    if (targetNode.index is! IntegerLiteral || (targetNode.index as IntegerLiteral).value != 0) return;
+    if (targetNode is IndexExpression) {
+      if (targetNode.index is! IntegerLiteral || (targetNode.index as IntegerLiteral).value != 0) return;
 
-    final String replacement = '${targetNode.target}.first';
+      final String replacement = '${targetNode.target}.first';
 
-    await builder.addDartFileEdit(file, (builder) {
-      builder.addSimpleReplacement(range.node(targetNode), replacement);
-    });
+      await builder.addDartFileEdit(file, (builder) {
+        builder.addSimpleReplacement(range.node(targetNode), replacement);
+      });
+    }
+
+    if (targetNode case MethodInvocation(
+      methodName: SimpleIdentifier(name: 'elementAt'),
+      argumentList: ArgumentList(arguments: [IntegerLiteral(value: 0)]),
+    )) {
+      final String replacement = '${targetNode.target}.first';
+
+      await builder.addDartFileEdit(file, (builder) {
+        builder.addSimpleReplacement(range.node(targetNode), replacement);
+      });
+    }
   }
 }
 
@@ -53,8 +65,12 @@ class PreferFirstFixInFile extends ResolvedCorrectionProducer {
     if (visitor.occurrences.isEmpty) return;
 
     await builder.addDartFileEdit(file, (builder) {
-      for (final occurrence in visitor.occurrences) {
-        final String replacement = '${(occurrence as IndexExpression).target}.first';
+      for (final occurrence in visitor.occurrences.whereType<IndexExpression>()) {
+        final String replacement = '${occurrence.target}.first';
+        builder.addSimpleReplacement(range.node(occurrence), replacement);
+      }
+      for (final occurrence in visitor.occurrences.whereType<MethodInvocation>()) {
+        final String replacement = '${occurrence.target}.first';
         builder.addSimpleReplacement(range.node(occurrence), replacement);
       }
     });
@@ -70,5 +86,16 @@ class _PreferFirstVisitor extends RecursiveAstVisitor<void> {
       occurrences.add(node);
     }
     super.visitIndexExpression(node);
+  }
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(name: 'elementAt'),
+      argumentList: ArgumentList(arguments: [IntegerLiteral(value: 0)]),
+    )) {
+      occurrences.add(node);
+    }
+    super.visitMethodInvocation(node);
   }
 }

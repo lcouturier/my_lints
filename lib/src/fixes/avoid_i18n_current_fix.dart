@@ -129,15 +129,9 @@ class AvoidI18nCurrentFixInFile extends ResolvedCorrectionProducer with ContextN
   }
 }
 
-typedef RetrieveContextName = (bool, String) Function(MethodDeclaration? Function(), FunctionDeclaration? Function());
-
 class _I18nCurrentVisitor extends RecursiveAstVisitor<void> with ContextName {
   final List<(AstNode, String)> occurrences = [];
-  late final RetrieveContextName _retrieveContextName;
-
-  _I18nCurrentVisitor() {
-    _retrieveContextName = _getCachedContextNameCore();
-  }
+  final Map<AstNode, (bool, String)> _contextCache = {};
 
   @override
   void visitPropertyAccess(PropertyAccess node) {
@@ -145,7 +139,7 @@ class _I18nCurrentVisitor extends RecursiveAstVisitor<void> with ContextName {
       target: SimpleIdentifier(name: 'I18n'),
       propertyName: SimpleIdentifier(name: 'current'),
     )) {
-      final (hasFix, paramName) = _retrieveContextName(
+      final (hasFix, paramName) = _getCachedContextName(
         () => node.thisOrAncestorOfType<MethodDeclaration>(),
         () => node.thisOrAncestorOfType<FunctionDeclaration>(),
       );
@@ -159,7 +153,7 @@ class _I18nCurrentVisitor extends RecursiveAstVisitor<void> with ContextName {
   @override
   void visitPrefixedIdentifier(PrefixedIdentifier node) {
     if (node.prefix.name == 'I18n' && node.identifier.name == 'current') {
-      final (hasFix, paramName) = _retrieveContextName(
+      final (hasFix, paramName) = _getCachedContextName(
         () => node.thisOrAncestorOfType<MethodDeclaration>(),
         () => node.thisOrAncestorOfType<FunctionDeclaration>(),
       );
@@ -170,20 +164,20 @@ class _I18nCurrentVisitor extends RecursiveAstVisitor<void> with ContextName {
     super.visitPrefixedIdentifier(node);
   }
 
-  RetrieveContextName _getCachedContextNameCore() {
-    final Map<AstNode, (bool, String)> cache = {};
-    return (gm, gf) {
-      final method = gm();
-      if (method != null) {
-        return cache.putIfAbsent(method, () => getContextName(gm, gf));
-      }
+  (bool, String) _getCachedContextName(
+    MethodDeclaration? Function() getMethod,
+    FunctionDeclaration? Function() getFunction,
+  ) {
+    final method = getMethod();
+    if (method != null) {
+      return _contextCache.putIfAbsent(method, () => getContextName(getMethod, getFunction));
+    }
 
-      final function = gf();
-      if (function != null) {
-        return cache.putIfAbsent(function, () => getContextName(gm, gf));
-      }
+    final function = getFunction();
+    if (function != null) {
+      return _contextCache.putIfAbsent(function, () => getContextName(getMethod, getFunction));
+    }
 
-      return (false, '');
-    };
+    return (false, '');
   }
 }

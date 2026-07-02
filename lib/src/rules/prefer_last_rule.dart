@@ -46,7 +46,8 @@ class _Visitor extends SimpleAstVisitor<void> {
           ),
         ],
       ),
-    ) when name.contains('length')) {
+      target: Expression(staticType: final targetType?),
+    ) when iterableChecker.isAssignableFromType(targetType) && name.contains('length')) {
       rule.reportAtNode(node);
     }
   }
