@@ -89,9 +89,10 @@ class _WidgetListVisitor extends RecursiveAstVisitor<void> {
   }
 
   bool _isWidget(InstanceCreationExpression node) {
-    // Check if it extends Widget (heuristic: common widget names or in flutter package)
-    // For simplicity, we'll assume most capitalized types in Flutter context are widgets
-    // A more robust implementation would check the element's hierarchy
+    /// This is a simplified check. In a real implementation, you would check if the type of the node is a subclass of `Widget`.
+    /// For the purpose of this example, we will assume that any class that starts with an uppercase letter is a widget.
+    /// In a real-world scenario, you would use the type system to check if the class extends `Widget`.
+    //. TODO(): Implement a proper type check to determine if the class is a subclass of `Widget`.
     return true;
   }
 }
