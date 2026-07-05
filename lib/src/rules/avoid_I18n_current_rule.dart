@@ -2,11 +2,10 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/extensions.dart';
+import 'package:my_lints/src/common/helpers.dart';
 
 class AvoidI18nCurrentRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -29,8 +28,9 @@ class AvoidI18nCurrentRule extends AnalysisRule {
   }
 }
 
-class _Visitor extends SimpleAstVisitor<void> {
+class _Visitor extends RecursiveAstVisitor<void> with ContextName {
   final AvoidI18nCurrentRule rule;
+  final Map<AstNode, (bool, String)> _contextCache = {};
 
   _Visitor(this.rule);
 
@@ -38,9 +38,17 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitPropertyAccess(PropertyAccess node) {
     if (node case PropertyAccess(
       target: PropertyAccess(target: SimpleIdentifier(name: 'I18n'), propertyName: SimpleIdentifier(name: 'current')),
-    ) when _hasBuildContextInScope(node)) {
+    )) {
+      final (hasFix, paramName) = _getCachedContextName(
+        () => node.thisOrAncestorOfType<MethodDeclaration>(),
+        () => node.thisOrAncestorOfType<FunctionDeclaration>(),
+      );
+
+      if (!hasFix) return;
+
       rule.reportAtNode(node);
     }
+    super.visitPropertyAccess(node);
   }
 
   @override
@@ -48,40 +56,33 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (node case PrefixedIdentifier(
       prefix: SimpleIdentifier(name: 'I18n'),
       identifier: SimpleIdentifier(name: 'current'),
-    ) when _hasBuildContextInScope(node)) {
+    )) {
+      final (hasFix, paramName) = _getCachedContextName(
+        () => node.thisOrAncestorOfType<MethodDeclaration>(),
+        () => node.thisOrAncestorOfType<FunctionDeclaration>(),
+      );
+
+      if (!hasFix) return;
+
       rule.reportAtNode(node);
     }
+    super.visitPrefixedIdentifier(node);
   }
 
-  bool _hasBuildContextInScope(AstNode node) {
-    final method = node.thisOrAncestorOfType<MethodDeclaration>();
+  (bool, String) _getCachedContextName(
+    MethodDeclaration? Function() getMethod,
+    FunctionDeclaration? Function() getFunction,
+  ) {
+    final method = getMethod();
     if (method != null) {
-      return _containsBuildContextParameter(method.parameters);
+      return _contextCache.putIfAbsent(method, () => getContextName(getMethod, getFunction));
     }
 
-    final function = node.thisOrAncestorOfType<FunctionDeclaration>();
+    final function = getFunction();
     if (function != null) {
-      return _containsBuildContextParameter(function.functionExpression.parameters);
+      return _contextCache.putIfAbsent(function, () => getContextName(getMethod, getFunction));
     }
 
-    return false;
-  }
-
-  bool _containsBuildContextParameter(FormalParameterList? parameters) {
-    if (parameters == null) {
-      return false;
-    }
-
-    for (final parameter in parameters.parameters.map((e) => e.unWrapped)) {
-      if (parameter case SimpleFormalParameter(type: NamedType(name: Token(lexeme: 'BuildContext')))) {
-        return true;
-      }
-
-      if (parameter case FieldFormalParameter(type: NamedType(name: Token(lexeme: 'BuildContext')))) {
-        return true;
-      }
-    }
-
-    return false;
+    return (false, '');
   }
 }

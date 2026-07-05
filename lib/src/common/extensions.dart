@@ -103,6 +103,11 @@ extension FormalParameterExtension on FormalParameter {
 
   // Checks if a formal parameter is dynamic.
   // bool get isDynamic => declaredElement?.type is DynamicType;
+
+  bool get isBuildContext =>
+      this is SimpleFormalParameter &&
+      (this as SimpleFormalParameter).type != null &&
+      (this as SimpleFormalParameter).type.toString() == 'BuildContext';
 }
 
 // extension ExpressionExtensions on Expression {

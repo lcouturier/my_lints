@@ -6,7 +6,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/fixes/fixes.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
-import 'package:my_lints/src/common/type_checker.dart';
+import 'package:my_lints/src/common/helpers.dart';
 
 class AvoidI18nCurrentFix extends ResolvedCorrectionProducer with ContextName {
   static const _fixKind = FixKind(
@@ -60,43 +60,6 @@ class AvoidI18nCurrentFix extends ResolvedCorrectionProducer with ContextName {
       });
     }
   }
-}
-
-mixin ContextName {
-  (bool, String) getContextName(MethodDeclaration? Function() getMethod, FunctionDeclaration? Function() getFunction) {
-    final method = getMethod();
-
-    if (method != null) {
-      final parameters = method.parameters?.parameters;
-      if (parameters == null || parameters.isEmpty) return (false, '');
-
-      return parameters.firstWhereOrElse(
-        (e) => e.isBuildContext,
-        (e) => (true, e.toString().split(' ')[1]),
-        () => (false, ''),
-      );
-    }
-
-    final function = getFunction();
-    if (function != null) {
-      final parameters = function.functionExpression.parameters?.parameters;
-      if (parameters == null || parameters.isEmpty) return (false, '');
-      return parameters.firstWhereOrElse(
-        (e) => e.isBuildContext,
-        (e) => (true, e.toString().split(' ')[1]),
-        () => (false, ''),
-      );
-    }
-
-    return (false, '');
-  }
-}
-
-extension FormalParameterExtensions on FormalParameter {
-  bool get isBuildContext =>
-      this is SimpleFormalParameter &&
-      (this as SimpleFormalParameter).type != null &&
-      (this as SimpleFormalParameter).type.toString() == 'BuildContext';
 }
 
 class AvoidI18nCurrentFixInFile extends ResolvedCorrectionProducer with ContextName {
