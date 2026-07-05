@@ -24,6 +24,9 @@ import 'package:my_lints/src/rules/avoid_compare_same_value_rule.dart';
 import 'package:my_lints/src/rules/avoid_complex_loop_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_complicated_conditional_rule.dart';
 import 'package:my_lints/src/rules/avoid_conditional_expression_in_parameter_rule.dart';
+import 'package:my_lints/src/rules/avoid_deep_condition_rule.dart';
+import 'package:my_lints/src/rules/avoid_high_cyclomatic_complexity_rule.dart';
+import 'package:my_lints/src/rules/avoid_long_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_context_in_initState_rule.dart';
 import 'package:my_lints/src/rules/avoid_double_negation_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
@@ -122,7 +125,8 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidUnsafeReduceRule())
       ..registerWarningRule(UseJoinOnStringsRule())
       // ..registerWarningRule(AvoidMagicNumbersRule())
-      ..registerWarningRule(AvoidComplexLoopConditionsRule())
+      // ..registerWarningRule(AvoidComplexLoopConditionsRule())
+      ..registerWarningRule(AvoidLongConditionsRule(maxTokens: 50, maxVariables: 4, maxOperatorTypes: 3))
       ..registerWarningRule(AvoidRedundantDurationRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
@@ -152,7 +156,10 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferFirstRule())
       ..registerWarningRule(PreferLastRule())
       ..registerWarningRule(PreferKeyedWidgetsRule())
-      ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5));
+      ..registerWarningRule(AvoidDeepConditionsRule(maxDepth: 3))
+      // ..registerWarningRule(AvoidLongConditionsRule(maxTokens: 10, maxVariables: 3, maxOperatorTypes: 3))
+      // ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5))
+      ..registerWarningRule(AvoidHighCyclomaticComplexityRule(threshold: 10));
 
     registry
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)
