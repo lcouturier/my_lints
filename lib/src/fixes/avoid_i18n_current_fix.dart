@@ -6,7 +6,9 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/fixes/fixes.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
+import 'package:my_lints/src/common/extensions.dart';
 import 'package:my_lints/src/common/helpers.dart';
+import 'package:my_lints/src/common/type_checker.dart';
 
 class AvoidI18nCurrentFix extends ResolvedCorrectionProducer with ContextName {
   static const _fixKind = FixKind(
@@ -27,38 +29,51 @@ class AvoidI18nCurrentFix extends ResolvedCorrectionProducer with ContextName {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    if (node case PropertyAccess(
+    if (_isI18nCurrent(node)) {
+      final (hasContext, paramName) = _getContextName(node);
+      if (!hasContext) return;
+
+      final replacement = 'I18n.of($paramName)';
+      await builder.addDartFileEdit(file, (builder) {
+        builder.addSimpleReplacement(range.node(node), replacement);
+      });
+    }
+  }
+
+  bool _isI18nCurrent(AstNode node) => switch (node) {
+    PropertyAccess(
       target: PropertyAccess(target: SimpleIdentifier(name: 'I18n'), propertyName: SimpleIdentifier(name: 'current')),
-    )) {
-      final (hasFix, paramName) = getContextName(
-        () => node.thisOrAncestorOfType<MethodDeclaration>(),
-        () => node.thisOrAncestorOfType<FunctionDeclaration>(),
+    ) ||
+    PrefixedIdentifier(prefix: SimpleIdentifier(name: 'I18n'), identifier: SimpleIdentifier(name: 'current')) => true,
+    _ => false,
+  };
+
+  (bool, String) _getContextName(AstNode node) {
+    final method = node.thisOrAncestorOfType<MethodDeclaration>();
+    if (method != null) {
+      final parameters = method.parameters?.parameters;
+      if (parameters == null || parameters.isEmpty) return (false, '');
+
+      final result = parameters.firstWhereOrElse(
+        (e) => e.isBuildContext,
+        (e) => (true, e.toString().split(' ')[1]),
+        () => (false, ''),
       );
-
-      if (!hasFix) return;
-
-      final replacement = 'I18n.of($paramName)';
-      await builder.addDartFileEdit(file, (builder) {
-        builder.addSimpleReplacement(range.node(node), replacement);
-      });
+      return result;
     }
+    final function = node.thisOrAncestorOfType<FunctionDeclaration>();
+    if (function != null) {
+      final parameters = function.functionExpression.parameters?.parameters;
+      if (parameters == null || parameters.isEmpty) return (false, '');
 
-    if (node case PrefixedIdentifier(
-      prefix: SimpleIdentifier(name: 'I18n'),
-      identifier: SimpleIdentifier(name: 'current'),
-    )) {
-      final (hasFix, paramName) = getContextName(
-        () => node.thisOrAncestorOfType<MethodDeclaration>(),
-        () => node.thisOrAncestorOfType<FunctionDeclaration>(),
+      final result = parameters.firstWhereOrElse(
+        (e) => e.isBuildContext,
+        (e) => (true, e.toString().split(' ')[1]),
+        () => (false, ''),
       );
-
-      if (!hasFix) return;
-
-      final replacement = 'I18n.of($paramName)';
-      await builder.addDartFileEdit(file, (builder) {
-        builder.addSimpleReplacement(range.node(node), replacement);
-      });
+      return result;
     }
+    return (false, '');
   }
 }
 
@@ -92,22 +107,31 @@ class AvoidI18nCurrentFixInFile extends ResolvedCorrectionProducer with ContextN
   }
 }
 
-class _I18nCurrentVisitor extends RecursiveAstVisitor<void> with ContextName {
-  final List<(AstNode, String)> occurrences = [];
+class _I18nCurrentVisitor extends RecursiveAstVisitor<void> {
   final Map<AstNode, (bool, String)> _contextCache = {};
+  final List<(AstNode, String)> occurrences = [];
+
+  _I18nCurrentVisitor();
 
   @override
   void visitPropertyAccess(PropertyAccess node) {
-    if (node.target case PropertyAccess(
-      target: SimpleIdentifier(name: 'I18n'),
-      propertyName: SimpleIdentifier(name: 'current'),
+    if (node case PropertyAccess(
+      target: PropertyAccess(target: SimpleIdentifier(name: 'I18n'), propertyName: SimpleIdentifier(name: 'current')),
     )) {
-      final (hasFix, paramName) = _getCachedContextName(
-        () => node.thisOrAncestorOfType<MethodDeclaration>(),
-        () => node.thisOrAncestorOfType<FunctionDeclaration>(),
-      );
-      if (hasFix) {
-        occurrences.add((node, paramName));
+      final method = node.thisOrAncestorOfType<MethodDeclaration>();
+      if (method is MethodDeclaration) {
+        final result = _getCachedContextName(method);
+        if (result.$1) {
+          occurrences.add((node, result.$2));
+        }
+      }
+
+      final function = node.thisOrAncestorOfType<FunctionDeclaration>();
+      if (function is FunctionDeclaration) {
+        final result = _getCachedContextName(function);
+        if (result.$1) {
+          occurrences.add((node, result.$2));
+        }
       }
     }
     super.visitPropertyAccess(node);
@@ -115,32 +139,54 @@ class _I18nCurrentVisitor extends RecursiveAstVisitor<void> with ContextName {
 
   @override
   void visitPrefixedIdentifier(PrefixedIdentifier node) {
-    if (node.prefix.name == 'I18n' && node.identifier.name == 'current') {
-      final (hasFix, paramName) = _getCachedContextName(
-        () => node.thisOrAncestorOfType<MethodDeclaration>(),
-        () => node.thisOrAncestorOfType<FunctionDeclaration>(),
-      );
-      if (hasFix) {
-        occurrences.add((node, paramName));
+    if (node case PrefixedIdentifier(
+      prefix: SimpleIdentifier(name: 'I18n'),
+      identifier: SimpleIdentifier(name: 'current'),
+    )) {
+      final method = node.thisOrAncestorOfType<MethodDeclaration>();
+      if (method is MethodDeclaration) {
+        final result = _getCachedContextName(method);
+        if (result.$1) {
+          occurrences.add((node, result.$2));
+        }
+      }
+
+      final function = node.thisOrAncestorOfType<FunctionDeclaration>();
+      if (function is FunctionDeclaration) {
+        final result = _getCachedContextName(function);
+        if (result.$1) {
+          occurrences.add((node, result.$2));
+        }
       }
     }
     super.visitPrefixedIdentifier(node);
   }
 
-  (bool, String) _getCachedContextName(
-    MethodDeclaration? Function() getMethod,
-    FunctionDeclaration? Function() getFunction,
-  ) {
-    final method = getMethod();
-    if (method != null) {
-      return _contextCache.putIfAbsent(method, () => getContextName(getMethod, getFunction));
-    }
+  (bool, String) _getCachedContextName(AstNode parent) {
+    return _contextCache.putIfAbsent(parent, () {
+      if (parent is MethodDeclaration) {
+        final parameters = parent.parameters?.parameters;
+        if (parameters == null || parameters.isEmpty) return (false, '');
 
-    final function = getFunction();
-    if (function != null) {
-      return _contextCache.putIfAbsent(function, () => getContextName(getMethod, getFunction));
-    }
+        final result = parameters.firstWhereOrElse(
+          (e) => e.isBuildContext,
+          (e) => (true, e.toString().split(' ')[1]),
+          () => (false, ''),
+        );
+        return result;
+      }
+      if (parent is FunctionDeclaration) {
+        final parameters = parent.functionExpression.parameters?.parameters;
+        if (parameters == null || parameters.isEmpty) return (false, '');
 
-    return (false, '');
+        final result = parameters.firstWhereOrElse(
+          (e) => e.isBuildContext,
+          (e) => (true, e.toString().split(' ')[1]),
+          () => (false, ''),
+        );
+        return result;
+      }
+      return (false, '');
+    });
   }
 }

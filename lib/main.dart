@@ -155,11 +155,11 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidI18nCurrentRule())
       ..registerWarningRule(PreferFirstRule())
       ..registerWarningRule(PreferLastRule())
-      ..registerWarningRule(PreferKeyedWidgetsRule())
-      ..registerWarningRule(AvoidDeepConditionsRule(maxDepth: 3))
-      // ..registerWarningRule(AvoidLongConditionsRule(maxTokens: 10, maxVariables: 3, maxOperatorTypes: 3))
-      // ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5))
-      ..registerWarningRule(AvoidHighCyclomaticComplexityRule(threshold: 10));
+      // ..registerWarningRule(PreferKeyedWidgetsRule())
+      ..registerWarningRule(AvoidDeepConditionsRule(maxDepth: 3));
+    // ..registerWarningRule(AvoidLongConditionsRule(maxTokens: 10, maxVariables: 3, maxOperatorTypes: 3))
+    // ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5))
+    // ..registerWarningRule(AvoidHighCyclomaticComplexityRule(threshold: 10));
 
     registry
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)

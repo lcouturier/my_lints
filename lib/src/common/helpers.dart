@@ -3,9 +3,7 @@ import 'package:my_lints/src/common/extensions.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
 mixin ContextName {
-  (bool, String) getContextName(MethodDeclaration? Function() getMethod, FunctionDeclaration? Function() getFunction) {
-    final method = getMethod();
-
+  (bool, String) getContextName(MethodDeclaration? method, FunctionDeclaration? function) {
     if (method != null) {
       final parameters = method.parameters?.parameters;
       if (parameters == null || parameters.isEmpty) return (false, '');
@@ -17,7 +15,6 @@ mixin ContextName {
       );
     }
 
-    final function = getFunction();
     if (function != null) {
       final parameters = function.functionExpression.parameters?.parameters;
       if (parameters == null || parameters.isEmpty) return (false, '');
