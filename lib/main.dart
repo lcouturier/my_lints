@@ -173,6 +173,7 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(PreferExplicitFunctionType.code, PreferExplicitFunctionTypeFix.new)
       ..registerFixForRule(PreferUsageOfValueGetterRule.code, PreferUsageOfValueGetterFix.new)
       ..registerFixForRule(AvoidRedundantMapFromRule.code, AvoidRedundantMapFromFix.new)
+      ..registerFixForRule(AvoidRedundantMapFromRule.code, AvoidRedundantMapFromFixInFile.new)
       ..registerFixForRule(PreferWhereTypeRule.code, PreferWhereTypeFix.new)
       ..registerFixForRule(AvoidI18nCurrentRule.code, AvoidI18nCurrentFix.new)
       ..registerFixForRule(AvoidI18nCurrentRule.code, AvoidI18nCurrentFixInFile.new)

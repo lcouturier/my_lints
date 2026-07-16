@@ -6,6 +6,12 @@ void foo() {
   var myMap2 = {...otherMap};
 }
 
+void foo2() {
+  var otherMap = {'key': 'value'};
+  var myMap = Map.from(otherMap); // This should trigger the lint warning.
+  var myMap2 = {...otherMap};
+}
+
 void bar() {
   var map = {'key': 'value'};
   for (final key in map.keys) {
