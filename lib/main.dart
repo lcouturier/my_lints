@@ -6,7 +6,7 @@ import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
 import 'package:my_lints/src/fixes/avoid_enum_values_by_index_fix.dart';
 import 'package:my_lints/src/fixes/avoid_i18n_current_fix.dart';
-import 'package:my_lints/src/fixes/avoid_invert_condition_fix.dart';
+import 'package:my_lints/src/fixes/avoid_yoda_condition_fix.dart';
 import 'package:my_lints/src/fixes/avoid_redundant_map_from_fix.dart';
 import 'package:my_lints/src/fixes/prefer_addition_subtraction_assignments_fix.dart';
 import 'package:my_lints/src/fixes/prefer_any_or_every_fix.dart';
@@ -164,7 +164,8 @@ class MyLintsPlugin extends Plugin {
     registry
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)
       ..registerFixForRule(PreferNullAwareElementsRule.code, PreferNullAwareElementsFix.new)
-      ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidInvertConditionFix.new)
+      ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidYodaConditionFix.new)
+      ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidYodaConditionFixInFile.new)
       ..registerFixForRule(PreferContainsRule.code, PreferContainsFix.new)
       ..registerFixForRule(PreferTernaryOverIfElseRule.code, PreferTernaryOverIfElseFix.new)
       ..registerFixForRule(PreferLastRule.code, PreferLastFix.new)

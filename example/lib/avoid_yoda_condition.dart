@@ -42,3 +42,14 @@ void foo6() {
     print("value is true");
   }
 }
+
+enum Color { red, blue, green }
+
+void foo7() {
+  Color color = Color.red;
+
+  if (Color.red == color) {
+    // LINT
+    print("Rouge");
+  }
+}

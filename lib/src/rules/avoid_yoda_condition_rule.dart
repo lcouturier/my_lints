@@ -2,7 +2,6 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
@@ -78,28 +77,9 @@ class _ConditionVisitor extends RecursiveAstVisitor<void> {
   void visitBinaryExpression(BinaryExpression node) {
     super.visitBinaryExpression(node);
 
-    if (_isYodaComparison(node)) {
+    if (!node.operator.type.isComparisonOperator) return;
+    if ((node.leftOperand.isConstant) && (!node.rightOperand.isConstant)) {
       rule.reportAtNode(node);
     }
-  }
-
-  bool _isYodaComparison(BinaryExpression node) {
-    if (!node.operator.type.isComparisonOperator) return false;
-
-    final left = node.leftOperand.unParenthesized;
-    final right = node.rightOperand.unParenthesized;
-
-    if (left.isSimpleLiteral && !right.isSimpleLiteral) {
-      return true;
-    }
-
-    if (node case BinaryExpression(
-      leftOperand: PrefixExpression(operand: Literal(), operator: Token(type: TokenType.MINUS)),
-      rightOperand: final rightOperand,
-    ) when (!rightOperand.isSimpleLiteral)) {
-      return true;
-    }
-
-    return false;
   }
 }

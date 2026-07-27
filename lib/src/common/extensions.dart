@@ -219,15 +219,11 @@ extension TokenTypeExtensions on TokenType {
   }
 
   /// Checks if the token type is a comparison operator.
-  /// Comparison operators include: `==`, `!=`, `>`, `<`, `>=`, `<=`.
+  /// Comparison operators include: `==`, `!=`.
   bool get isComparisonOperator {
     return switch (this) {
-      TokenType.EQ_EQ ||
-      TokenType.BANG_EQ ||
-      TokenType.GT ||
-      TokenType.GT_EQ ||
-      TokenType.LT ||
-      TokenType.LT_EQ => true,
+      TokenType.EQ_EQ => true,
+      TokenType.BANG_EQ => true,
       _ => false,
     };
   }
@@ -319,6 +315,15 @@ extension ExpressionExtensions on Expression {
     if (this is PropertyAccess) return (this as PropertyAccess).propertyName.name;
     if (this is PrefixedIdentifier) return (this as PrefixedIdentifier).identifier.name;
     return null;
+  }
+
+  bool get isConstant {
+    final expr = unParenthesized;
+    return switch (expr) {
+      Literal() => true,
+      final InstanceCreationExpression e => e.isConst,
+      _ => expr.computeConstantValue() != null,
+    };
   }
 }
 
