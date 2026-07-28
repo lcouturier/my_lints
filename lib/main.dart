@@ -155,6 +155,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidI18nCurrentRule())
       ..registerWarningRule(PreferFirstRule())
       ..registerWarningRule(PreferLastRule())
+      ..registerWarningRule(PreferCompoundAssignmentRule())
       // ..registerWarningRule(PreferKeyedWidgetsRule())
       ..registerWarningRule(AvoidDeepConditionsRule(maxDepth: 3));
     // ..registerWarningRule(AvoidLongConditionsRule(maxTokens: 10, maxVariables: 3, maxOperatorTypes: 3))

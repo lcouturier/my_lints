@@ -39,3 +39,44 @@ class _Visitor extends SimpleAstVisitor<void> {
     }
   }
 }
+
+class PreferCompoundAssignmentRule extends AnalysisRule {
+  static const LintCode code = LintCode(
+    'prefer_compound_assignment',
+    'Prefer using compound assignment operators (e.g., +=, -=) instead of simple assignment with arithmetic operations.',
+  );
+
+  PreferCompoundAssignmentRule() : super(name: code.name, description: code.problemMessage);
+
+  @override
+  LintCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
+    final visitor = _CompoundAssignmentVisitor(this);
+    registry.addAssignmentExpression(this, visitor);
+  }
+}
+
+class _CompoundAssignmentVisitor extends SimpleAstVisitor<void> {
+  _CompoundAssignmentVisitor(this.rule);
+
+  final PreferCompoundAssignmentRule rule;
+
+  @override
+  void visitAssignmentExpression(AssignmentExpression node) {
+    if (node case AssignmentExpression(
+      leftHandSide: final left,
+      operator: Token(type: TokenType.EQ),
+      rightHandSide: BinaryExpression(
+        leftOperand: final leftOperand,
+        operator: Token(type: TokenType.PLUS) ||
+            Token(type: TokenType.MINUS) ||
+            Token(type: TokenType.SLASH) ||
+            Token(type: TokenType.STAR),
+      ),
+    ) when left is SimpleIdentifier && leftOperand is SimpleIdentifier && left.name == leftOperand.name) {
+      rule.reportAtNode(node);
+    }
+  }
+}

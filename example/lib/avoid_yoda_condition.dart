@@ -29,20 +29,6 @@ void foo4() {
   }
 }
 
-void foo5() {
-  bool value = false;
-  if (value == value) {
-    print("value is true");
-  }
-}
-
-void foo6() {
-  String value = "test";
-  if ((value != value) == (value != value)) {
-    print("value is true");
-  }
-}
-
 enum Color { red, blue, green }
 
 void foo7() {
