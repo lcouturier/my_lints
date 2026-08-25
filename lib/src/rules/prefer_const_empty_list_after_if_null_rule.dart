@@ -7,6 +7,16 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 /// Lint rule that encourages using a const empty list as an if-null fallback.
+///
+/// Example:
+/// ```dart
+/// var list = someList ?? [];
+/// ```
+///
+/// Should be:
+/// ```dart
+/// var list = someList ?? const [];
+/// ```
 class PreferConstEmptyListAfterIfNullRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_const_empty_list_after_if_null',
@@ -25,7 +35,9 @@ class PreferConstEmptyListAfterIfNullRule extends AnalysisRule {
   }
 }
 
-class _Visitor extends SimpleAstVisitor<void> {
+/// Visitor that identifies binary expressions with the ?? operator
+/// where the right operand is an empty non-const list literal.
+class _Visitor extends RecursiveAstVisitor<void> {
   _Visitor(this.rule);
 
   final PreferConstEmptyListAfterIfNullRule rule;
