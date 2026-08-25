@@ -15,6 +15,7 @@ import 'package:my_lints/src/fixes/prefer_explicit_function_type_fix.dart';
 import 'package:my_lints/src/fixes/prefer_first_fix.dart';
 import 'package:my_lints/src/fixes/prefer_last_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_elements_fix.dart';
+import 'package:my_lints/src/fixes/prefer_const_empty_list_after_if_null_fix.dart';
 import 'package:my_lints/src/fixes/prefer_ternary_over_if_else_fix.dart';
 import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
 import 'package:my_lints/src/fixes/prefer_where_type_fix.dart';
@@ -68,6 +69,7 @@ import 'package:my_lints/src/rules/prefer_addition_subtraction_assignments_rule.
 import 'package:my_lints/src/rules/prefer_any_or_every_rule.dart';
 import 'package:my_lints/src/rules/spread/prefer_collection_if_for_conditional_elements_rule.dart';
 import 'package:my_lints/src/rules/prefer_contains_rule.dart';
+import 'package:my_lints/src/rules/prefer_const_empty_list_after_if_null_rule.dart';
 import 'package:my_lints/src/rules/prefer_correct_callback_field_name_rule.dart';
 import 'package:my_lints/src/rules/prefer_explicit_function_type_rule.dart';
 import 'package:my_lints/src/rules/prefer_first_rule.dart';
@@ -113,6 +115,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidPositionalRecordFieldAccessRule())
       ..registerWarningRule(AvoidDynamicTypeRule())
       ..registerWarningRule(PreferNullAwareElementsRule())
+      ..registerWarningRule(PreferConstEmptyListAfterIfNullRule())
       ..registerWarningRule(ControllerDisposeRule())
       ..registerWarningRule(PreferNullAwareNotationRule())
       ..registerWarningRule(PreferVoidCallbackRule())
@@ -165,6 +168,8 @@ class MyLintsPlugin extends Plugin {
     registry
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)
       ..registerFixForRule(PreferNullAwareElementsRule.code, PreferNullAwareElementsFix.new)
+      ..registerFixForRule(PreferConstEmptyListAfterIfNullRule.code, PreferConstEmptyListAfterIfNullFix.new)
+      ..registerFixForRule(PreferConstEmptyListAfterIfNullRule.code, PreferConstEmptyListAfterIfNullFixInFile.new)
       ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidYodaConditionFix.new)
       ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidYodaConditionFixInFile.new)
       ..registerFixForRule(PreferContainsRule.code, PreferContainsFix.new)
