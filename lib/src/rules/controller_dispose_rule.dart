@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
@@ -6,6 +8,11 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
+
+// ignore: unused_element
+void _debug(String message) {
+  stderr.writeln('[controller_dispose_check] $message');
+}
 
 class ControllerDisposeRule extends AnalysisRule {
   ControllerDisposeRule()
@@ -34,11 +41,14 @@ class _Visitor extends SimpleAstVisitor<void> {
     'AnimationController',
     'TabController',
     'PageController',
+    'ValueNotifier',
+    'ChangeNotifier',
+    'StreamController',
   };
 
-  final Set<FieldElement> _controllers = {};
-  final Set<FieldElement> _disposed = {};
-  final Set<FieldElement> _fields = {};
+  final Set<String> _controllers = {};
+  final Set<String> _disposed = {};
+  final Map<String, FieldElement> _fields = {};
   MethodDeclaration? _disposeMethod;
 
   @override
@@ -47,26 +57,21 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     _controllers.clear();
     _disposed.clear();
-    _fields.clear();
     _disposeMethod = null;
 
     for (final member in node.members.whereType<FieldDeclaration>()) {
       final type = member.fields.type?.type;
       if (type == null) continue;
 
-      final typeName = type.element?.name;
-      final isController = _controllerTypes.contains(typeName) || type.shouldBeDisposed();
+      final isDisposable = type.shouldBeDisposed();
 
-      if (!isController) continue;
+      if (!isDisposable) continue;
 
       for (final variable in member.fields.variables) {
         final element = variable.declaredFragment?.element;
         if (element is FieldElement) {
-          _fields.add(element);
-
-          if (variable.initializer?.staticType?.shouldBeDisposed() ?? false) {
-            _controllers.add(element);
-          }
+          _fields[element.name ?? ''] = element;
+          _controllers.add(element.name ?? '');
         }
       }
     }
@@ -74,35 +79,50 @@ class _Visitor extends SimpleAstVisitor<void> {
     for (final member in node.members) {
       if (member is MethodDeclaration && member.name.lexeme == 'dispose') {
         _disposeMethod = member;
-        member.body.visitChildren(_DisposeVisitor(disposed: _disposed, fields: _fields));
+        member.body.visitChildren(_DisposeVisitor(_disposed));
       }
 
       if (member is MethodDeclaration && member.name.lexeme == 'initState') {
-        member.body.visitChildren(_InitStateVisitor(fields: _fields, controllers: _controllers));
+        member.body.visitChildren(
+          _InitStateVisitor(fields: _fields, controllers: _controllers, controllerTypes: _controllerTypes),
+        );
       }
     }
 
-    final missingControllers = _controllers.difference(_disposed);
-    for (final item in missingControllers) {
-      rule.reportAtNode(_disposeMethod ?? node, arguments: [item.name ?? '']);
+    if (_disposeMethod != null) {
+      for (final item in _controllers.difference(_disposed)) {
+        rule.reportAtToken(_disposeMethod!.name, arguments: [item]);
+      }
     }
   }
 }
 
 class _InitStateVisitor extends RecursiveAstVisitor<void> {
-  final Set<FieldElement> fields;
-  final Set<FieldElement> controllers;
+  final Map<String, FieldElement> fields;
+  final Set<String> controllers;
+  final Set<String> controllerTypes;
 
-  _InitStateVisitor({required this.fields, required this.controllers});
+  _InitStateVisitor({required this.fields, required this.controllers, required this.controllerTypes});
 
   @override
   void visitAssignmentExpression(AssignmentExpression node) {
+    final left = node.leftHandSide;
     final right = node.rightHandSide;
 
-    final field = _resolveFieldElement(node.leftHandSide);
+    final name = left.getNormalizedName();
+    if (name == null) return;
 
-    if (field != null && fields.contains(field) && right.staticType?.shouldBeDisposed() == true) {
-      controllers.add(field);
+    final field = fields[name];
+    if (field == null) return; // 🔒 garantit que c’est un field
+
+    if (right is InstanceCreationExpression) {
+      final typeName = right.constructorName.type.name.lexeme;
+
+      final shouldTrack = controllerTypes.contains(typeName) || (right.staticType?.shouldBeDisposed() ?? false);
+
+      if (shouldTrack) {
+        controllers.add(name);
+      }
     }
 
     super.visitAssignmentExpression(node);
@@ -110,31 +130,19 @@ class _InitStateVisitor extends RecursiveAstVisitor<void> {
 }
 
 class _DisposeVisitor extends RecursiveAstVisitor<void> {
-  final Set<FieldElement> disposed;
-  final Set<FieldElement> fields;
+  final Set<String> disposed;
 
-  _DisposeVisitor({required this.disposed, required this.fields});
+  _DisposeVisitor(this.disposed);
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node.methodName.name == 'dispose') {
-      final element = _resolveFieldElement(node.realTarget);
-      if (element != null && fields.contains(element)) {
-        disposed.add(element);
-      }
+    if (node.methodName.name != 'dispose') return;
+
+    final name = node.realTarget?.getNormalizedName();
+    if (name != null) {
+      disposed.add(name);
     }
 
     super.visitMethodInvocation(node);
   }
-}
-
-FieldElement? _resolveFieldElement(Expression? expression) {
-  final target = expression?.unParenthesized;
-
-  return switch (target) {
-    SimpleIdentifier(element: final FieldElement element) => element,
-    PropertyAccess(propertyName: SimpleIdentifier(element: final FieldElement element)) => element,
-    PrefixedIdentifier(identifier: SimpleIdentifier(element: final FieldElement element)) => element,
-    _ => null,
-  };
 }

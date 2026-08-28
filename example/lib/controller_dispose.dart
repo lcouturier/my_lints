@@ -10,35 +10,28 @@ class MyController extends ChangeNotifier {
 }
 
 class MyWidget extends StatefulWidget {
-  final MyController controller;
-  final VoidCallback? tap;
-
-  const MyWidget({super.key, required this.controller, this.tap});
+  const MyWidget({super.key});
 
   @override
   State<MyWidget> createState() => _MyWidgetState();
 }
 
 class _MyWidgetState extends State<MyWidget> {
-  final TextEditingController _controller = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
-  final MyController _myController = MyController();
-  late final MyController controller;
+  late final TextEditingController _controller = TextEditingController();
+  late MyController _myController;
+  late final FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => Container())); // Lint
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) => Container()));
-    });
-    controller = widget.controller;
+    _myController = MyController();
+    _focusNode = FocusNode();
   }
 
   @override
   void dispose() {
-    Navigator.of(context).pop();
-    _controller.dispose();
+    // _myController.dispose();
+    // _controller.dispose();
     super.dispose();
   }
 
