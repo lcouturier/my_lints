@@ -36,9 +36,9 @@ class _Visitor extends SimpleAstVisitor<void> {
     'PageController',
   };
 
-  final Set<String> _controllers = {};
-  final Set<String> _disposed = {};
-  final Map<String, FieldElement> _fields = {};
+  final Set<FieldElement> _controllers = {};
+  final Set<FieldElement> _disposed = {};
+  final Set<FieldElement> _fields = {};
   MethodDeclaration? _disposeMethod;
 
   @override
@@ -47,6 +47,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     _controllers.clear();
     _disposed.clear();
+    _fields.clear();
     _disposeMethod = null;
 
     for (final member in node.members.whereType<FieldDeclaration>()) {
@@ -61,8 +62,11 @@ class _Visitor extends SimpleAstVisitor<void> {
       for (final variable in member.fields.variables) {
         final element = variable.declaredFragment?.element;
         if (element is FieldElement) {
-          _fields[element.name ?? ''] = element;
-          _controllers.add(element.name ?? '');
+          _fields.add(element);
+
+          if (variable.initializer?.staticType?.shouldBeDisposed() ?? false) {
+            _controllers.add(element);
+          }
         }
       }
     }
@@ -70,50 +74,35 @@ class _Visitor extends SimpleAstVisitor<void> {
     for (final member in node.members) {
       if (member is MethodDeclaration && member.name.lexeme == 'dispose') {
         _disposeMethod = member;
-        member.body.visitChildren(_DisposeVisitor(_disposed));
+        member.body.visitChildren(_DisposeVisitor(disposed: _disposed, fields: _fields));
       }
 
       if (member is MethodDeclaration && member.name.lexeme == 'initState') {
-        member.body.visitChildren(
-          _InitStateVisitor(fields: _fields, controllers: _controllers, controllerTypes: _controllerTypes),
-        );
+        member.body.visitChildren(_InitStateVisitor(fields: _fields, controllers: _controllers));
       }
     }
 
-    if (_disposeMethod != null) {
-      for (final item in _controllers.difference(_disposed)) {
-        rule.reportAtNode(_disposeMethod!, arguments: [item]);
-      }
+    final missingControllers = _controllers.difference(_disposed);
+    for (final item in missingControllers) {
+      rule.reportAtNode(_disposeMethod ?? node, arguments: [item.name ?? '']);
     }
   }
 }
 
 class _InitStateVisitor extends RecursiveAstVisitor<void> {
-  final Map<String, FieldElement> fields;
-  final Set<String> controllers;
-  final Set<String> controllerTypes;
+  final Set<FieldElement> fields;
+  final Set<FieldElement> controllers;
 
-  _InitStateVisitor({required this.fields, required this.controllers, required this.controllerTypes});
+  _InitStateVisitor({required this.fields, required this.controllers});
 
   @override
   void visitAssignmentExpression(AssignmentExpression node) {
-    final left = node.leftHandSide;
     final right = node.rightHandSide;
 
-    final name = left.getNormalizedName();
-    if (name == null) return;
+    final field = _resolveFieldElement(node.leftHandSide);
 
-    final field = fields[name];
-    if (field == null) return; // 🔒 garantit que c’est un field
-
-    if (right is InstanceCreationExpression) {
-      final typeName = right.constructorName.type.name.lexeme;
-
-      final shouldTrack = controllerTypes.contains(typeName) || (right.staticType?.shouldBeDisposed() ?? false);
-
-      if (shouldTrack) {
-        controllers.add(name);
-      }
+    if (field != null && fields.contains(field) && right.staticType?.shouldBeDisposed() == true) {
+      controllers.add(field);
     }
 
     super.visitAssignmentExpression(node);
@@ -121,19 +110,31 @@ class _InitStateVisitor extends RecursiveAstVisitor<void> {
 }
 
 class _DisposeVisitor extends RecursiveAstVisitor<void> {
-  final Set<String> disposed;
+  final Set<FieldElement> disposed;
+  final Set<FieldElement> fields;
 
-  _DisposeVisitor(this.disposed);
+  _DisposeVisitor({required this.disposed, required this.fields});
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node.methodName.name != 'dispose') return;
-
-    final name = node.realTarget?.getNormalizedName();
-    if (name != null) {
-      disposed.add(name);
+    if (node.methodName.name == 'dispose') {
+      final element = _resolveFieldElement(node.realTarget);
+      if (element != null && fields.contains(element)) {
+        disposed.add(element);
+      }
     }
 
     super.visitMethodInvocation(node);
   }
+}
+
+FieldElement? _resolveFieldElement(Expression? expression) {
+  final target = expression?.unParenthesized;
+
+  return switch (target) {
+    SimpleIdentifier(element: final FieldElement element) => element,
+    PropertyAccess(propertyName: SimpleIdentifier(element: final FieldElement element)) => element,
+    PrefixedIdentifier(identifier: SimpleIdentifier(element: final FieldElement element)) => element,
+    _ => null,
+  };
 }
