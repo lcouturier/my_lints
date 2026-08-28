@@ -8,7 +8,7 @@ void foo() {
 
 void bar() {
   bool? value;
-  if (value ?? false) {
+  if (value == true) {
     print('value is false');
   }
 }

@@ -16,6 +16,7 @@ import 'package:my_lints/src/fixes/prefer_first_fix.dart';
 import 'package:my_lints/src/fixes/prefer_last_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_elements_fix.dart';
 import 'package:my_lints/src/fixes/prefer_const_empty_list_after_if_null_fix.dart';
+import 'package:my_lints/src/fixes/prefer_null_aware_notation_fix.dart';
 import 'package:my_lints/src/fixes/prefer_ternary_over_if_else_fix.dart';
 import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
 import 'package:my_lints/src/fixes/prefer_where_type_fix.dart';
@@ -170,6 +171,8 @@ class MyLintsPlugin extends Plugin {
     registry
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)
       ..registerFixForRule(PreferNullAwareElementsRule.code, PreferNullAwareElementsFix.new)
+      ..registerFixForRule(PreferNullAwareNotationRule.code, PreferNullAwareNotationFix.new)
+      ..registerFixForRule(PreferNullAwareNotationRule.code, PreferNullAwareNotationFixInFile.new)
       ..registerFixForRule(PreferConstEmptyListAfterIfNullRule.code, PreferConstEmptyListAfterIfNullFix.new)
       ..registerFixForRule(PreferConstEmptyListAfterIfNullRule.code, PreferConstEmptyListAfterIfNullFixInFile.new)
       ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidYodaConditionFix.new)
