@@ -17,6 +17,7 @@ import 'package:my_lints/src/fixes/prefer_last_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_elements_fix.dart';
 import 'package:my_lints/src/fixes/prefer_const_empty_list_after_if_null_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_notation_fix.dart';
+import 'package:my_lints/src/fixes/prefer_null_coalescing_operator_fix.dart';
 import 'package:my_lints/src/fixes/prefer_ternary_over_if_else_fix.dart';
 import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
 import 'package:my_lints/src/fixes/prefer_where_type_fix.dart';
@@ -28,6 +29,7 @@ import 'package:my_lints/src/rules/avoid_complex_loop_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_complicated_conditional_rule.dart';
 import 'package:my_lints/src/rules/avoid_conditional_expression_in_parameter_rule.dart';
 import 'package:my_lints/src/rules/avoid_deep_condition_rule.dart';
+import 'package:my_lints/src/rules/avoid_disposable_state_field_leaks_rule.dart';
 import 'package:my_lints/src/rules/avoid_high_cyclomatic_complexity_rule.dart';
 import 'package:my_lints/src/rules/avoid_long_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_context_in_initState_rule.dart';
@@ -40,6 +42,7 @@ import 'package:my_lints/src/rules/avoid_i18n_current_rule.dart';
 import 'package:my_lints/src/rules/avoid_join_on_nullable_item_rule.dart';
 import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
 import 'package:my_lints/src/rules/avoid_tolist_before_join_rule.dart';
+import 'package:my_lints/src/rules/prefer_null_coalescing_operator_rule.dart';
 import 'package:my_lints/src/rules/prefer_return_await_rule.dart';
 import 'package:my_lints/src/rules/prefer_where_type_rule.dart';
 import 'package:my_lints/src/rules/record/avoid_extensions_on_records_rule.dart';
@@ -65,7 +68,6 @@ import 'package:my_lints/src/rules/avoid_shadowed_extension_methods_rule.dart';
 import 'package:my_lints/src/rules/avoid_throw_literal_rule.dart';
 import 'package:my_lints/src/rules/avoid_unnecessary_gesture_detector_rule.dart';
 import 'package:my_lints/src/rules/avoid_useless_async_method_rule.dart';
-import 'package:my_lints/src/rules/controller_dispose_rule.dart';
 import 'package:my_lints/src/rules/edge_insets_rule.dart';
 import 'package:my_lints/src/rules/prefer_addition_subtraction_assignments_rule.dart';
 import 'package:my_lints/src/rules/prefer_any_or_every_rule.dart';
@@ -118,7 +120,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidDynamicTypeRule())
       ..registerWarningRule(PreferNullAwareElementsRule())
       ..registerWarningRule(PreferConstEmptyListAfterIfNullRule())
-      ..registerWarningRule(ControllerDisposeRule())
+      ..registerWarningRule(AvoidDisposableStateFieldLeaksRule())
       ..registerWarningRule(PreferNullAwareNotationRule())
       ..registerWarningRule(PreferVoidCallbackRule())
       ..registerWarningRule(AvoidNestedAssignmentRule())
@@ -162,6 +164,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferFirstRule())
       ..registerWarningRule(PreferLastRule())
       ..registerWarningRule(PreferCompoundAssignmentRule())
+      ..registerWarningRule(PreferNullCoalescingOperatorRule())
       // ..registerWarningRule(PreferKeyedWidgetsRule())
       ..registerWarningRule(AvoidDeepConditionsRule(maxDepth: 3));
     // ..registerWarningRule(AvoidLongConditionsRule(maxTokens: 10, maxVariables: 3, maxOperatorTypes: 3))
@@ -170,6 +173,8 @@ class MyLintsPlugin extends Plugin {
 
     registry
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)
+      ..registerFixForRule(PreferNullCoalescingOperatorRule.code, PreferNullCoalescingOperatorFix.new)
+      ..registerFixForRule(PreferNullCoalescingOperatorRule.code, PreferNullCoalescingOperatorFixInFile.new)
       ..registerFixForRule(PreferNullAwareElementsRule.code, PreferNullAwareElementsFix.new)
       ..registerFixForRule(PreferNullAwareNotationRule.code, PreferNullAwareNotationFix.new)
       ..registerFixForRule(PreferNullAwareNotationRule.code, PreferNullAwareNotationFixInFile.new)

@@ -2,13 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-class MyController extends ChangeNotifier {
-  @override
-  void dispose() {
-    super.dispose();
-  }
-}
-
 class MyWidget extends StatefulWidget {
   const MyWidget({super.key});
 
@@ -18,13 +11,12 @@ class MyWidget extends StatefulWidget {
 
 class _MyWidgetState extends State<MyWidget> {
   late final TextEditingController _controller = TextEditingController();
-  late MyController _myController;
+
   late final FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
-    _myController = MyController();
     _focusNode = FocusNode();
   }
 
@@ -32,6 +24,7 @@ class _MyWidgetState extends State<MyWidget> {
   void dispose() {
     // _myController.dispose();
     // _controller.dispose();
+    // _focusNode.dispose();
     super.dispose();
   }
 

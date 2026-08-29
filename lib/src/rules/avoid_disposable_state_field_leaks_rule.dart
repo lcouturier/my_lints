@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
@@ -9,16 +7,10 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-// ignore: unused_element
-void _debug(String message) {
-  stderr.writeln('[controller_dispose_check] $message');
-}
+class AvoidDisposableStateFieldLeaksRule extends AnalysisRule {
+  AvoidDisposableStateFieldLeaksRule() : super(name: code.name, description: code.problemMessage);
 
-class ControllerDisposeRule extends AnalysisRule {
-  ControllerDisposeRule()
-    : super(name: 'controller_dispose_check', description: 'Controllers should be disposed properly');
-
-  static const LintCode code = LintCode('controller_dispose_check', 'Controller "{0}" is not disposed.');
+  static const LintCode code = LintCode('avoid_disposable_state_field_leaks', 'Controller "{0}" is not disposed.');
 
   @override
   DiagnosticCode get diagnosticCode => code;
@@ -30,21 +22,9 @@ class ControllerDisposeRule extends AnalysisRule {
 }
 
 class _Visitor extends SimpleAstVisitor<void> {
-  final ControllerDisposeRule rule;
+  final AvoidDisposableStateFieldLeaksRule rule;
 
   _Visitor(this.rule);
-
-  static const _controllerTypes = {
-    'TextEditingController',
-    'FocusNode',
-    'ScrollController',
-    'AnimationController',
-    'TabController',
-    'PageController',
-    'ValueNotifier',
-    'ChangeNotifier',
-    'StreamController',
-  };
 
   final Set<String> _controllers = {};
   final Set<String> _disposed = {};
@@ -64,7 +44,6 @@ class _Visitor extends SimpleAstVisitor<void> {
       if (type == null) continue;
 
       final isDisposable = type.shouldBeDisposed();
-
       if (!isDisposable) continue;
 
       for (final variable in member.fields.variables) {
@@ -83,16 +62,14 @@ class _Visitor extends SimpleAstVisitor<void> {
       }
 
       if (member is MethodDeclaration && member.name.lexeme == 'initState') {
-        member.body.visitChildren(
-          _InitStateVisitor(fields: _fields, controllers: _controllers, controllerTypes: _controllerTypes),
-        );
+        member.body.visitChildren(_InitStateVisitor(fields: _fields, controllers: _controllers));
       }
     }
 
-    if (_disposeMethod != null) {
-      for (final item in _controllers.difference(_disposed)) {
-        rule.reportAtToken(_disposeMethod!.name, arguments: [item]);
-      }
+    if (_disposeMethod == null) return;
+
+    for (final item in _controllers.difference(_disposed)) {
+      rule.reportAtToken(_disposeMethod!.name, arguments: [item]);
     }
   }
 }
@@ -100,9 +77,8 @@ class _Visitor extends SimpleAstVisitor<void> {
 class _InitStateVisitor extends RecursiveAstVisitor<void> {
   final Map<String, FieldElement> fields;
   final Set<String> controllers;
-  final Set<String> controllerTypes;
 
-  _InitStateVisitor({required this.fields, required this.controllers, required this.controllerTypes});
+  _InitStateVisitor({required this.fields, required this.controllers});
 
   @override
   void visitAssignmentExpression(AssignmentExpression node) {
@@ -116,9 +92,7 @@ class _InitStateVisitor extends RecursiveAstVisitor<void> {
     if (field == null) return; // 🔒 garantit que c’est un field
 
     if (right is InstanceCreationExpression) {
-      final typeName = right.constructorName.type.name.lexeme;
-
-      final shouldTrack = controllerTypes.contains(typeName) || (right.staticType?.shouldBeDisposed() ?? false);
+      final shouldTrack = (right.staticType?.shouldBeDisposed() ?? false);
 
       if (shouldTrack) {
         controllers.add(name);
