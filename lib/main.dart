@@ -14,6 +14,7 @@ import 'package:my_lints/src/fixes/prefer_contains_fix.dart';
 import 'package:my_lints/src/fixes/prefer_explicit_function_type_fix.dart';
 import 'package:my_lints/src/fixes/prefer_first_fix.dart';
 import 'package:my_lints/src/fixes/prefer_last_fix.dart';
+import 'package:my_lints/src/fixes/prefer_null_aware_assignment_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_elements_fix.dart';
 import 'package:my_lints/src/fixes/prefer_const_empty_list_after_if_null_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_notation_fix.dart';
@@ -174,6 +175,8 @@ class MyLintsPlugin extends Plugin {
     // ..registerWarningRule(AvoidHighCyclomaticComplexityRule(threshold: 10));
 
     registry
+      ..registerFixForRule(PreferNullAwareAssignmentRule.code, PreferNullAwareAssignmentFix.new)
+      ..registerFixForRule(PreferNullAwareAssignmentRule.code, PreferNullAwareAssignmentFixInFile.new)
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)
       ..registerFixForRule(PreferNullCoalescingOperatorRule.code, PreferNullCoalescingOperatorFix.new)
       ..registerFixForRule(PreferNullCoalescingOperatorRule.code, PreferNullCoalescingOperatorFixInFile.new)

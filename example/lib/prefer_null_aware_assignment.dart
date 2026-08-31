@@ -12,6 +12,14 @@ void bar() {
   }
 }
 
+void barz() {
+  const int c = 42;
+  int? b;
+  if (b == null) {
+    b = c;
+  }
+}
+
 void qux() {
   int? a;
   int? b;

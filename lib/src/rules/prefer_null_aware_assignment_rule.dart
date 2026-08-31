@@ -51,6 +51,9 @@ class _Visitor extends RecursiveAstVisitor<void> {
       operator: Token(type: TokenType.EQ_EQ),
       rightOperand: NullLiteral(),
     )) {
+      final elseStatement = node.elseStatement;
+      if (elseStatement != null) return;
+
       final thenStatement = node.thenStatement;
       if (thenStatement case Block(:final statements) when statements.length == 1) {
         final actualStatement = statements.single;
