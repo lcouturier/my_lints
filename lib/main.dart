@@ -45,7 +45,6 @@ import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_interpolation_rule.dart';
 import 'package:my_lints/src/rules/avoid_tolist_before_join_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_assignment_rule.dart';
-import 'package:my_lints/src/rules/prefer_null_coalescing_operator_rule.dart';
 import 'package:my_lints/src/rules/prefer_return_await_rule.dart';
 import 'package:my_lints/src/rules/prefer_where_type_rule.dart';
 import 'package:my_lints/src/rules/record/avoid_extensions_on_records_rule.dart';
@@ -169,7 +168,6 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferFirstRule())
       ..registerWarningRule(PreferLastRule())
       ..registerWarningRule(PreferCompoundAssignmentRule())
-      ..registerWarningRule(PreferNullCoalescingOperatorRule())
       // ..registerWarningRule(PreferKeyedWidgetsRule())
       ..registerWarningRule(AvoidDeepConditionsRule(maxDepth: 3));
     // ..registerWarningRule(AvoidLongConditionsRule(maxTokens: 10, maxVariables: 3, maxOperatorTypes: 3))
@@ -180,8 +178,8 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(PreferNullAwareAssignmentRule.code, PreferNullAwareAssignmentFix.new)
       ..registerFixForRule(PreferNullAwareAssignmentRule.code, PreferNullAwareAssignmentFixInFile.new)
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)
-      ..registerFixForRule(PreferNullCoalescingOperatorRule.code, PreferNullCoalescingOperatorFix.new)
-      ..registerFixForRule(PreferNullCoalescingOperatorRule.code, PreferNullCoalescingOperatorFixInFile.new)
+      ..registerFixForRule(PreferNullAwareAssignmentRule.code, PreferNullAwareAssignmentFix.new)
+      ..registerFixForRule(PreferNullAwareAssignmentRule.code, PreferNullAwareAssignmentFixInFile.new)
       ..registerFixForRule(PreferNullAwareElementsRule.code, PreferNullAwareElementsFix.new)
       ..registerFixForRule(PreferNullAwareNotationRule.code, PreferNullAwareNotationFix.new)
       ..registerFixForRule(PreferNullAwareNotationRule.code, PreferNullAwareNotationFixInFile.new)
