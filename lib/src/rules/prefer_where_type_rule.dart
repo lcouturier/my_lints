@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
@@ -5,6 +7,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 class PreferWhereTypeRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -28,6 +31,16 @@ class _Visitor extends SimpleAstVisitor<void> {
   final PreferWhereTypeRule rule;
 
   _Visitor(this.rule);
+
+  bool _isMapWithAsCast(MethodInvocation mapInvocation) {
+    final args = mapInvocation.argumentList.arguments;
+    if (args.length != 1) return false;
+    final arg = args.first;
+    if (arg is! FunctionExpression) return false;
+    final body = arg.body;
+    if (body is! ExpressionFunctionBody) return false;
+    return body.expression is AsExpression;
+  }
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
@@ -59,6 +72,22 @@ class _Visitor extends SimpleAstVisitor<void> {
         expression: SimpleIdentifier(:final name),
         isOperator: Token(type: TokenType.IS),
       ) when name == parameter) {
+        final parent = node.parent;
+        if (parent is MethodInvocation && parent.target == node) {
+          final parentMethod = parent.methodName.name;
+
+          // items.where((x) => x is String).cast<String>();
+          if (parentMethod == 'cast') {
+            rule.reportAtNode(parent);
+            return;
+          }
+
+          // items.where((x) => x is String).map((x) => x as String);
+          if (parentMethod == 'map' && parent.isMapWithCast) {
+            rule.reportAtNode(parent);
+            return;
+          }
+        }
         rule.reportAtNode(node);
       }
     }

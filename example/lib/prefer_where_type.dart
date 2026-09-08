@@ -18,3 +18,17 @@ void bar() {
   final result = items.whereType<String>();
   print(result);
 }
+
+void barz() {
+  final items = <String?>['a', 'b', 'c', null, 'd'];
+
+  final result = items.where((x) => x is String).cast<String>();
+  print(result);
+}
+
+void barx() {
+  final items = <String?>['a', 'b', 'c', null, 'd'];
+
+  final result = items.where((x) => x is String).map((x) => x as String);
+  print(result);
+}
