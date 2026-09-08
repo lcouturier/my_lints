@@ -44,6 +44,7 @@ import 'package:my_lints/src/rules/avoid_join_on_nullable_item_rule.dart';
 import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_interpolation_rule.dart';
 import 'package:my_lints/src/rules/avoid_tolist_before_join_rule.dart';
+import 'package:my_lints/src/rules/prefer_factory_constructor_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_assignment_rule.dart';
 import 'package:my_lints/src/rules/prefer_return_await_rule.dart';
 import 'package:my_lints/src/rules/prefer_where_type_rule.dart';
@@ -108,6 +109,7 @@ class MyLintsPlugin extends Plugin {
   @override
   void register(PluginRegistry registry) {
     registry
+      ..registerWarningRule(PreferFactoryConstructorRule())
       ..registerWarningRule(PreferNullAwareAssignmentRule())
       ..registerWarningRule(AvoidNullableInterpolationRule())
       ..registerWarningRule(PreferExplicitFunctionType())
