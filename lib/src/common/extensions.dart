@@ -199,6 +199,24 @@ extension ListExtensions<E> on List<E> {
     }
     return map;
   }
+
+  List<E> shiftRight(int n) {
+    if (isEmpty) return this;
+    final length = this.length;
+    final shift = n % length;
+    if (shift == 0) return List.of(this);
+
+    return [...sublist(length - shift), ...sublist(0, length - shift)];
+  }
+
+  List<E> shiftLeft(int n) {
+    if (isEmpty) return this;
+    final length = this.length;
+    final shift = n % length;
+    if (shift == 0) return List.of(this);
+
+    return [...sublist(shift), ...sublist(0, shift)];
+  }
 }
 
 extension TokenTypeExtensions on TokenType {

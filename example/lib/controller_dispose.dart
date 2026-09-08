@@ -16,16 +16,18 @@ class _MyWidgetState extends State<MyWidget> {
 
   @override
   void initState() {
-    super.initState();
+    // super.initState();
     _focusNode = FocusNode();
+    super.initState();
   }
 
   @override
   void dispose() {
-    // _myController.dispose();
-    // _controller.dispose();
-    // _focusNode.dispose();
     super.dispose();
+    // _myController.dispose();
+    _controller.dispose();
+    _focusNode.dispose();
+    // super.dispose();
   }
 
   @override

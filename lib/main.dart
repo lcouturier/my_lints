@@ -48,6 +48,7 @@ import 'package:my_lints/src/rules/prefer_factory_constructor_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_assignment_rule.dart';
 import 'package:my_lints/src/rules/prefer_return_await_rule.dart';
 import 'package:my_lints/src/rules/prefer_where_type_rule.dart';
+import 'package:my_lints/src/rules/proper_super_calls_rule.dart';
 import 'package:my_lints/src/rules/record/avoid_extensions_on_records_rule.dart';
 import 'package:my_lints/src/rules/avoid_identical_if_branch_rule.dart';
 import 'package:my_lints/src/rules/avoid_incomplete_copy_with_rule.dart';
@@ -109,6 +110,7 @@ class MyLintsPlugin extends Plugin {
   @override
   void register(PluginRegistry registry) {
     registry
+      ..registerWarningRule(ProperSuperCallsRule())
       ..registerWarningRule(PreferFactoryConstructorRule())
       ..registerWarningRule(PreferNullAwareAssignmentRule())
       ..registerWarningRule(AvoidNullableInterpolationRule())
