@@ -4,11 +4,22 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 /// Classe de base pour vos règles personnalisées
 abstract class CustomAstVisitor extends SimpleAstVisitor<void> {
   /// Votre méthode custom !
   void visitCopyWithMethod(MethodDeclaration node, Set<String> fields) {}
+
+  /// Votre méthode custom pour les classes Cubit
+  void visitCubitClass(ClassDeclaration node) {}
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (node.isCubitClass) {
+      visitCubitClass(node);
+    }
+  }
 
   @override
   void visitMethodDeclaration(MethodDeclaration node) {
@@ -16,12 +27,7 @@ abstract class CustomAstVisitor extends SimpleAstVisitor<void> {
     if (node.name.lexeme == 'copyWith') {
       final parent = node.parent as ClassDeclaration;
 
-      final fields = parent.members
-          .whereType<FieldDeclaration>()
-          .where((e) => !e.isStatic)
-          .map((e) => e.fields.variables.map((variable) => variable.name.lexeme).toList())
-          .expand((f) => f)
-          .toSet();
+      final fields = parent.fields;
       if (fields.isEmpty) return;
       visitCopyWithMethod(node, fields);
     }
@@ -44,6 +50,11 @@ extension CopyWithRegistryExtension on RuleVisitorRegistry {
   void addCopyWithMethod(AnalysisRule rule, CustomAstVisitor visitor) {
     // On enregistre le visiteur sur les déclarations de méthodes
     addMethodDeclaration(rule, visitor);
+  }
+
+  void addCubitClass(AnalysisRule rule, CustomAstVisitor visitor) {
+    // On enregistre le visiteur sur les déclarations de classes
+    addClassDeclaration(rule, visitor);
   }
 }
 

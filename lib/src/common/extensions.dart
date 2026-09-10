@@ -47,7 +47,7 @@ extension FunctionCacheExtensions<F, R> on R Function(F) {
   // Caches the results of a function call.
   R Function(F) cache() {
     final cache = <F, R>{};
-    return (key) => cache[key] ??= this(key);
+    return (key) => cache.putIfAbsent(key, () => this(key));
   }
 }
 
@@ -381,6 +381,20 @@ extension ClassDeclarationExtensions on ClassDeclaration {
     final type = extendsClause?.superclass.type;
     return type is InterfaceType && type.isCubitLike;
   }
+
+  /// Returns the fields of the class.
+  ///
+  /// This includes:
+  /// - Final fields
+  /// - Non-static fields
+  /// - Non-synthetic fields
+  Set<String> get fields => members
+      .whereType<FieldDeclaration>()
+      .where((e) => !e.isStatic)
+      .where((e) => !e.isSynthetic)
+      .map((e) => e.fields.variables.map((variable) => variable.name.lexeme).toList())
+      .expand((f) => f)
+      .toSet();
 
   /// Checks if the class is a data class.
   ///
