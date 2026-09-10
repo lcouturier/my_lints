@@ -41,7 +41,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     }
   }
 
-  String? _extractName(Expression expression) {
+  static String? _extractName(Expression expression) {
     final current = expression.unParenthesized;
 
     return switch (current) {

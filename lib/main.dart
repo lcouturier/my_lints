@@ -44,6 +44,7 @@ import 'package:my_lints/src/rules/avoid_join_on_nullable_item_rule.dart';
 import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_interpolation_rule.dart';
 import 'package:my_lints/src/rules/avoid_tolist_before_join_rule.dart';
+import 'package:my_lints/src/rules/prefer_bloc_extensions_rule.dart';
 import 'package:my_lints/src/rules/prefer_factory_constructor_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_assignment_rule.dart';
 import 'package:my_lints/src/rules/prefer_return_await_rule.dart';
@@ -110,6 +111,8 @@ class MyLintsPlugin extends Plugin {
   @override
   void register(PluginRegistry registry) {
     registry
+      ..registerWarningRule(AvoidIncompleteCopyWithRule())
+      ..registerWarningRule(PreferBlocExtensionsRule())
       ..registerWarningRule(ProperSuperCallsRule())
       ..registerWarningRule(PreferFactoryConstructorRule())
       ..registerWarningRule(PreferNullAwareAssignmentRule())
@@ -125,7 +128,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferCollectionIfForConditionalElementsRule())
       ..registerWarningRule(PreferIsEmptyRule())
       ..registerWarningRule(AvoidPositionalRecordFieldAccessRule())
-      ..registerWarningRule(AvoidDynamicTypeRule())
+      // ..registerWarningRule(AvoidDynamicTypeRule())
       ..registerWarningRule(PreferNullAwareElementsRule())
       ..registerWarningRule(PreferConstEmptyListAfterIfNullRule())
       ..registerWarningRule(AvoidDisposableStateFieldLeaksRule())
@@ -149,13 +152,13 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidThrowLiteralRule())
       ..registerWarningRule(AvoidNestedTernaryRule())
       ..registerWarningRule(AvoidExtensionsOnRecordsRule())
-      ..registerWarningRule(EdgeInsetsRule())
+      // ..registerWarningRule(EdgeInsetsRule())
       ..registerWarningRule(AvoidAssignationInConditionRule())
-      ..registerWarningRule(AvoidUnnecessaryGestureDetectorRule())
+      // ..registerWarningRule(AvoidUnnecessaryGestureDetectorRule())
       ..registerWarningRule(AvoidNegativeBooleanRule())
       ..registerWarningRule(AvoidDoubleNegationConditionsRule())
       ..registerWarningRule(AvoidIdenticalIfBranchRule())
-      ..registerWarningRule(PreferNamedBooleanParametersRule())
+      // ..registerWarningRule(PreferNamedBooleanParametersRule())
       ..registerWarningRule(PreferFunctionTypedefsRule())
       ..registerWarningRule(AvoidRedundantMapFromRule())
       ..registerWarningRule(PreferTryGetValueRule())

@@ -335,6 +335,11 @@ extension ExpressionExtensions on Expression {
     return null;
   }
 
+  /// Checks if the expression is a constant.
+  /// This includes:
+  /// - Literal values (int, double, bool, null, string)
+  /// - Const instance creation expressions
+  /// - Any expression that can be evaluated to a constant value
   bool get isConstant {
     final expr = unParenthesized;
     return switch (expr) {

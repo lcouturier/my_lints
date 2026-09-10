@@ -35,7 +35,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitSwitchExpression(SwitchExpression node) {
     final result = node.cases.firstWhereOrNot((e) => e.expression is SwitchExpression);
 
-    if (!result.$1) return;
-    rule.reportAtNode(result.$2);
+    if (!result.found) return;
+    rule.reportAtNode(result.value);
   }
 }

@@ -8,7 +8,7 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
-import 'package:my_lints/src/common/type_checker.dart';
+import 'package:my_lints/src/common/rule_visitor_extensions.dart';
 
 class AvoidIncompleteCopyWithRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -25,30 +25,18 @@ class AvoidIncompleteCopyWithRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry.addClassDeclaration(this, visitor);
+    registry.addCopyWithMethod(this, visitor);
   }
 }
 
-class _Visitor extends SimpleAstVisitor<void> {
+class _Visitor extends CustomAstVisitor {
   final AvoidIncompleteCopyWithRule rule;
 
   _Visitor(this.rule);
 
   @override
-  void visitClassDeclaration(ClassDeclaration node) {
-    final (found, copyWithMethod) = node.members.whereType<MethodDeclaration>().firstWhereOrNot(
-      (m) => m.name.lexeme == 'copyWith',
-    );
-    if (!found) return;
-
-    final fields = node.members
-        .whereType<FieldDeclaration>()
-        .map((e) => e.fields.variables.map((variable) => variable.name.lexeme).toList())
-        .expand((f) => f)
-        .toSet();
-    if (fields.isEmpty) return;
-
-    final body = copyWithMethod!.body.expression;
+  void visitCopyWithMethod(MethodDeclaration node, Set<String> fields) {
+    final body = node.body.expression;
     if (body == null) return;
 
     final visitor = _CopyWithVisitor();
@@ -58,7 +46,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     final missing = fields.difference(assignedFields);
     if (missing.isEmpty) return;
 
-    rule.reportAtToken(copyWithMethod.name, arguments: [missing.join(', ')]);
+    rule.reportAtToken(node.name, arguments: [missing.join(', ')]);
   }
 }
 
