@@ -4,6 +4,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:my_lints/src/common/type_checker.dart';
 
 extension DartTypeExtensions on DartType {
   // Checks if a DartType is a nullable list.
@@ -372,6 +373,9 @@ extension on InterfaceType {
 }
 
 extension ClassDeclarationExtensions on ClassDeclaration {
+  bool get isEquatable =>
+      declaredFragment?.element != null && equatableChecker.isAssignableFromType(declaredFragment!.element.thisType);
+
   bool get isFlutterStateClass {
     final type = extendsClause?.superclass.type;
     return type is InterfaceType && type.isFlutterState;
