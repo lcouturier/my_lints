@@ -22,6 +22,7 @@ import 'package:my_lints/src/fixes/prefer_null_coalescing_operator_fix.dart';
 import 'package:my_lints/src/fixes/prefer_ternary_over_if_else_fix.dart';
 import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
 import 'package:my_lints/src/fixes/prefer_where_type_fix.dart';
+import 'package:my_lints/src/fixes/unprotected_emit_after_await_fix.dart';
 import 'package:my_lints/src/rules/avoid_assignation_in_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_always_null_parameters_rule.dart';
 import 'package:my_lints/src/rules/avoid_cascade_after_if_null_rule.dart';
@@ -44,6 +45,7 @@ import 'package:my_lints/src/rules/avoid_join_on_nullable_item_rule.dart';
 import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_interpolation_rule.dart';
 import 'package:my_lints/src/rules/avoid_tolist_before_join_rule.dart';
+import 'package:my_lints/src/rules/unprotected_emit_after_await_rule.dart';
 import 'package:my_lints/src/rules/prefer_bloc_extensions_rule.dart';
 import 'package:my_lints/src/rules/prefer_factory_constructor_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_assignment_rule.dart';
@@ -111,6 +113,7 @@ class MyLintsPlugin extends Plugin {
   @override
   void register(PluginRegistry registry) {
     registry
+      ..registerWarningRule(UnProtectedEmitAfterAwaitRule())
       ..registerWarningRule(AvoidIncompleteCopyWithRule())
       ..registerWarningRule(PreferBlocExtensionsRule())
       ..registerWarningRule(ProperSuperCallsRule())
@@ -182,6 +185,8 @@ class MyLintsPlugin extends Plugin {
     // ..registerWarningRule(AvoidHighCyclomaticComplexityRule(threshold: 10));
 
     registry
+      ..registerFixForRule(UnProtectedEmitAfterAwaitRule.code, UnProtectedEmitAfterAwaitInsertFix.new)
+      ..registerFixForRule(UnProtectedEmitAfterAwaitRule.code, UnProtectedEmitAfterAwaitReplaceFix.new)
       ..registerFixForRule(PreferNullAwareAssignmentRule.code, PreferNullAwareAssignmentFix.new)
       ..registerFixForRule(PreferNullAwareAssignmentRule.code, PreferNullAwareAssignmentFixInFile.new)
       ..registerFixForRule(PreferAnyRule.code, PreferAnyOrEveryFix.new)
