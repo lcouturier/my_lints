@@ -2,10 +2,9 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/extensions.dart';
+import 'package:my_lints/src/common/rule_visitor_extensions.dart';
 
 class CubitStateMustBeEquatableRule extends AnalysisRule {
   static LintCode code = const LintCode(
@@ -23,19 +22,17 @@ class CubitStateMustBeEquatableRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry.addClassDeclaration(this, visitor);
+    registry.addCubitClass(this, visitor);
   }
 }
 
-class _Visitor extends SimpleAstVisitor<void> {
+class _Visitor extends CustomAstVisitor {
   _Visitor(this.rule);
 
   final CubitStateMustBeEquatableRule rule;
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.isCubitClass) return;
-
     final superclassClause = node.extendsClause;
     if (superclassClause == null) return;
 

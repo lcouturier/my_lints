@@ -45,6 +45,7 @@ import 'package:my_lints/src/rules/avoid_join_on_nullable_item_rule.dart';
 import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_interpolation_rule.dart';
 import 'package:my_lints/src/rules/avoid_tolist_before_join_rule.dart';
+import 'package:my_lints/src/rules/avoid_unused_after_null_check_rule.dart';
 import 'package:my_lints/src/rules/cubit_state_must_be_equatable_rule.dart';
 import 'package:my_lints/src/rules/unprotected_emit_after_await_rule.dart';
 import 'package:my_lints/src/rules/prefer_bloc_extensions_rule.dart';
@@ -114,6 +115,7 @@ class MyLintsPlugin extends Plugin {
   @override
   void register(PluginRegistry registry) {
     registry
+      ..registerWarningRule(AvoidUnusedAfterNullCheckRule())
       ..registerWarningRule(CubitStateMustBeEquatableRule())
       ..registerWarningRule(UnProtectedEmitAfterAwaitRule())
       ..registerWarningRule(AvoidIncompleteCopyWithRule())

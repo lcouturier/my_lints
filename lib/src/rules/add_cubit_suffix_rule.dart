@@ -6,7 +6,7 @@ import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/rule_visitor_extensions.dart';
 
 class AddCubitSuffixRule extends AnalysisRule {
-  static LintCode code = const LintCode('add_cubit_suffix_rule', 'Consider add cubit suffix.');
+  static LintCode code = const LintCode('add_cubit_suffix_rule', 'Consider add cubit suffix to {0}.');
 
   AddCubitSuffixRule() : super(name: code.name, description: code.problemMessage);
 
@@ -27,8 +27,9 @@ class _Visitor extends CustomAstVisitor {
 
   @override
   void visitCubitClass(ClassDeclaration node) {
-    if (node.name.lexeme.endsWith('Cubit')) return;
+    final name = node.name.lexeme;
+    if (name.endsWith('Cubit')) return;
 
-    rule.reportAtToken(node.name);
+    rule.reportAtToken(node.name, arguments: [name]);
   }
 }

@@ -34,14 +34,17 @@ class _Visitor extends SimpleAstVisitor<void> {
     final parent = node.parent;
     if (parent is! ClassDeclaration) return;
 
-    if (node case MethodDeclaration(:final body, :final returnType) when node.isStatic && returnType != null) {
-      final expression = body.expression;
-      if (expression case InstanceCreationExpression(:final constructorName)) {
-        final parentName = parent.name.lexeme;
+    if (node case MethodDeclaration(
+      body: FunctionBody(expression: InstanceCreationExpression(:final constructorName)),
+      :final returnType,
+      isStatic: true,
+      isGetter: false,
+      isSetter: false,
+    ) when returnType != null) {
+      final parentName = parent.name.lexeme;
 
-        if (parentName == constructorName.type.name.lexeme) {
-          rule.reportAtToken(node.name);
-        }
+      if (parentName == constructorName.type.name.lexeme) {
+        rule.reportAtToken(node.name);
       }
     }
   }
