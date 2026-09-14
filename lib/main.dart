@@ -150,7 +150,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferUsageOfValueGetterRule())
       ..registerWarningRule(PreferCorrectCallbackFieldNameRule())
       ..registerWarningRule(AvoidCompareSameValueRule())
-      ..registerWarningRule(AvoidUnsafeReduceRule())
+      // ..registerWarningRule(AvoidUnsafeReduceRule())
       ..registerWarningRule(UseJoinOnStringsRule())
       // ..registerWarningRule(AvoidMagicNumbersRule())
       // ..registerWarningRule(AvoidComplexLoopConditionsRule())
@@ -176,16 +176,16 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferReturnAwaitRule())
       ..registerWarningRule(UnnecessaryStringInterpolationRule())
       ..registerWarningRule(UnnecessaryToStringInInterpolationRule())
-      ..registerWarningRule(AvoidForEachRule())
+      // ..registerWarningRule(AvoidForEachRule())
       ..registerWarningRule(AvoidToListBeforeJoinRule())
       ..registerWarningRule(AvoidJoinOnNullableItemRule())
       ..registerWarningRule(PreferWhereTypeRule())
       ..registerWarningRule(AvoidI18nCurrentRule())
       ..registerWarningRule(PreferFirstRule())
-      ..registerWarningRule(PreferLastRule())
-      ..registerWarningRule(PreferCompoundAssignmentRule())
-      // ..registerWarningRule(PreferKeyedWidgetsRule())
-      ..registerWarningRule(AvoidDeepConditionsRule(maxDepth: 3));
+      ..registerWarningRule(PreferLastRule());
+    // ..registerWarningRule(PreferCompoundAssignmentRule())
+    // ..registerWarningRule(PreferKeyedWidgetsRule())
+    // ..registerWarningRule(AvoidDeepConditionsRule(maxDepth: 3));
     // ..registerWarningRule(AvoidLongConditionsRule(maxTokens: 10, maxVariables: 3, maxOperatorTypes: 3))
     // ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5))
     // ..registerWarningRule(AvoidHighCyclomaticComplexityRule(threshold: 10));
