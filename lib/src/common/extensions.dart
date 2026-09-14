@@ -358,7 +358,7 @@ extension on InterfaceType {
     return allTypes.any((t) {
       final element = t.element;
 
-      return element.name == 'State' && element.library.identifier.contains('framework');
+      return element.name == 'State' && element.library2.firstFragment.source.uri.toString().contains('framework');
     });
   }
 
@@ -366,8 +366,8 @@ extension on InterfaceType {
     final allTypes = [this, ...allSupertypes];
 
     return allTypes.any((t) {
-      final name = t.element.name;
-      return name == 'Cubit' && t.element.library.identifier.contains('bloc');
+      final element = t.element;
+      return element.name == 'Cubit' && element.library2.firstFragment.source.uri.toString().contains('bloc');
     });
   }
 }

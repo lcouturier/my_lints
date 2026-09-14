@@ -21,6 +21,7 @@ import 'package:my_lints/src/fixes/prefer_null_aware_notation_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_coalescing_operator_fix.dart';
 import 'package:my_lints/src/fixes/prefer_ternary_over_if_else_fix.dart';
 import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
+import 'package:my_lints/src/fixes/prefer_void_callback_fix.dart';
 import 'package:my_lints/src/fixes/prefer_where_type_fix.dart';
 import 'package:my_lints/src/fixes/unprotected_emit_after_await_fix.dart';
 import 'package:my_lints/src/rules/avoid_assignation_in_condition_rule.dart';
@@ -98,7 +99,7 @@ import 'package:my_lints/src/rules/prefer_null_aware_notation_rule.dart';
 import 'package:my_lints/src/rules/spread/prefer_null_aware_spread_rule.dart';
 import 'package:my_lints/src/rules/prefer_try_get_value_rule.dart';
 import 'package:my_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
-import 'package:my_lints/src/rules/prefer_void_callback.dart';
+import 'package:my_lints/src/rules/prefer_void_callback_rule.dart';
 import 'package:my_lints/src/rules/unnecessary_string_interpolation_rule.dart';
 import 'package:my_lints/src/rules/unnecessary_to_string_in_interpolation_rule.dart';
 import 'package:my_lints/src/rules/use_join_on_strings_rule.dart';
@@ -118,10 +119,10 @@ class MyLintsPlugin extends Plugin {
     registry
       ..registerWarningRule(AvoidUnnecessaryBlockRule())
       ..registerWarningRule(AvoidUnusedAfterNullCheckRule())
-      ..registerWarningRule(CubitStateMustBeEquatableRule())
+      // ..registerWarningRule(CubitStateMustBeEquatableRule()) // pas utile
       ..registerWarningRule(UnProtectedEmitAfterAwaitRule())
       ..registerWarningRule(AvoidIncompleteCopyWithRule())
-      ..registerWarningRule(PreferBlocExtensionsRule())
+      // ..registerWarningRule(PreferBlocExtensionsRule())
       ..registerWarningRule(ProperSuperCallsRule())
       ..registerWarningRule(PreferFactoryConstructorRule())
       ..registerWarningRule(PreferNullAwareAssignmentRule())
@@ -147,14 +148,14 @@ class MyLintsPlugin extends Plugin {
       // ..registerWarningRule(AvoidAlwaysNullParametersRule())
       ..registerWarningRule(AvoidMapKeysContainsRule())
       ..registerWarningRule(AvoidShadowedExtensionMethodsRule())
-      ..registerWarningRule(PreferUsageOfValueGetterRule())
+      // ..registerWarningRule(PreferUsageOfValueGetterRule())
       ..registerWarningRule(PreferCorrectCallbackFieldNameRule())
       ..registerWarningRule(AvoidCompareSameValueRule())
       // ..registerWarningRule(AvoidUnsafeReduceRule())
       ..registerWarningRule(UseJoinOnStringsRule())
       // ..registerWarningRule(AvoidMagicNumbersRule())
       // ..registerWarningRule(AvoidComplexLoopConditionsRule())
-      ..registerWarningRule(AvoidLongConditionsRule(maxTokens: 50, maxVariables: 4, maxOperatorTypes: 3))
+      // ..registerWarningRule(AvoidLongConditionsRule(maxTokens: 50, maxVariables: 4, maxOperatorTypes: 3))
       ..registerWarningRule(AvoidRedundantDurationRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
@@ -168,7 +169,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidDoubleNegationConditionsRule())
       ..registerWarningRule(AvoidIdenticalIfBranchRule())
       // ..registerWarningRule(PreferNamedBooleanParametersRule())
-      ..registerWarningRule(PreferFunctionTypedefsRule())
+      // ..registerWarningRule(PreferFunctionTypedefsRule())
       ..registerWarningRule(AvoidRedundantMapFromRule())
       ..registerWarningRule(PreferTryGetValueRule())
       ..registerWarningRule(AvoidRedundantSpreadRule())
@@ -191,6 +192,8 @@ class MyLintsPlugin extends Plugin {
     // ..registerWarningRule(AvoidHighCyclomaticComplexityRule(threshold: 10));
 
     registry
+      ..registerFixForRule(PreferVoidCallbackRule.code, PreferVoidCallbackFix.new)
+      ..registerFixForRule(PreferVoidCallbackRule.code, PreferVoidCallbackFixInFile.new)
       ..registerFixForRule(UnProtectedEmitAfterAwaitRule.code, UnProtectedEmitAfterAwaitInsertFix.new)
       ..registerFixForRule(UnProtectedEmitAfterAwaitRule.code, UnProtectedEmitAfterAwaitReplaceFix.new)
       ..registerFixForRule(PreferNullAwareAssignmentRule.code, PreferNullAwareAssignmentFix.new)
@@ -211,7 +214,7 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(PreferLastRule.code, PreferLastFixInFile.new)
       ..registerFixForRule(AvoidEnumValuesByIndexRule.code, AvoidEnumValuesByIndexFix.new)
       ..registerFixForRule(PreferExplicitFunctionType.code, PreferExplicitFunctionTypeFix.new)
-      ..registerFixForRule(PreferUsageOfValueGetterRule.code, PreferUsageOfValueGetterFix.new)
+      // ..registerFixForRule(PreferUsageOfValueGetterRule.code, PreferUsageOfValueGetterFix.new)
       ..registerFixForRule(AvoidRedundantMapFromRule.code, AvoidRedundantMapFromFix.new)
       ..registerFixForRule(AvoidRedundantMapFromRule.code, AvoidRedundantMapFromFixInFile.new)
       ..registerFixForRule(PreferWhereTypeRule.code, PreferWhereTypeFix.new)

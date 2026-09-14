@@ -1,7 +1,6 @@
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
-import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/dart/ast/ast.dart';
@@ -32,11 +31,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitGenericFunctionType(GenericFunctionType node) {
-    if (node case GenericFunctionType(
-      typeParameters: null,
-      parameters: FormalParameterList(parameters: []),
-      returnType: NamedType(name: Token(lexeme: 'void')),
-    )) {
+    if (node case GenericFunctionType(typeParameters: null, parameters: FormalParameterList(parameters: []))) {
       rule.reportAtNode(node);
     }
   }

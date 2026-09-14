@@ -7,7 +7,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/extensions.dart';
+import 'package:my_lints/src/common/type_checker.dart';
 
 class UnProtectedEmitAfterAwaitRule extends AnalysisRule {
   static const code = LintCode(
@@ -36,7 +36,9 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.isCubitClass) return;
+    final element = node.declaredFragment?.element;
+    if (element == null) return;
+    if (!cubitChecker.isSuperOf(element)) return;
 
     for (final m in node.members.whereType<MethodDeclaration>().where((e) => e.body.isAsynchronous)) {
       m.body.accept(_BlockVisitor(rule: rule));

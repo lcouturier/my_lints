@@ -20,25 +20,26 @@ class PreferFirstFix extends ResolvedCorrectionProducer {
   @override
   Future<void> compute(ChangeBuilder builder) async {
     final targetNode = node;
-    if (targetNode is IndexExpression) {
-      if (targetNode.index is! IntegerLiteral || (targetNode.index as IntegerLiteral).value != 0) return;
-
-      final String replacement = '${targetNode.target}.first';
+    if (targetNode case IndexExpression(index: IntegerLiteral(value: 0), :final target, :final question)) {
+      final replacement = '$target${question != null ? '?.' : '.'}first';
 
       await builder.addDartFileEdit(file, (builder) {
         builder.addSimpleReplacement(range.node(targetNode), replacement);
       });
+      return;
     }
 
     if (targetNode case MethodInvocation(
       methodName: SimpleIdentifier(name: 'elementAt'),
       argumentList: ArgumentList(arguments: [IntegerLiteral(value: 0)]),
+      :final target,
     )) {
-      final String replacement = '${targetNode.target}.first';
+      final replacement = '$target.first';
 
       await builder.addDartFileEdit(file, (builder) {
         builder.addSimpleReplacement(range.node(targetNode), replacement);
       });
+      return;
     }
   }
 }
@@ -66,7 +67,8 @@ class PreferFirstFixInFile extends ResolvedCorrectionProducer {
 
     await builder.addDartFileEdit(file, (builder) {
       for (final occurrence in visitor.occurrences.whereType<IndexExpression>()) {
-        final String replacement = '${occurrence.target}.first';
+        final question = occurrence.question;
+        final replacement = '${occurrence.target}${question != null ? '?.' : '.'}first';
         builder.addSimpleReplacement(range.node(occurrence), replacement);
       }
       for (final occurrence in visitor.occurrences.whereType<MethodInvocation>()) {
