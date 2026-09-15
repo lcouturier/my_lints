@@ -5,6 +5,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 class CubitStateMustBeEquatableRule extends AnalysisRule {
   static LintCode code = const LintCode(
@@ -33,47 +34,23 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    final element = node.declaredFragment?.element;
-    if (element == null) return;
+    if (!node.isCubitClass) return;
 
-    // 1. Chercher le type Cubit dans la hiérarchie résolue (supertypes)
-    InterfaceType? cubitSupertype;
-    for (final type in element.allSupertypes) {
-      // Dans analyzer 8.0, element correspond à un InterfaceElement
-      final superElement = type.element;
-      final libraryUri = superElement.library.uri.toString();
+    final superclassClause = node.extendsClause;
+    if (superclassClause == null) return;
 
-      if (superElement.name == 'Cubit' && libraryUri.contains('bloc')) {
-        cubitSupertype = type;
-        break;
-      }
-    }
+    final typeArguments = superclassClause.superclass.typeArguments?.arguments;
+    if (typeArguments == null || typeArguments.isEmpty) return;
 
-    if (cubitSupertype == null) return;
-
-    // 2. Extraire le type générique T de Cubit<T>
-    final typeArguments = cubitSupertype.typeArguments;
-    if (typeArguments.isEmpty) return;
-
-    final stateType = typeArguments.first;
+    final stateType = typeArguments.first.type;
     if (stateType is! InterfaceType) return;
 
-    // 3. Vérifier si l'état ou l'un de ses supertypes est Equatable
-    final stateElement = stateType.element;
-    final stateLibraryUri = stateElement.library.uri.toString();
-
-    final isDirectEquatable = stateElement.name == 'Equatable' && stateLibraryUri.contains('equatable');
-
-    final isSubtypeEquatable = stateType.allSupertypes.any((e) {
-      final eLibraryUri = e.element.library.uri.toString();
-      return e.element.name == 'Equatable' && eLibraryUri.contains('equatable');
+    final isEquatable = stateType.allSupertypes.any((e) {
+      return e.element.name == 'Equatable' && e.element.library.identifier.contains('equatable');
     });
 
-    if (isDirectEquatable || isSubtypeEquatable) return;
+    if (isEquatable) return;
 
-    // 4. Déterminer le nœud AST pour l'affichage de l'erreur
-    // final targetNode = node.extendsClause?.superclass.typeArguments?.arguments.first ?? node.name;
-
-    rule.reportAtToken(node.name, arguments: [stateType.getDisplayString()]);
+    rule.reportAtNode(typeArguments.first, arguments: [stateType.element.name ?? '']);
   }
 }

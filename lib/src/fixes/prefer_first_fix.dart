@@ -71,10 +71,10 @@ class PreferFirstFixInFile extends ResolvedCorrectionProducer {
         final replacement = '${occurrence.target}${question != null ? '?.' : '.'}first';
         builder.addSimpleReplacement(range.node(occurrence), replacement);
       }
-      for (final occurrence in visitor.occurrences.whereType<MethodInvocation>()) {
-        final String replacement = '${occurrence.target}.first';
-        builder.addSimpleReplacement(range.node(occurrence), replacement);
-      }
+      // for (final occurrence in visitor.occurrences.whereType<MethodInvocation>()) {
+      //   final String replacement = '${occurrence.target}.first';
+      //   builder.addSimpleReplacement(range.node(occurrence), replacement);
+      // }
     });
   }
 }

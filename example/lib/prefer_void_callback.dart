@@ -2,6 +2,10 @@ void foo(void Function() f) {
   f();
 }
 
+void foo2(Function() f) {
+  f();
+}
+
 void other(int Function() f) {
   final result = f();
   print(result);

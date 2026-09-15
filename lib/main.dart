@@ -119,9 +119,9 @@ class MyLintsPlugin extends Plugin {
     registry
       ..registerWarningRule(AvoidUnnecessaryBlockRule())
       ..registerWarningRule(AvoidUnusedAfterNullCheckRule())
-      // ..registerWarningRule(CubitStateMustBeEquatableRule()) // pas utile
+      ..registerWarningRule(CubitStateMustBeEquatableRule()) // pas utile
       ..registerWarningRule(UnProtectedEmitAfterAwaitRule())
-      ..registerWarningRule(AvoidIncompleteCopyWithRule())
+      // ..registerWarningRule(AvoidIncompleteCopyWithRule())
       // ..registerWarningRule(PreferBlocExtensionsRule())
       ..registerWarningRule(ProperSuperCallsRule())
       ..registerWarningRule(PreferFactoryConstructorRule())
