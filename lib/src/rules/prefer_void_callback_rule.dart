@@ -31,6 +31,9 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitGenericFunctionType(GenericFunctionType node) {
+    final parent = node.parent;
+    if (parent is GenericTypeAlias) return;
+
     if (node case GenericFunctionType(typeParameters: null, parameters: FormalParameterList(parameters: []))) {
       rule.reportAtNode(node);
     }

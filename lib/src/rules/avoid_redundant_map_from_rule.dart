@@ -12,14 +12,15 @@ import 'package:analyzer/error/error.dart';
 /// ```dart
 /// // Bad
 /// var myMap = Map.from(otherMap);
+/// var myMap = Map.of(otherMap);
 /// // Good
 /// var myMap = {...otherMap};
 /// ```
 class AvoidRedundantMapFromRule extends AnalysisRule {
   static const LintCode code = LintCode(
-    'avoid_redundant_map_from',
-    'This Map.from is redundant. Try using a map literal with a spread operator instead.',
-    correctionMessage: 'Try using a map literal with a spread operator instead.',
+    'avoid_redundant_collection',
+    'Redundant collection creation.',
+    correctionMessage: 'Try using a collection literal with a spread operator instead.',
   );
 
   AvoidRedundantMapFromRule() : super(name: code.name, description: code.problemMessage);
@@ -39,12 +40,15 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   _Visitor(this.rule);
 
+  static const _targetTypes = {'List', 'Set', 'Map'};
+  static const _targetConstructors = {'from', 'of'};
+
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     if (node case InstanceCreationExpression(
-      constructorName: ConstructorName(type: NamedType(name: Token(lexeme: 'Map')), name: Identifier(name: 'from')),
+      constructorName: ConstructorName(type: NamedType(name: Token(lexeme: final type)), name: Identifier(:final name)),
       argumentList: ArgumentList(arguments: [Identifier()]),
-    )) {
+    ) when _targetTypes.contains(type) && _targetConstructors.contains(name)) {
       rule.reportAtNode(node);
     }
   }

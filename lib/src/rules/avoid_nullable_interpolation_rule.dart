@@ -32,6 +32,11 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitStringInterpolation(StringInterpolation node) {
+    final parent = node.parent;
+    if (parent == null) return;
+    if (parent is ConditionalExpression) return;
+    if (parent is IfStatement) return;
+
     for (final element in node.elements) {
       if (element case InterpolationExpression(
         expression: SimpleIdentifier(staticType: final type),
@@ -39,6 +44,7 @@ class _Visitor extends RecursiveAstVisitor<void> {
         rule.reportAtNode(element);
       }
     }
+
     super.visitStringInterpolation(node);
   }
 }

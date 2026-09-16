@@ -11,7 +11,7 @@ class AvoidRedundantMapFromFix extends ResolvedCorrectionProducer {
   static const _fixKind = FixKind(
     'my_lints.fix.avoidRedundantMapFrom',
     DartFixKindPriority.standard,
-    'Remove redundant map.from',
+    'Replace by spread operator',
   );
 
   AvoidRedundantMapFromFix({required super.context});
@@ -24,12 +24,18 @@ class AvoidRedundantMapFromFix extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    final arg = (node as InstanceCreationExpression).argumentList.arguments.first;
-
-    final replacement = '{...$arg}';
-    await builder.addDartFileEdit(file, (builder) {
-      builder.addSimpleReplacement(range.node(node), replacement);
-    });
+    if (node case InstanceCreationExpression(
+      constructorName: ConstructorName(type: NamedType(name: Token(lexeme: final type))),
+      argumentList: ArgumentList(arguments: [Identifier(name: final arg)]),
+    )) {
+      final replacement = switch (type) {
+        'List' => '[...$arg]',
+        _ => '{...$arg}',
+      };
+      await builder.addDartFileEdit(file, (builder) {
+        builder.addSimpleReplacement(range.node(node), replacement);
+      });
+    }
   }
 }
 
@@ -37,7 +43,7 @@ class AvoidRedundantMapFromFixInFile extends ResolvedCorrectionProducer {
   static const _fixKind = FixKind(
     'my_lints.fix.avoidRedundantMapFromInFile',
     DartFixKindPriority.inFile,
-    'Replace all map.from in file...',
+    "Replace all with spread operator",
   );
 
   AvoidRedundantMapFromFixInFile({required super.context});
@@ -56,9 +62,16 @@ class AvoidRedundantMapFromFixInFile extends ResolvedCorrectionProducer {
 
     await builder.addDartFileEdit(file, (builder) {
       for (final node in visitor.occurrences.whereType<InstanceCreationExpression>()) {
-        final arg = node.argumentList.arguments.first;
-        final replacement = '{...$arg}';
-        builder.addSimpleReplacement(range.node(node), replacement);
+        if (node case InstanceCreationExpression(
+          constructorName: ConstructorName(type: NamedType(name: Token(lexeme: final type))),
+          argumentList: ArgumentList(arguments: [Identifier(name: final arg)]),
+        )) {
+          final replacement = switch (type) {
+            'List' => '[...$arg]',
+            _ => '{...$arg}',
+          };
+          builder.addSimpleReplacement(range.node(node), replacement);
+        }
       }
     });
   }
@@ -67,12 +80,15 @@ class AvoidRedundantMapFromFixInFile extends ResolvedCorrectionProducer {
 class _Visitor extends RecursiveAstVisitor<void> {
   final List<AstNode> occurrences = [];
 
+  static const _targetTypes = {'List', 'Set', 'Map'};
+  static const _targetConstructors = {'from', 'of'};
+
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     if (node case InstanceCreationExpression(
-      constructorName: ConstructorName(type: NamedType(name: Token(lexeme: 'Map')), name: Identifier(name: 'from')),
+      constructorName: ConstructorName(type: NamedType(name: Token(lexeme: final type)), name: Identifier(:final name)),
       argumentList: ArgumentList(arguments: [Identifier()]),
-    )) {
+    ) when _targetTypes.contains(type) && _targetConstructors.contains(name)) {
       occurrences.add(node);
     }
   }

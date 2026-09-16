@@ -3,9 +3,11 @@ void foo() {
 
   // Totalement valide selon le linter standard Dart !
   // Résultat à l'écran ou dans une API : "Bonjour, null"
-  print(
-    'Bonjour, $username',
-  ); // This should trigger the lint and be replaced with `username ?? 'invité'`
+  print('Bonjour, ${username}'); // This should trigger the lint and be replaced with `username ?? 'invité'`
+}
+
+void fooz() {
+  String? username;
 }
 
 void bar() {

@@ -126,7 +126,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(ProperSuperCallsRule())
       ..registerWarningRule(PreferFactoryConstructorRule())
       ..registerWarningRule(PreferNullAwareAssignmentRule())
-      ..registerWarningRule(AvoidNullableInterpolationRule())
+      // ..registerWarningRule(AvoidNullableInterpolationRule())
       ..registerWarningRule(PreferExplicitFunctionType())
       ..registerWarningRule(PreferAnyRule())
       ..registerWarningRule(PreferNullAwareSpreadRule())
