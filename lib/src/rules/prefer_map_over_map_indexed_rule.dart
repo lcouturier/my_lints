@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
@@ -9,7 +11,7 @@ import 'package:analyzer/error/error.dart';
 class PreferMapOverMapIndexedRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_map_over_mapIndexed',
-    "Prefer using map when the index is unused.",
+    "Prefer using map when the index is not used.",
     correctionMessage: "Use map instead of mapIndexed.",
   );
 
@@ -32,54 +34,45 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node.methodName.name != 'mapIndexed') {
-      return;
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(name: 'mapIndexed'),
+      argumentList: ArgumentList(arguments: [final FunctionExpression functionExpr]),
+    )) {
+      final index = functionExpr.parameters?.parameters.first as SimpleFormalParameter;
+      final indexName = index.name?.lexeme;
+      if (indexName == null) return;
+      if (indexName == '_') {
+        rule.reportAtNode(node.methodName);
+        return;
+      }
+
+      final indexElement = index.declaredFragment?.element;
+      if (indexElement == null) {
+        return;
+      }
+
+      final body = functionExpr.body;
+      var found = false;
+      body.visitChildren(_ElementSearchVisitor(indexElement, onFound: () => found = true));
+      if (found) return;
+
+      rule.reportAtNode(node.methodName);
     }
-
-    final callback = node.argumentList.arguments.firstOrNull;
-    if (callback is! FunctionExpression) {
-      return;
-    }
-
-    final parameters = callback.parameters?.parameters;
-    if (parameters == null || parameters.length < 2) {
-      return;
-    }
-
-    final indexParameter = parameters.first;
-    if (indexParameter is! SimpleFormalParameter) {
-      return;
-    }
-
-    final indexElement = indexParameter.declaredFragment?.element;
-    if (indexElement == null) {
-      return;
-    }
-
-    final isUsed = _usesParameter(callback.body, indexElement);
-
-    if (!isUsed) {
-      rule.reportAtNode(indexParameter);
-    }
-  }
-
-  bool _usesParameter(AstNode node, FormalParameterElement parameter) {
-    var found = false;
-    node.visitChildren(_IdentifierSearchVisitor(parameter, onFound: () => found = true));
-    return found;
   }
 }
 
-class _IdentifierSearchVisitor extends RecursiveAstVisitor<void> {
+class _ElementSearchVisitor extends RecursiveAstVisitor<void> {
   final FormalParameterElement target;
   final void Function() onFound;
 
-  _IdentifierSearchVisitor(this.target, {required this.onFound});
+  _ElementSearchVisitor(this.target, {required this.onFound});
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
     if (node.element == target) {
       onFound();
     }
+
+    super.visitSimpleIdentifier(node);
   }
 }

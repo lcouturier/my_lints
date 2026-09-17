@@ -51,17 +51,12 @@ class _SetStateVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node.methodName.name != 'setState') return;
-
-    if (node.argumentList.arguments.isEmpty) return;
-    final argument = node.argumentList.arguments.first;
-    if (argument is! FunctionExpression) return;
-    if (argument.body is! BlockFunctionBody) return;
-
-    final body = argument.body as BlockFunctionBody;
-    if (body.block.statements.isNotEmpty) return;
-
-    matches.add(node);
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(name: 'setState'),
+      argumentList: ArgumentList(arguments: [FunctionExpression(body: BlockFunctionBody(:final block))]),
+    ) when block.statements.isEmpty) {
+      matches.add(node);
+    }
 
     super.visitMethodInvocation(node);
   }

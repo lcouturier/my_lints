@@ -49,6 +49,7 @@ import 'package:my_lints/src/rules/avoid_tolist_before_join_rule.dart';
 import 'package:my_lints/src/rules/avoid_unnecessary_block_rule.dart';
 import 'package:my_lints/src/rules/avoid_unused_after_null_check_rule.dart';
 import 'package:my_lints/src/rules/cubit_state_must_be_equatable_rule.dart';
+import 'package:my_lints/src/rules/prefer_map_over_map_indexed_rule.dart';
 import 'package:my_lints/src/rules/unprotected_emit_after_await_rule.dart';
 import 'package:my_lints/src/rules/prefer_bloc_extensions_rule.dart';
 import 'package:my_lints/src/rules/prefer_factory_constructor_rule.dart';
@@ -103,7 +104,6 @@ import 'package:my_lints/src/rules/prefer_void_callback_rule.dart';
 import 'package:my_lints/src/rules/unnecessary_string_interpolation_rule.dart';
 import 'package:my_lints/src/rules/unnecessary_to_string_in_interpolation_rule.dart';
 import 'package:my_lints/src/rules/use_join_on_strings_rule.dart';
-import 'package:my_lints/src/rules/prefer_map_over_map_indexed_rule.dart';
 import 'package:my_lints/src/rules/prefer_ternary_over_if_else_rule.dart';
 import 'package:my_lints/src/rules/prefer_keyed_widgets_rule.dart';
 import 'package:my_lints/src/rules/spread/prefer_if_elements_to_ternary_spread_rule.dart';
@@ -117,6 +117,7 @@ class MyLintsPlugin extends Plugin {
   @override
   void register(PluginRegistry registry) {
     registry
+      ..registerWarningRule(PreferMapOverMapIndexedRule())
       ..registerWarningRule(AvoidUnnecessaryBlockRule())
       ..registerWarningRule(AvoidUnusedAfterNullCheckRule())
       ..registerWarningRule(CubitStateMustBeEquatableRule()) // pas utile
