@@ -33,9 +33,9 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitSwitchExpression(SwitchExpression node) {
-    final result = node.cases.firstWhereOrNot((e) => e.expression is SwitchExpression);
+    final (:found, :value) = node.cases.firstWhereOrNot((e) => e.expression is SwitchExpression);
 
-    if (!result.found) return;
-    rule.reportAtNode(result.value);
+    if (!found) return;
+    rule.reportAtNode(value);
   }
 }
