@@ -7,6 +7,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/type_checker.dart';
 
 class PreferMapOverMapIndexedRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -35,10 +36,16 @@ class _Visitor extends RecursiveAstVisitor<void> {
   @override
   void visitMethodInvocation(MethodInvocation node) {
     if (node case MethodInvocation(
-      methodName: SimpleIdentifier(name: 'mapIndexed'),
+      methodName: SimpleIdentifier(name: 'mapIndex' || 'mapIndexed'),
       argumentList: ArgumentList(arguments: [final FunctionExpression functionExpr]),
-    )) {
-      final index = functionExpr.parameters?.parameters.first as SimpleFormalParameter;
+      target: Expression(staticType: final targetType?),
+    ) when iterableChecker.isAssignableFromType(targetType)) {
+      final index =
+          (node.methodName.name == 'mapIndexed'
+                  ? functionExpr.parameters?.parameters.first
+                  : functionExpr.parameters?.parameters[1])
+              as SimpleFormalParameter;
+
       final indexName = index.name?.lexeme;
       if (indexName == null) return;
       if (indexName == '_') {
@@ -53,7 +60,7 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
       final body = functionExpr.body;
       var found = false;
-      body.visitChildren(_ElementSearchVisitor(indexElement, onFound: () => found = true));
+      body.accept(_ElementSearchVisitor(indexElement, onFound: () => found = true));
       if (found) return;
 
       rule.reportAtNode(node.methodName);
