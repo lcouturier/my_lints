@@ -60,7 +60,8 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
       final body = functionExpr.body;
       var found = false;
-      body.accept(_ElementSearchVisitor(indexElement, onFound: () => found = true));
+      final visitor = _ElementSearchVisitor(indexElement, onFound: () => found = true);
+      body.accept(visitor);
       if (found) return;
 
       rule.reportAtNode(node.methodName);

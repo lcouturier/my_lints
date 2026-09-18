@@ -63,6 +63,4 @@ class _Visitor extends SimpleAstVisitor<void> {
       expression is PropertyAccess,
     ].any((e) => e);
   }
-
-  
 }

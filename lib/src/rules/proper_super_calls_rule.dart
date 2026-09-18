@@ -35,8 +35,8 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitClassDeclaration(ClassDeclaration node) {
     if (!node.isFlutterStateClass) return;
 
-    for (final member in node.members) {
-      if (member is MethodDeclaration && member.name.lexeme == 'initState') {
+    for (final member in node.members.whereType<MethodDeclaration>()) {
+      if (member.name.lexeme == 'initState') {
         final visitor = _InitStateVisitor(method: member);
         member.body.visitChildren(visitor);
         final (:hasSuperCalled, :statement) = visitor.hasSuperCalled;
@@ -44,7 +44,7 @@ class _Visitor extends SimpleAstVisitor<void> {
           rule.reportAtNode(statement);
         }
       }
-      if (member is MethodDeclaration && member.name.lexeme == 'dispose') {
+      if (member.name.lexeme == 'dispose') {
         final visitor = _DisposeVisitor(method: member);
         member.body.visitChildren(visitor);
         final (:hasSuperCalled, :statement) = visitor.hasSuperCalled;
@@ -72,9 +72,10 @@ class _InitStateVisitor extends SimpleAstVisitor<void> {
     for (var i = 0; i < node.statements.length; i++) {
       if (node.statements[i] is ExpressionStatement) {
         final expression = (node.statements[i] as ExpressionStatement).expression;
-        if (expression is MethodInvocation &&
-            expression.methodName.name == 'initState' &&
-            expression.target is SuperExpression) {
+        if (expression case MethodInvocation(
+          methodName: SimpleIdentifier(name: 'initState'),
+          target: SuperExpression(),
+        )) {
           hasSuperCalled = (hasSuperCalled: i == 0, statement: expression);
         }
       }
@@ -98,9 +99,10 @@ class _DisposeVisitor extends SimpleAstVisitor<void> {
     for (var i = 0; i < node.statements.length; i++) {
       if (node.statements[i] is ExpressionStatement) {
         final expression = (node.statements[i] as ExpressionStatement).expression;
-        if (expression is MethodInvocation &&
-            expression.methodName.name == 'dispose' &&
-            expression.target is SuperExpression) {
+        if (expression case MethodInvocation(
+          methodName: SimpleIdentifier(name: 'dispose'),
+          target: SuperExpression(),
+        )) {
           hasSuperCalled = (hasSuperCalled: (i == (node.statements.length - 1)), statement: expression);
         }
       }

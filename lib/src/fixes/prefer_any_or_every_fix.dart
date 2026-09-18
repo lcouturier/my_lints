@@ -5,6 +5,7 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/fixes/fixes.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 /// Fix that replaces .where().isEmpty/isNotEmpty with .any()/.every().
 class PreferAnyOrEveryFix extends ResolvedCorrectionProducer {
@@ -59,7 +60,7 @@ String? buildEveryReplacement(String collection, Expression predicate) {
   if (predicate is! FunctionExpression) return null;
 
   final body = predicate.body;
-  final innerExpr = maybeGetSingleReturnExpression(body);
+  final innerExpr = body.expression;
   if (innerExpr == null) return null;
 
   final paramList = predicate.parameters;
@@ -70,13 +71,13 @@ String? buildEveryReplacement(String collection, Expression predicate) {
 }
 
 /// Given a function body, returns the single return expression if there is one.
-Expression? maybeGetSingleReturnExpression(FunctionBody body) {
-  return switch (body) {
-    ExpressionFunctionBody(:final expression) ||
-    BlockFunctionBody(block: Block(statements: [ReturnStatement(:final expression?)])) => expression,
-    _ => null,
-  };
-}
+// Expression? maybeGetSingleReturnExpression(FunctionBody body) {
+//   return switch (body) {
+//     ExpressionFunctionBody(:final expression) ||
+//     BlockFunctionBody(block: Block(statements: [ReturnStatement(:final expression?)])) => expression,
+//     _ => null,
+//   };
+// }
 
 /// Negates an expression, handling double negation and parenthesization.
 String negateExpression(Expression expr) {
