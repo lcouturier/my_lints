@@ -30,6 +30,7 @@ class AvoidMutatingParametersRule extends AnalysisRule {
   }
 }
 
+@Deprecated('Do not use.')
 class _Visitor extends SimpleAstVisitor<void> {
   _Visitor(this.rule);
 
@@ -56,6 +57,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   }
 }
 
+@Deprecated('Do not use.')
 class _MutationVisitor extends RecursiveAstVisitor<void> {
   _MutationVisitor(this.parameters, this.rule);
 

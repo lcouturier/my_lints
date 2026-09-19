@@ -40,14 +40,14 @@ class _Visitor extends SimpleAstVisitor<void> {
       argumentList: ArgumentList(
         arguments: [
           BinaryExpression(
-            leftOperand: Identifier(name: final name),
+            leftOperand: Identifier(name: 'length'),
             operator: Token(type: TokenType.MINUS),
             rightOperand: IntegerLiteral(value: 1),
           ),
         ],
       ),
       target: Expression(staticType: final targetType?),
-    ) when iterableChecker.isAssignableFromType(targetType) && name.contains('length')) {
+    ) when iterableChecker.isAssignableFromType(targetType)) {
       rule.reportAtNode(node);
     }
   }
@@ -56,12 +56,12 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitIndexExpression(IndexExpression node) {
     if (node case IndexExpression(
       index: BinaryExpression(
-        leftOperand: Identifier(name: final name),
+        leftOperand: Identifier(name: 'length'),
         operator: Token(type: TokenType.MINUS),
         rightOperand: IntegerLiteral(value: 1),
       ),
       target: Expression(staticType: final targetType?),
-    ) when iterableChecker.isAssignableFromType(targetType) && name.contains('length')) {
+    ) when iterableChecker.isAssignableFromType(targetType)) {
       rule.reportAtNode(node);
     }
   }

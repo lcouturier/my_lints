@@ -6,8 +6,32 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/type_checker.dart';
 
+/// A rule that detects nested switch expressions.
+///
+/// ## Example
+///
+/// ```
+/// // Avoid
+/// switch (value) {
+///   case 1:
+///     switch (value2) {
+///       case 2:
+///         return 3;
+///     }
+///     return 1;
+///   case 2:
+///     return 2;
+/// }
+///
+/// // Good
+/// switch (value) {
+///   case 1:
+///     return 1;
+///   case 2:
+///     return 2;
+/// }
+/// ```
 class AvoidNestedSwitchExpressionRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_nested_switch_expression_rule',
@@ -33,9 +57,8 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitSwitchExpression(SwitchExpression node) {
-    final (:found, :value) = node.cases.firstWhereOrNot((e) => e.expression is SwitchExpression);
-
-    if (!found) return;
-    rule.reportAtNode(value);
+    if (node case SwitchExpression(:final cases) when cases.any((e) => e.expression is SwitchExpression)) {
+      rule.reportAtNode(node);
+    }
   }
 }

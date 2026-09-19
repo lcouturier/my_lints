@@ -160,6 +160,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidRedundantDurationRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
+      ..registerWarningRule(AvoidMountedInSetStateRule())
       ..registerWarningRule(AvoidThrowLiteralRule())
       ..registerWarningRule(AvoidNestedTernaryRule())
       ..registerWarningRule(AvoidExtensionsOnRecordsRule())

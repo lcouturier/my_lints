@@ -4,9 +4,11 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-
 import 'package:my_lints/src/common/extensions.dart';
 
+/// Never use mounted in a setState callback.
+///
+/// Instead, use WidgetsBinding.instance.addPostFrameCallback or similar.
 class AvoidMountedInSetStateRule extends AnalysisRule {
   static LintCode code = const LintCode('avoid_mounted_in_set_state', 'Never use mounted in a setState callback.');
 
@@ -18,7 +20,7 @@ class AvoidMountedInSetStateRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    //registry.addClassDeclaration(this, visitor);
+    // registry.addClassDeclaration(this, visitor);
     registry.addMethodInvocation(this, visitor);
   }
 }
@@ -30,35 +32,29 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node.methodName.name != 'setState') return;
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(name: 'setState'),
+      argumentList: ArgumentList(arguments: [FunctionExpression(body: final BlockFunctionBody body)]),
+    )) {
+      bool hasMounted = false;
+      body.block.visitChildren(_MountedFinder(() => hasMounted = true));
 
-    final enclosingClass = node.thisOrAncestorOfType<ClassDeclaration>();
-    if (enclosingClass == null || !enclosingClass.isFlutterStateClass) return;
-
-    final arg = node.argumentList.arguments.firstOrNull;
-    if (arg is! FunctionExpression) return;
-
-    final body = arg.body;
-    if (body is! BlockFunctionBody) return;
-
-    bool hasMounted = false;
-    body.block.visitChildren(_MountedFinder((_) => hasMounted = true));
-
-    if (hasMounted) {
-      rule.reportAtNode(node);
+      if (hasMounted) {
+        rule.reportAtNode(node);
+      }
     }
   }
 }
 
 class _MountedFinder extends RecursiveAstVisitor<void> {
-  final void Function(SimpleIdentifier) onFound;
+  final void Function() onFound;
 
   _MountedFinder(this.onFound);
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
     if (node.name == 'mounted') {
-      onFound(node);
+      onFound();
     }
   }
 }

@@ -6,6 +6,23 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that detects nested assignments.
+///
+/// Nested assignments can lead to confusion or indicate an incorrect operator (= instead of ==).
+///
+/// ## Example
+///
+/// ```
+/// // Avoid
+/// if (a = b) {
+///   // ...
+/// }
+///
+/// // Good
+/// if (a == b) {
+///   // ...
+/// }
+/// ```
 class AvoidNestedAssignmentRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_nested_assignment',

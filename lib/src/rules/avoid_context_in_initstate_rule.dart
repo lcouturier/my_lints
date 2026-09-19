@@ -1,3 +1,11 @@
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
+
 // Bad
 // @override
 // void initState() {
@@ -12,15 +20,6 @@
 //     Navigator.of(context).push(...);
 //   });
 // }
-
-import 'package:analyzer/analysis_rule/analysis_rule.dart';
-import 'package:analyzer/analysis_rule/rule_context.dart';
-import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
-import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/extensions.dart';
-
 class AvoidContextInInitStateRule extends AnalysisRule {
   static LintCode code = const LintCode('avoid_context_in_initState', "Don't use 'context' in this method.");
 

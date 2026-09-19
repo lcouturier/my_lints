@@ -5,6 +5,17 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that detects mixing named and positional fields in record literals.
+///
+/// ## Example
+///
+/// ```
+/// // Avoid
+/// (a: 1, 2)
+///
+/// // Good
+/// (a: 1, b: 2)
+/// ```
 class AvoidMixingNamedAndPositionalFields extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_mixing_named_and_positional_fields',

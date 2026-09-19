@@ -1,5 +1,3 @@
-
-
 void foo() {
   final x = switch (1) {
     1 => switch (2) {
