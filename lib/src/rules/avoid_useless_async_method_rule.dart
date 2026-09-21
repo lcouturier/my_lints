@@ -66,7 +66,7 @@ class _Visitor extends SimpleAstVisitor<void> {
       functionExpression: FunctionExpression(body: final FunctionBody body),
       isGetter: false,
       isSetter: false,
-    ) when !name.startsWith('_')) {
+    ) when !name.startsWith('_') && body.isAsynchronous) {
       final visitor = _AwaitFinderVisitor();
       body.accept(visitor);
       if (visitor.hasAwait) return;
@@ -93,12 +93,5 @@ class _AwaitFinderVisitor extends RecursiveAstVisitor<void> {
   @override
   void visitBlockFunctionBody(BlockFunctionBody node) {
     node.visitChildren(this);
-  }
-
-  @override
-  void visitFunctionDeclaration(FunctionDeclaration node) {
-    if (!node.functionExpression.body.isAsynchronous) return;
-
-    node.functionExpression.body.accept(this);
   }
 }
