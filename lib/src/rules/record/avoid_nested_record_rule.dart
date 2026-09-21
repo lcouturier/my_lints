@@ -6,6 +6,18 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that detects nested records within record literals.
+///
+/// ## Example
+///
+/// ```
+/// // Avoid
+/// (1, (2, 3))
+///
+/// // Good
+/// final inner = (2, 3);
+/// (1, inner)
+/// ```
 class AvoidNestedRecordRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_nested_record',
@@ -32,11 +44,8 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitRecordLiteral(RecordLiteral node) {
-    for (final field in node.fields) {
-      final expression = _fieldExpression(field);
-      if (_isNestedRecord(expression)) {
-        rule.reportAtNode(expression);
-      }
+    if (node case RecordLiteral(:final fields) when fields.any((e) => _isNestedRecord(_fieldExpression(e)))) {
+      rule.reportAtNode(node);
     }
   }
 

@@ -117,6 +117,7 @@ class MyLintsPlugin extends Plugin {
   @override
   void register(PluginRegistry registry) {
     registry
+      ..registerWarningRule(AvoidUselessAsyncMethodRule())
       ..registerWarningRule(PreferMapOverMapIndexedRule())
       ..registerWarningRule(AvoidUnnecessaryBlockRule())
       ..registerWarningRule(AvoidUnusedAfterNullCheckRule())

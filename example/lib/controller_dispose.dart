@@ -19,6 +19,7 @@ class _MyWidgetState extends State<MyWidget> {
     // super.initState();
     _focusNode = FocusNode();
     super.initState();
+    ;
   }
 
   @override

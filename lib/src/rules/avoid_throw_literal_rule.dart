@@ -31,7 +31,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitThrowExpression(ThrowExpression node) {
-    if (node.expression is Literal) {
+    if (node case ThrowExpression(expression: Literal())) {
       rule.reportAtNode(node);
     }
   }

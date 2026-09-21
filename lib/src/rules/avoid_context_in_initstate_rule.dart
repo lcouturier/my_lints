@@ -86,11 +86,7 @@ class _ContextInInitStateVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
-    final type = node.staticType;
-
-    if (type == null) return;
-
-    if (type.getDisplayString() == 'BuildContext') {
+    if (node case SimpleIdentifier(isBuildContext: true)) {
       foundContext = (true, node);
     }
   }
@@ -104,12 +100,12 @@ class _ContextInDisposeVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
-    final type = node.staticType;
-
-    if (type == null) return;
-
-    if (type.getDisplayString() == 'BuildContext') {
+    if (node case SimpleIdentifier(isBuildContext: true)) {
       foundContext = (true, node);
     }
   }
+}
+
+extension on SimpleIdentifier {
+  bool get isBuildContext => staticType?.element?.name == 'BuildContext';
 }
