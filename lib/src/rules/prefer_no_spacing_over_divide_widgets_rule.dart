@@ -11,7 +11,7 @@ class PreferSpacingOverDivideWidgetsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_spacing_over_divide_widgets',
     'Prefer spacing property on column instead of divideWidgets meethod.',
-    correctionMessage: 'Use nospacing property instead of divideWidgets method.',
+    correctionMessage: 'Use spacing property instead of divideWidgets method.',
   );
 
   PreferSpacingOverDivideWidgetsRule() : super(name: code.name, description: code.problemMessage);
@@ -49,6 +49,7 @@ class _Visitor extends RecursiveAstVisitor<void> {
             name: Label(label: SimpleIdentifier(name: 'children')),
             expression: MethodInvocation(
               methodName: SimpleIdentifier(name: 'divideWidgets'),
+              target: final target,
               argumentList: ArgumentList(
                 arguments: [
                   InstanceCreationExpression(
@@ -65,6 +66,14 @@ class _Visitor extends RecursiveAstVisitor<void> {
         ],
       ),
     )) {
+      if (target is ListLiteral &&
+          target.elements.whereType<InstanceCreationExpression>().every(
+            (e) => e.constructorName.type.name.lexeme != 'IgnoreDividerInsertion',
+          )) {
+        rule.reportAtNode(node);
+        return;
+      }
+
       rule.reportAtNode(node);
     }
     super.visitInstanceCreationExpression(node);
