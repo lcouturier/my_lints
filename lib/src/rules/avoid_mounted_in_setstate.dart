@@ -4,6 +4,7 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 /// Never use mounted in a setState callback.
 ///
@@ -19,8 +20,7 @@ class AvoidMountedInSetStateRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    // registry.addClassDeclaration(this, visitor);
-    registry.addMethodInvocation(this, visitor);
+    registry.addClassDeclaration(this, visitor);
   }
 }
 
@@ -28,6 +28,13 @@ class _Visitor extends SimpleAstVisitor<void> {
   final AvoidMountedInSetStateRule rule;
 
   _Visitor(this.rule);
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!node.isFlutterStateClass) return;
+
+    super.visitClassDeclaration(node);
+  }
 
   @override
   void visitMethodInvocation(MethodInvocation node) {

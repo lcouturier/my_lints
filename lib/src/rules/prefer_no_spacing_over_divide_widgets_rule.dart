@@ -5,15 +5,16 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
-class PreferNoSpacingOverDivideWidgetsRule extends AnalysisRule {
+class PreferSpacingOverDivideWidgetsRule extends AnalysisRule {
   static const LintCode code = LintCode(
-    'prefer_no_spacing_over_divide_widgets',
-    'Prefer no spacing over divide widgets.',
-    correctionMessage: 'Remove spacing over divide widgets.',
+    'prefer_spacing_over_divide_widgets',
+    'Prefer spacing property on column instead of divideWidgets meethod.',
+    correctionMessage: 'Use nospacing property instead of divideWidgets method.',
   );
 
-  PreferNoSpacingOverDivideWidgetsRule() : super(name: code.name, description: code.problemMessage);
+  PreferSpacingOverDivideWidgetsRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   DiagnosticCode get diagnosticCode => code;
@@ -21,26 +22,44 @@ class PreferNoSpacingOverDivideWidgetsRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry.addMethodInvocation(this, visitor);
+    registry.addClassDeclaration(this, visitor);
   }
 }
 
 class _Visitor extends RecursiveAstVisitor<void> {
-  final PreferNoSpacingOverDivideWidgetsRule rule;
+  final PreferSpacingOverDivideWidgetsRule rule;
 
   _Visitor(this.rule);
 
   @override
-  void visitMethodInvocation(MethodInvocation node) {
-    if (node case MethodInvocation(
-      methodName: SimpleIdentifier(name: 'divideWidgets'),
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!node.isFlutterStateClass) return;
+
+    super.visitClassDeclaration(node);
+  }
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    if (node case InstanceCreationExpression(
+      constructorName: ConstructorName(type: NamedType(name: Token(lexeme: 'Column'))),
       argumentList: ArgumentList(
         arguments: [
-          InstanceCreationExpression(
-            keyword: Token(lexeme: 'const'),
-            constructorName: ConstructorName(type: NamedType(name: Token(lexeme: 'SizedBox'))),
-            argumentList: ArgumentList(
-              arguments: [NamedExpression(name: Label(label: SimpleIdentifier(name: 'height')))],
+          ...,
+          NamedExpression(
+            name: Label(label: SimpleIdentifier(name: 'children')),
+            expression: MethodInvocation(
+              methodName: SimpleIdentifier(name: 'divideWidgets'),
+              argumentList: ArgumentList(
+                arguments: [
+                  InstanceCreationExpression(
+                    keyword: Token(lexeme: 'const'),
+                    constructorName: ConstructorName(type: NamedType(name: Token(lexeme: 'SizedBox'))),
+                    argumentList: ArgumentList(
+                      arguments: [NamedExpression(name: Label(label: SimpleIdentifier(name: 'height')))],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -48,6 +67,6 @@ class _Visitor extends RecursiveAstVisitor<void> {
     )) {
       rule.reportAtNode(node);
     }
-    super.visitMethodInvocation(node);
+    super.visitInstanceCreationExpression(node);
   }
 }

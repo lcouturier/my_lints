@@ -50,6 +50,7 @@ import 'package:my_lints/src/rules/avoid_unnecessary_block_rule.dart';
 import 'package:my_lints/src/rules/avoid_unused_after_null_check_rule.dart';
 import 'package:my_lints/src/rules/cubit_state_must_be_equatable_rule.dart';
 import 'package:my_lints/src/rules/prefer_map_over_map_indexed_rule.dart';
+import 'package:my_lints/src/rules/prefer_no_spacing_over_divide_widgets_rule.dart';
 import 'package:my_lints/src/rules/unprotected_emit_after_await_rule.dart';
 import 'package:my_lints/src/rules/prefer_bloc_extensions_rule.dart';
 import 'package:my_lints/src/rules/prefer_factory_constructor_rule.dart';
@@ -123,6 +124,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidUnusedAfterNullCheckRule())
       ..registerWarningRule(CubitStateMustBeEquatableRule()) // pas utile
       ..registerWarningRule(UnProtectedEmitAfterAwaitRule())
+      ..registerWarningRule(PreferSpacingOverDivideWidgetsRule())
       // ..registerWarningRule(AvoidIncompleteCopyWithRule())
       // ..registerWarningRule(PreferBlocExtensionsRule())
       ..registerWarningRule(ProperSuperCallsRule())
