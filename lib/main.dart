@@ -176,7 +176,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidRedundantMapFromRule())
       ..registerWarningRule(PreferTryGetValueRule())
       ..registerWarningRule(AvoidRedundantSpreadRule())
-      ..registerWarningRule(AvoidContextInInitStateRule())
+      // ..registerWarningRule(AvoidContextInInitStateRule())
       ..registerWarningRule(PreferReturnAwaitRule())
       ..registerWarningRule(UnnecessaryStringInterpolationRule())
       ..registerWarningRule(UnnecessaryToStringInInterpolationRule())

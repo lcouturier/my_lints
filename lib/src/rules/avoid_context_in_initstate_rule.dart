@@ -75,8 +75,28 @@ class _ContextInInitStateVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    final name = node.methodName.name;
+    if (node case MethodInvocation(
+      target: PropertyAccess(propertyName: SimpleIdentifier(name: 'endOfFrame')),
+      methodName: SimpleIdentifier(name: 'then'),
+    )) {
+      return;
+    }
 
+    if (node case MethodInvocation(
+      target: SimpleIdentifier(name: 'BlocProvider'),
+      methodName: SimpleIdentifier(name: 'of'),
+    )) {
+      return;
+    }
+
+    if (node case MethodInvocation(
+      target: SimpleIdentifier(name: 'context'),
+      methodName: SimpleIdentifier(name: 'read'),
+    )) {
+      return;
+    }
+
+    final name = node.methodName.name;
     if (_safeAsyncMethods.contains(name)) {
       return;
     }
