@@ -1,0 +1,131 @@
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
+
+// Bad
+// @override
+// void initState() {
+//   super.initState();
+//   Navigator.of(context).push(...);
+// }
+//- Good
+// @override
+// void initState() {
+//   super.initState();
+//   WidgetsBinding.instance.addPostFrameCallback((_) {
+//     Navigator.of(context).push(...);
+//   });
+// }
+class AvoidContextInInitStateRule extends AnalysisRule {
+  static LintCode code = const LintCode('avoid_context_in_initState', "Don't use 'context' in this method.");
+
+  AvoidContextInInitStateRule() : super(name: code.name, description: code.problemMessage);
+
+  @override
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
+    final visitor = _Visitor(this);
+    registry.addClassDeclaration(this, visitor);
+  }
+}
+
+class _Visitor extends SimpleAstVisitor<void> {
+  final AvoidContextInInitStateRule rule;
+
+  _Visitor(this.rule);
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!node.isFlutterStateClass) return;
+
+    for (final member in node.members) {
+      if (member is MethodDeclaration && member.name.lexeme == 'initState') {
+        final visitor = _ContextInInitStateVisitor();
+        member.body.visitChildren(visitor);
+        final (found, node) = visitor.foundContext;
+        if (found) {
+          rule.reportAtNode(node);
+        }
+      }
+      if (member is MethodDeclaration && member.name.lexeme == 'dispose') {
+        final visitor = _ContextInDisposeVisitor();
+        member.body.visitChildren(visitor);
+        final (found, node) = visitor.foundContext;
+        if (found) {
+          rule.reportAtNode(node);
+        }
+      }
+    }
+  }
+}
+
+class _ContextInInitStateVisitor extends RecursiveAstVisitor<void> {
+  _ContextInInitStateVisitor();
+  bool insideSafeAsync = false;
+
+  static const _safeAsyncMethods = {'addPostFrameCallback', 'scheduleFrameCallback', 'addListener'};
+
+  (bool, AstNode?) foundContext = (false, null);
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    if (node case MethodInvocation(
+      target: PropertyAccess(propertyName: SimpleIdentifier(name: 'endOfFrame')),
+      methodName: SimpleIdentifier(name: 'then'),
+    )) {
+      return;
+    }
+
+    if (node case MethodInvocation(
+      target: SimpleIdentifier(name: 'BlocProvider'),
+      methodName: SimpleIdentifier(name: 'of'),
+    )) {
+      return;
+    }
+
+    if (node case MethodInvocation(
+      target: SimpleIdentifier(name: 'context'),
+      methodName: SimpleIdentifier(name: 'read'),
+    )) {
+      return;
+    }
+
+    final name = node.methodName.name;
+    if (_safeAsyncMethods.contains(name)) {
+      return;
+    }
+
+    super.visitMethodInvocation(node);
+  }
+
+  @override
+  void visitSimpleIdentifier(SimpleIdentifier node) {
+    if (node case SimpleIdentifier(isBuildContext: true)) {
+      foundContext = (true, node);
+    }
+  }
+}
+
+class _ContextInDisposeVisitor extends RecursiveAstVisitor<void> {
+  _ContextInDisposeVisitor();
+  bool insideSafeAsync = false;
+
+  (bool, AstNode?) foundContext = (false, null);
+
+  @override
+  void visitSimpleIdentifier(SimpleIdentifier node) {
+    if (node case SimpleIdentifier(isBuildContext: true)) {
+      foundContext = (true, node);
+    }
+  }
+}
+
+extension on SimpleIdentifier {
+  bool get isBuildContext => staticType?.element?.name == 'BuildContext';
+}

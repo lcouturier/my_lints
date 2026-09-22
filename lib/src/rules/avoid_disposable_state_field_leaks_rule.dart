@@ -1,0 +1,122 @@
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
+
+class AvoidDisposableStateFieldLeaksRule extends AnalysisRule {
+  AvoidDisposableStateFieldLeaksRule() : super(name: code.name, description: code.problemMessage);
+
+  static const LintCode code = LintCode('avoid_disposable_state_field_leaks', 'Controller "{0}" is not disposed.');
+
+  @override
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
+    registry.addClassDeclaration(this, _Visitor(this));
+  }
+}
+
+class _Visitor extends SimpleAstVisitor<void> {
+  final AvoidDisposableStateFieldLeaksRule rule;
+
+  _Visitor(this.rule);
+
+  final Set<String> _controllers = {};
+  final Set<String> _disposed = {};
+  final Map<String, FieldElement> _fields = {};
+  MethodDeclaration? _disposeMethod;
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!node.isFlutterStateClass) return;
+
+    _controllers.clear();
+    _disposed.clear();
+    _disposeMethod = null;
+
+    for (final member in node.members.whereType<FieldDeclaration>()) {
+      final type = member.fields.type?.type;
+      if (type == null) continue;
+
+      final isDisposable = type.shouldBeDisposed();
+      if (!isDisposable) continue;
+
+      for (final variable in member.fields.variables) {
+        final element = variable.declaredFragment?.element;
+        if (element is FieldElement) {
+          _fields[element.name ?? ''] = element;
+          _controllers.add(element.name ?? '');
+        }
+      }
+    }
+
+    for (final member in node.members) {
+      if (member is MethodDeclaration && member.name.lexeme == 'dispose') {
+        _disposeMethod = member;
+        member.body.visitChildren(_DisposeVisitor(_disposed));
+      }
+
+      if (member is MethodDeclaration && member.name.lexeme == 'initState') {
+        member.body.visitChildren(_InitStateVisitor(fields: _fields, controllers: _controllers));
+      }
+    }
+
+    if (_disposeMethod == null) return;
+
+    for (final item in _controllers.difference(_disposed)) {
+      rule.reportAtToken(_disposeMethod!.name, arguments: [item]);
+    }
+  }
+}
+
+class _InitStateVisitor extends RecursiveAstVisitor<void> {
+  final Map<String, FieldElement> fields;
+  final Set<String> controllers;
+
+  _InitStateVisitor({required this.fields, required this.controllers});
+
+  @override
+  void visitAssignmentExpression(AssignmentExpression node) {
+    final left = node.leftHandSide;
+    final right = node.rightHandSide;
+
+    final name = left.getNormalizedName();
+    if (name == null) return;
+
+    final field = fields[name];
+    if (field == null) return; // 🔒 garantit que c’est un field
+
+    if (right is InstanceCreationExpression) {
+      final shouldTrack = (right.staticType?.shouldBeDisposed() ?? false);
+
+      if (shouldTrack) {
+        controllers.add(name);
+      }
+    }
+
+    super.visitAssignmentExpression(node);
+  }
+}
+
+class _DisposeVisitor extends RecursiveAstVisitor<void> {
+  final Set<String> disposed;
+
+  _DisposeVisitor(this.disposed);
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    if (node.methodName.name != 'dispose') return;
+
+    final name = node.realTarget?.getNormalizedName();
+    if (name != null) {
+      disposed.add(name);
+    }
+
+    super.visitMethodInvocation(node);
+  }
+}

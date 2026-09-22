@@ -1,0 +1,16 @@
+name: example
+description: Example Flutter project demonstrating many_lints.
+publish_to: none
+
+environment:
+  sdk: ^3.10.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  bloc: ^9.1.0
+  flutter_bloc: ^9.1.0
+
+dependency_overrides:
+  analyzer: ^10.1.0
+  meta: ^1.18.1
