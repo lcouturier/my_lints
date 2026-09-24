@@ -105,6 +105,7 @@ import 'package:my_lints/src/rules/prefer_usage_of_value_getter_rule.dart';
 import 'package:my_lints/src/rules/prefer_void_callback_rule.dart';
 import 'package:my_lints/src/rules/unnecessary_string_interpolation_rule.dart';
 import 'package:my_lints/src/rules/unnecessary_to_string_in_interpolation_rule.dart';
+import 'package:my_lints/src/rules/use_itemextent_for_large_list_rule.dart';
 import 'package:my_lints/src/rules/use_join_on_strings_rule.dart';
 import 'package:my_lints/src/rules/prefer_ternary_over_if_else_rule.dart';
 import 'package:my_lints/src/rules/prefer_keyed_widgets_rule.dart';
@@ -119,6 +120,7 @@ class MyLintsPlugin extends Plugin {
   @override
   void register(PluginRegistry registry) {
     registry
+      ..registerWarningRule(UseItemextentForLargeListRule())
       ..registerWarningRule(AvoidUselessAsyncMethodRule())
       ..registerWarningRule(PreferMapOverMapIndexedRule())
       ..registerWarningRule(AvoidUnnecessaryBlockRule())
