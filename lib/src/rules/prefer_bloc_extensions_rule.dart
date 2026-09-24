@@ -4,7 +4,7 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/type_checker.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 class PreferBlocExtensionsRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -21,7 +21,7 @@ class PreferBlocExtensionsRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry.addMethodInvocation(this, visitor);
+    registry.addClassDeclaration(this, visitor);
   }
 }
 
@@ -31,18 +31,23 @@ class _Visitor extends SimpleAstVisitor<void> {
   _Visitor(this.rule);
 
   @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (!node.isFlutterStateClass) return;
+
+    super.visitClassDeclaration(node);
+  }
+
+  @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node case MethodInvocation(
-      methodName: SimpleIdentifier(name: 'of'),
-      realTarget: SimpleIdentifier(name: 'BlocProvider'),
-      :final argumentList,
-    )) {
-      final (:found, value: named) = argumentList.arguments.firstWhereOrNot((e) => e.toString().startsWith('listen:'));
-      if (found) {
-        if (named is! NamedExpression) return;
-        if (named.name.label.name != 'listen') return;
-        if (named.expression is! BooleanLiteral) return;
-      }
+    if (node
+        case MethodInvocation(
+          methodName: SimpleIdentifier(name: 'of'),
+          realTarget: SimpleIdentifier(name: 'BlocProvider'),
+          :final argumentList,
+        )
+        when argumentList.arguments.any(
+          (e) => e is NamedExpression && e.name.label.name == 'listen' && e.expression is BooleanLiteral,
+        )) {
       rule.reportAtNode(node);
     }
 
