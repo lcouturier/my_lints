@@ -358,7 +358,8 @@ extension on InterfaceType {
     return allTypes.any((t) {
       final element = t.element;
 
-      return element.name == 'State' && element.library2.firstFragment.source.uri.toString().contains('framework');
+      return (element.name == 'State' || element.name == 'StatelessWidget') &&
+          element.library2.firstFragment.source.uri.toString().contains('framework');
     });
   }
 
