@@ -21,25 +21,19 @@ class AvoidAssignationInConditionRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry.addAssignmentExpression(this, visitor);
+    registry.addBinaryExpression(this, visitor);
   }
 }
 
-class _Visitor extends SimpleAstVisitor<void> {
+class _Visitor extends RecursiveAstVisitor<void> {
   final AvoidAssignationInConditionRule rule;
 
   _Visitor(this.rule);
 
-  bool _isInsideCondition(AstNode node) {
-    return node.thisOrAncestorOfType<IfStatement>()?.expression == node ||
-        node.thisOrAncestorOfType<WhileStatement>()?.condition == node ||
-        node.thisOrAncestorOfType<DoStatement>()?.condition == node;
-  }
-
   @override
-  void visitAssignmentExpression(AssignmentExpression node) {
-    if (_isInsideCondition(node)) {
-      rule.reportAtNode(node);
+  void visitBinaryExpression(BinaryExpression node) {
+    if (node case BinaryExpression(:final leftOperand) when leftOperand.unParenthesized is AssignmentExpression) {
+      rule.reportAtNode(leftOperand.unParenthesized);
     }
   }
 }
