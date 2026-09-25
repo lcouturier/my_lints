@@ -24,13 +24,17 @@ abstract class CustomAstVisitor extends SimpleAstVisitor<void> {
   @override
   void visitMethodDeclaration(MethodDeclaration node) {
     // Si la méthode s'appelle copyWith, on redirige vers notre méthode custom
-    if (node.name.lexeme == 'copyWith') {
-      final parent = node.parent as ClassDeclaration;
+    if (node.name.lexeme != 'copyWith') return;
 
-      final fields = parent.fields;
-      if (fields.isEmpty) return;
-      visitCopyWithMethod(node, fields);
-    }
+    final fields = switch (node.parent) {
+      final ClassDeclaration parent => parent.members.instanceFieldNames,
+      final MixinDeclaration parent => parent.members.instanceFieldNames,
+      final ExtensionTypeDeclaration parent => parent.members.instanceFieldNames,
+      _ => const <String>{},
+    };
+    if (fields.isEmpty) return;
+
+    visitCopyWithMethod(node, fields);
   }
 }
 
