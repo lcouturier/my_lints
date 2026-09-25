@@ -387,19 +387,8 @@ extension ClassDeclarationExtensions on ClassDeclaration {
     return type is InterfaceType && type.isCubitLike;
   }
 
-  /// Returns the fields of the class.
-  ///
-  /// This includes:
-  /// - Final fields
-  /// - Non-static fields
-  /// - Non-synthetic fields
-  Set<String> get fields => members
-      .whereType<FieldDeclaration>()
-      .where((e) => !e.isStatic)
-      .where((e) => !e.isSynthetic)
-      .map((e) => e.fields.variables.map((variable) => variable.name.lexeme).toList())
-      .expand((f) => f)
-      .toSet();
+  /// Returns the instance field names of the class.
+  Set<String> get fields => members.instanceFieldNames;
 
   /// Checks if the class is a data class.
   ///
@@ -417,6 +406,19 @@ extension ClassDeclarationExtensions on ClassDeclaration {
 
     return hasFinalFields && hasConstructor && hasCopyWith;
   }
+}
+
+extension ClassMemberListExtensions on List<ClassMember> {
+  /// Returns the names of the non-static, non-synthetic fields that can be
+  /// provided by a caller. Fields with an initializer are derived state and are
+  /// therefore excluded.
+  Set<String> get instanceFieldNames => whereType<FieldDeclaration>()
+      .where((e) => !e.isStatic)
+      .where((e) => !e.isSynthetic)
+      .expand((e) => e.fields.variables)
+      .where((variable) => variable.initializer == null)
+      .map((variable) => variable.name.lexeme)
+      .toSet();
 }
 
 extension FormalParameterExtensions on FormalParameter {
