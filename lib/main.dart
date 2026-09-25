@@ -24,6 +24,7 @@ import 'package:my_lints/src/fixes/prefer_usage_of_value_getter_fix.dart';
 import 'package:my_lints/src/fixes/prefer_void_callback_fix.dart';
 import 'package:my_lints/src/fixes/prefer_where_type_fix.dart';
 import 'package:my_lints/src/fixes/unprotected_emit_after_await_fix.dart';
+import 'package:my_lints/src/rules/add_cubit_suffix_rule.dart';
 import 'package:my_lints/src/rules/avoid_assignation_in_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_always_null_parameters_rule.dart';
 import 'package:my_lints/src/rules/avoid_cascade_after_if_null_rule.dart';
@@ -121,6 +122,7 @@ class MyLintsPlugin extends Plugin {
   void register(PluginRegistry registry) {
     registry
       ..registerWarningRule(UseItemextentForLargeListRule())
+      ..registerWarningRule(AddCubitSuffixRule())
       ..registerWarningRule(AvoidUselessAsyncMethodRule())
       ..registerWarningRule(PreferMapOverMapIndexedRule())
       ..registerWarningRule(AvoidUnnecessaryBlockRule())
