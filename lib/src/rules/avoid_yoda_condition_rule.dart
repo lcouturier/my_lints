@@ -79,10 +79,8 @@ class _ConditionVisitor extends RecursiveAstVisitor<void> {
     if (node case BinaryExpression(
       leftOperand: final leftOperand,
       rightOperand: final rightOperand,
-      operator: Token(
-        type: TokenType.EQ_EQ || TokenType.BANG_EQ, // Example, replace with the actual operator type you want to match
-      ),
-    ) when (leftOperand.isConstant) && (!rightOperand.isConstant)) {
+      operator: Token(type: final operatorType),
+    ) when operatorType.isComparisonOperator && leftOperand.isConstant && !rightOperand.isConstant) {
       rule.reportAtNode(node);
     }
 
