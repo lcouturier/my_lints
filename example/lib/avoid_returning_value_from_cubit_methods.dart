@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LegalCubit extends Cubit<bool> {
-  LegalCubit() : super(false);
+class Legal extends Cubit<bool> {
+  Legal() : super(false);
 
   void initialize() {
     emit(true);
