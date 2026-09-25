@@ -2,6 +2,7 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
@@ -75,11 +76,14 @@ class _ConditionVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
-    super.visitBinaryExpression(node);
-
-    if (!node.operator.type.isComparisonOperator) return;
-    if ((node.leftOperand.isConstant) && (!node.rightOperand.isConstant)) {
+    if (node case BinaryExpression(
+      leftOperand: final leftOperand,
+      rightOperand: final rightOperand,
+      operator: Token(type: final operatorType),
+    ) when operatorType.isComparisonOperator && leftOperand.isConstant && !rightOperand.isConstant) {
       rule.reportAtNode(node);
     }
+
+    super.visitBinaryExpression(node);
   }
 }
