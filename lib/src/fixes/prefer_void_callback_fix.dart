@@ -7,6 +7,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/fixes/fixes.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
+import 'package:my_lints/src/rules/prefer_void_callback_rule.dart';
 
 class PreferVoidCallbackFix extends ResolvedCorrectionProducer with ReplaceByVoidCallback {
   static const _fixKind = FixKind(
@@ -25,19 +26,10 @@ class PreferVoidCallbackFix extends ResolvedCorrectionProducer with ReplaceByVoi
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    if (node case GenericFunctionType(
-      typeParameters: null,
-      parameters: FormalParameterList(parameters: []),
-      :final returnType,
-    )) {
-      if (returnType case NamedType(name: Token(lexeme: 'Future'))) {
-        return;
-      }
-
+    if (node case final GenericFunctionType type when type.isReplaceableByCallbackAlias) {
       await builder.addDartFileEdit(file, (builder) {
         builder.importLibraryElement(Uri.parse('package:flutter/material.dart'));
-        final replacement = getReplacement(node as GenericFunctionType);
-        builder.addSimpleReplacement(range.node(node), replacement);
+        builder.addSimpleReplacement(range.node(type), getReplacement(type));
       });
     }
   }
@@ -66,29 +58,19 @@ class PreferVoidCallbackFixInFile extends ResolvedCorrectionProducer with Replac
 
     await builder.addDartFileEdit(file, (builder) {
       builder.importLibraryElement(Uri.parse('package:flutter/material.dart'));
-      for (final occurrence in visitor.occurrences.whereType<GenericFunctionType>()) {
-        if (occurrence case GenericFunctionType(
-          typeParameters: null,
-          parameters: FormalParameterList(parameters: []),
-          :final returnType,
-        )) {
-          if (returnType case NamedType(name: Token(lexeme: 'Future'))) {
-            continue;
-          }
-          final replacement = getReplacement(occurrence);
-          builder.addSimpleReplacement(range.node(occurrence), replacement);
-        }
+      for (final occurrence in visitor.occurrences) {
+        builder.addSimpleReplacement(range.node(occurrence), getReplacement(occurrence));
       }
     });
   }
 }
 
 class _Visitor extends RecursiveAstVisitor<void> {
-  final List<AstNode> occurrences = [];
+  final List<GenericFunctionType> occurrences = [];
 
   @override
   void visitGenericFunctionType(GenericFunctionType node) {
-    if (node case GenericFunctionType(typeParameters: null, parameters: FormalParameterList(parameters: []))) {
+    if (node.isReplaceableByCallbackAlias) {
       occurrences.add(node);
     }
 
