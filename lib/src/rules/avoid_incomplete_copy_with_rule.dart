@@ -1,14 +1,10 @@
-// ignore_for_file: unused_element
-
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
-import 'package:my_lints/src/common/rule_visitor_extensions.dart';
 
 class AvoidIncompleteCopyWithRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -25,51 +21,43 @@ class AvoidIncompleteCopyWithRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry.addCopyWithMethod(this, visitor);
+    registry.addMethodDeclaration(this, visitor);
   }
 }
 
-class _Visitor extends CustomAstVisitor {
+class _Visitor extends SimpleAstVisitor<void> {
   final AvoidIncompleteCopyWithRule rule;
 
   _Visitor(this.rule);
 
   @override
-  void visitCopyWithMethod(MethodDeclaration node, Set<String> fields) {
-    final body = node.body.expression;
-    if (body == null) return;
+  void visitMethodDeclaration(MethodDeclaration node) {
+    if (node.name.lexeme != 'copyWith') return;
 
-    final visitor = _CopyWithVisitor();
-    body.accept(visitor);
-    final assignedFields = visitor.fields;
+    final fields = switch (node.parent) {
+      final ClassDeclaration parent => parent.members.instanceFieldNames,
+      final MixinDeclaration parent => parent.members.instanceFieldNames,
+      final ExtensionTypeDeclaration parent => parent.members.instanceFieldNames,
+      _ => const <String>{},
+    };
+    if (fields.isEmpty) return;
 
-    final missing = fields.difference(assignedFields);
+    final missing = node.missingCopyWithParameters(fields);
     if (missing.isEmpty) return;
 
     rule.reportAtToken(node.name, arguments: [missing.join(', ')]);
   }
 }
 
-class _CopyWithVisitor extends RecursiveAstVisitor<void> {
-  final Set<String> fields = {};
+extension CopyWithParametersExtension on MethodDeclaration {
+  /// Returns the [fields] that have no matching named parameter, sorted by name.
+  List<String> missingCopyWithParameters(Set<String> fields) {
+    final named = parameters?.parameters
+        .where((parameter) => parameter.isNamed)
+        .map((parameter) => parameter.name?.lexeme)
+        .nonNulls
+        .toSet();
 
-  @override
-  void visitNamedExpression(NamedExpression node) {
-    if (node case NamedExpression(
-      name: final label,
-      expression: BinaryExpression(
-        leftOperand: SimpleIdentifier(:final name),
-        operator: Token(type: TokenType.QUESTION_QUESTION),
-        rightOperand: PropertyAccess(
-          target: ThisExpression(),
-          operator: Token(type: TokenType.PERIOD),
-          propertyName: SimpleIdentifier(name: final propertyName),
-        ),
-      ),
-    ) when name == label.label.name && propertyName == label.label.name) {
-      fields.add(label.label.name);
-    }
-
-    super.visitNamedExpression(node);
+    return fields.difference(named ?? const <String>{}).toList()..sort();
   }
 }

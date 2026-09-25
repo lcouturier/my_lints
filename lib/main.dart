@@ -129,7 +129,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(UnProtectedEmitAfterAwaitRule())
       ..registerWarningRule(PreferSpacingOverDivideWidgetsRule())
       ..registerWarningRule(DoNotCallToListAfterDivideWidgetsRule())
-      // ..registerWarningRule(AvoidIncompleteCopyWithRule())
+      ..registerWarningRule(AvoidIncompleteCopyWithRule())
       // ..registerWarningRule(PreferBlocExtensionsRule())
       ..registerWarningRule(ProperSuperCallsRule())
       ..registerWarningRule(PreferFactoryConstructorRule())
