@@ -83,10 +83,14 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
-    super.visitBinaryExpression(node);
-    if (!node.operator.type.isComparisonOperator) return;
-    if ((node.leftOperand.isConstant) && (!node.rightOperand.isConstant)) {
+    if (node case BinaryExpression(
+      operator: Token(type: TokenType(isComparisonOperator: true)),
+      leftOperand: Expression(isConstant: true),
+      rightOperand: Expression(isConstant: false),
+    )) {
       occurrences.add(node);
     }
+
+    super.visitBinaryExpression(node);
   }
 }

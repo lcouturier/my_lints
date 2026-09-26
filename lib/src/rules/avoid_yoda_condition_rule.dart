@@ -77,10 +77,10 @@ class _ConditionVisitor extends RecursiveAstVisitor<void> {
   @override
   void visitBinaryExpression(BinaryExpression node) {
     if (node case BinaryExpression(
-      leftOperand: final leftOperand,
-      rightOperand: final rightOperand,
-      operator: Token(type: final operatorType),
-    ) when operatorType.isComparisonOperator && leftOperand.isConstant && !rightOperand.isConstant) {
+      operator: Token(type: TokenType(isComparisonOperator: true)),
+      leftOperand: Expression(isConstant: true),
+      rightOperand: Expression(isConstant: false),
+    )) {
       rule.reportAtNode(node);
     }
 
