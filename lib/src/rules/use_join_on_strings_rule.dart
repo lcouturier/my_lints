@@ -7,7 +7,22 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that detects when a parameter's field or setter is reassigned.
+/// Lint to detect when `join()` is called on an `Iterable` that does not contain `String`s.
+///
+/// ```dart
+/// Iterable<int> numbers = [1, 2, 3];
+/// numbers.join(); // Lint
+/// ```
+///
+/// ```dart
+/// Iterable<String> strings = ['1', '2', '3'];
+/// strings.join(); // OK
+/// ```
+///
+///
+/// TODO(lcouturier): add regex to find call `join` on `Iterable<String>`
+/// TODO(lcouturier): add suggestions to replace `join` with `toString`
+///
 class UseJoinOnStringsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_join_on_non_strings',
@@ -34,23 +49,15 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    final element = node.methodName.element;
-    if (!(element is MethodElement && element.name == 'join' && element.library.isDartCore)) return;
-
-    final target = node.target;
-    if (target == null) return;
-
-    final type = target.staticType;
-    if (type is! InterfaceType) return;
-
-    if (!_isIterable(type)) return;
-    if (type.typeArguments.isEmpty) return;
-    if (type.typeArguments.first.isDartCoreString) return;
-
-    rule.reportAtNode(node);
+    if (node case MethodInvocation(
+      target: Expression(staticType: InterfaceType(isIterable: true, :final typeArguments)),
+      methodName: SimpleIdentifier(name: 'join', element: MethodElement(library: LibraryElement(name: 'dart.core'))),
+    ) when typeArguments.isNotEmpty && typeArguments.first.isDartCoreString) {
+      rule.reportAtNode(node);
+    }
   }
+}
 
-  bool _isIterable(InterfaceType type) {
-    return type.isDartCoreIterable || type.allSupertypes.any((t) => t.isDartCoreIterable);
-  }
+extension on InterfaceType {
+  bool get isIterable => isDartCoreIterable || allSupertypes.any((t) => t.isDartCoreIterable);
 }

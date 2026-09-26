@@ -67,7 +67,7 @@ import 'package:my_lints/src/rules/avoid_magic_duration_rule.dart';
 import 'package:my_lints/src/rules/avoid_negative_boolean_names_rule.dart';
 import 'package:my_lints/src/rules/avoid_nested_ternary_rule.dart';
 import 'package:my_lints/src/rules/avoid_redundant_duration_rule.dart';
-import 'package:my_lints/src/rules/avoid_redundant_map_from_rule.dart';
+import 'package:my_lints/src/rules/avoid_redundant_collection_rule.dart';
 import 'package:my_lints/src/rules/spread/avoid_redundant_spread_rule.dart';
 import 'package:my_lints/src/rules/avoid_yoda_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_map_keys_contains_rule.dart';
@@ -181,7 +181,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidIdenticalIfBranchRule())
       // ..registerWarningRule(PreferNamedBooleanParametersRule())
       // ..registerWarningRule(PreferFunctionTypedefsRule())
-      ..registerWarningRule(AvoidRedundantMapFromRule())
+      ..registerWarningRule(AvoidRedundantCollectionRule())
       ..registerWarningRule(PreferTryGetValueRule())
       ..registerWarningRule(AvoidRedundantSpreadRule())
       // ..registerWarningRule(AvoidContextInInitStateRule())
@@ -226,8 +226,8 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(AvoidEnumValuesByIndexRule.code, AvoidEnumValuesByIndexFix.new)
       ..registerFixForRule(PreferExplicitFunctionType.code, PreferExplicitFunctionTypeFix.new)
       // ..registerFixForRule(PreferUsageOfValueGetterRule.code, PreferUsageOfValueGetterFix.new)
-      ..registerFixForRule(AvoidRedundantMapFromRule.code, AvoidRedundantMapFromFix.new)
-      ..registerFixForRule(AvoidRedundantMapFromRule.code, AvoidRedundantMapFromFixInFile.new)
+      ..registerFixForRule(AvoidRedundantCollectionRule.code, AvoidRedundantMapFromFix.new)
+      ..registerFixForRule(AvoidRedundantCollectionRule.code, AvoidRedundantMapFromFixInFile.new)
       ..registerFixForRule(PreferWhereTypeRule.code, PreferWhereTypeFix.new)
       ..registerFixForRule(PreferWhereTypeRule.code, PreferWhereTypeFixInFile.new)
       ..registerFixForRule(AvoidI18nCurrentRule.code, AvoidI18nCurrentFix.new)
