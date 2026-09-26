@@ -33,28 +33,12 @@ class _Visitor extends SimpleAstVisitor<void> {
   @override
   void visitBinaryExpression(BinaryExpression node) {
     if (node case BinaryExpression(
-      leftOperand: final left,
+      leftOperand: (PropertyAccess(propertyName: SimpleIdentifier(name: 'length')) ||
+          PrefixedIdentifier(identifier: SimpleIdentifier(name: 'length'))),
       operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
-      rightOperand: final right,
+      rightOperand: IntegerLiteral(value: 0),
     )) {
-      if (_isLengthAccess(left) && _isZeroLiteral(right)) {
-        rule.reportAtNode(node, arguments: ['length', '==']);
-      }
+      rule.reportAtNode(node, arguments: ['length', '==']);
     }
-  }
-
-  bool _isZeroLiteral(Expression expr) {
-    return expr is IntegerLiteral && expr.value == 0;
-  }
-
-  /// list.length → PrefixedIdentifier
-  /// this.list.length → PropertyAccess
-  /// (foo.bar).length → PropertyAccess
-  bool _isLengthAccess(Expression expr) {
-    return switch (expr) {
-      PropertyAccess(propertyName: SimpleIdentifier(name: 'length')) => true,
-      PrefixedIdentifier(identifier: SimpleIdentifier(name: 'length')) => true,
-      _ => false,
-    };
   }
 }
