@@ -13,6 +13,7 @@ import 'package:my_lints/src/fixes/prefer_any_or_every_fix.dart';
 import 'package:my_lints/src/fixes/prefer_contains_fix.dart';
 import 'package:my_lints/src/fixes/prefer_explicit_function_type_fix.dart';
 import 'package:my_lints/src/fixes/prefer_first_fix.dart';
+import 'package:my_lints/src/fixes/prefer_is_empty_fix.dart';
 import 'package:my_lints/src/fixes/prefer_last_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_assignment_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_elements_fix.dart';
@@ -203,6 +204,8 @@ class MyLintsPlugin extends Plugin {
     // ..registerWarningRule(AvoidHighCyclomaticComplexityRule(threshold: 10));
 
     registry
+      ..registerFixForRule(PreferIsEmptyRule.code, PreferIsEmptyFix.new)
+      ..registerFixForRule(PreferIsEmptyRule.code, PreferIsEmptyFixInFile.new)
       ..registerFixForRule(PreferVoidCallbackRule.code, PreferVoidCallbackFix.new)
       ..registerFixForRule(PreferVoidCallbackRule.code, PreferVoidCallbackFixInFile.new)
       ..registerFixForRule(UnProtectedEmitAfterAwaitRule.code, UnProtectedEmitAfterAwaitInsertFix.new)

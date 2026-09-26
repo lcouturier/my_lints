@@ -10,8 +10,8 @@ class PreferIsEmptyRule extends AnalysisRule {
   PreferIsEmptyRule() : super(name: code.name, description: code.problemMessage);
 
   static const LintCode code = LintCode(
-    'prefer_is_empty',
-    'Prefer using isEmpty instead of length',
+    'prefer_using_is_empty',
+    'Prefer using isEmpty/isNotEmpty instead of length == 0/!= 0.',
     correctionMessage: "Prefer using `.isEmpty` over `.length == 0 or Prefer using `.isNotEmpty` over `.length != 0`.",
   );
 
