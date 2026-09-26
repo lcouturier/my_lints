@@ -33,5 +33,17 @@ void foo4() {
 
 void foo5() {
   var otherMap = [1, 2, 3, 4, 5];
-  var myMap = List.of(otherMap)..add(1); // This should trigger the lint warning.
+  var myMap = List.of(otherMap)
+    ..add(1); // This should trigger the lint warning.
+}
+
+void foo6() {
+  var myMap = List.from([
+    1,
+    2,
+    3,
+    4,
+    5,
+  ]); // This should trigger the lint warning.
+  myMap.add(1);
 }

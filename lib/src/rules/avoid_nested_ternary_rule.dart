@@ -31,11 +31,11 @@ class AvoidNestedTernaryVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitConditionalExpression(ConditionalExpression node) {
-    final thenExpr = node.thenExpression.unParenthesized;
-    final elseExpr = node.elseExpression.unParenthesized;
-
-    if (thenExpr is ConditionalExpression || elseExpr is ConditionalExpression) {
-      rule.reportAtNode(node);
+    if (node case ConditionalExpression(thenExpression: ConditionalExpression())) {
+      rule.reportAtNode(node.thenExpression);
+    }
+    if (node case ConditionalExpression(elseExpression: ConditionalExpression())) {
+      rule.reportAtNode(node.elseExpression);
     }
 
     super.visitConditionalExpression(node);
