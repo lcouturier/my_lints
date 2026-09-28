@@ -146,7 +146,6 @@ bool isIterableOrSubclass(DartType? type) => _checkSelfOrSupertypes(type, (t) =>
 
 bool isListOrSubclass(DartType? type) => _checkSelfOrSupertypes(type, (t) => t?.isDartCoreList ?? false);
 
-// ignore: unused-code
 bool isMapOrSubclass(DartType? type) => _checkSelfOrSupertypes(type, (t) => t?.isDartCoreMap ?? false);
 
 bool isNullableType(DartType? type) => type?.nullabilitySuffix == NullabilitySuffix.question;

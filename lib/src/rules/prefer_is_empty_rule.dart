@@ -10,9 +10,9 @@ class PreferIsEmptyRule extends AnalysisRule {
   PreferIsEmptyRule() : super(name: code.name, description: code.problemMessage);
 
   static const LintCode code = LintCode(
-    'prefer_using_is_empty',
-    'Prefer using isEmpty/isNotEmpty instead of length == 0/!= 0.',
-    correctionMessage: "Prefer using `.isEmpty` over `.length == 0 or Prefer using `.isNotEmpty` over `.length != 0`.",
+    'prefer_is_empty',
+    'Prefer using `isEmpty`/`isNotEmpty` instead of comparing `length` to `0`.',
+    correctionMessage: 'Replace `.length == 0` with `.isEmpty` and `.length != 0` with `.isNotEmpty`.',
   );
 
   @override
@@ -32,11 +32,8 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
-    if (node case BinaryExpression(leftOperand: (PropertyAccess(target: StringLiteral())))) return;
-    if (node case BinaryExpression(leftOperand: (PropertyAccess(target: ListLiteral())))) return;
+    if (!node.isEmptinessComparison) return;
 
-    if (node.isLengthComparison) {
-      rule.reportAtNode(node, arguments: ['length', '==']);
-    }
+    rule.reportAtNode(node);
   }
 }

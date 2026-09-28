@@ -465,27 +465,42 @@ extension MethodInvocationExtensions on MethodInvocation {
 }
 
 extension BinaryExpressionExtensions on BinaryExpression {
-  /// Returns `true` if this binary expression is a comparison of a `.length` property to `0` using `==` or `!=`.
-  /// This is useful for identifying patterns that can be replaced with `.isEmpty` or `.isNotEmpty`.
+  /// Returns the receiver of a `x.length == 0` or `x.length != 0` comparison, `null` otherwise.
+  ///
+  /// Purely syntactic: use [isEmptinessComparison] to also validate that the receiver
+  /// actually exposes `isEmpty`/`isNotEmpty`.
+  ///
   /// Example:
   /// ```dart
-  ///   if (list.length == 0) {
-  ///     // do something
-  ///   }
-  ///   if (list.length != 0) {
-  ///     // do something
-  ///   }
+  ///   if (list.length == 0) {} // returns the `list` expression
   /// ```
-
-  bool get isLengthComparison {
-    if (this case BinaryExpression(
-      leftOperand: (PropertyAccess(propertyName: SimpleIdentifier(name: 'length')) ||
-          PrefixedIdentifier(identifier: SimpleIdentifier(name: 'length'))),
-      operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
+  Expression? get lengthComparisonTarget => switch (this) {
+    BinaryExpression(
+      leftOperand: PropertyAccess(propertyName: SimpleIdentifier(name: 'length'), target: final Expression target),
+      operator: Token(type: TokenType.EQ_EQ || TokenType.BANG_EQ),
       rightOperand: IntegerLiteral(value: 0),
-    )) {
-      return true;
-    }
-    return false;
-  }
+    ) =>
+      target,
+    BinaryExpression(
+      leftOperand: PrefixedIdentifier(
+        identifier: SimpleIdentifier(name: 'length'),
+        prefix: final SimpleIdentifier target,
+      ),
+      operator: Token(type: TokenType.EQ_EQ || TokenType.BANG_EQ),
+      rightOperand: IntegerLiteral(value: 0),
+    ) =>
+      target,
+    _ => null,
+  };
+
+  /// Returns `true` when this comparison can safely be rewritten as `isEmpty`/`isNotEmpty`.
+  bool get isEmptinessComparison => _supportsIsEmpty(lengthComparisonTarget?.staticType);
+
+  /// The getter replacing this comparison: `isEmpty` for `==`, `isNotEmpty` for `!=`.
+  String get emptinessGetterName => operator.type == TokenType.EQ_EQ ? 'isEmpty' : 'isNotEmpty';
 }
+
+bool _supportsIsEmpty(DartType? type) =>
+    type is InterfaceType &&
+    type.nullabilitySuffix != NullabilitySuffix.question &&
+    (type.isDartCoreString || isIterableOrSubclass(type) || isMapOrSubclass(type));
