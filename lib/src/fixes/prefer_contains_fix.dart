@@ -8,17 +8,12 @@ import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
 class PreferContainsFix extends ResolvedCorrectionProducer {
-  static const _fixKind = FixKind(
-    'my_lints.fix.preferContains',
-    DartFixKindPriority.standard,
-    'Replace with contains',
-  );
+  static const _fixKind = FixKind('my_lints.fix.preferContains', DartFixKindPriority.standard, 'Replace with contains');
 
   PreferContainsFix({required super.context});
 
   @override
-  CorrectionApplicability get applicability =>
-      CorrectionApplicability.singleLocation;
+  CorrectionApplicability get applicability => CorrectionApplicability.singleLocation;
 
   @override
   FixKind get fixKind => _fixKind;
@@ -36,8 +31,7 @@ class PreferContainsFix extends ResolvedCorrectionProducer {
       (false, true) => left.toSource().replaceFirst('indexOf', 'contains'),
       (true, true) => '!${left.toSource().replaceFirst('indexOf', 'contains')}',
       (false, false) => right.toSource().replaceFirst('indexOf', 'contains'),
-      (true, false) =>
-        '!${right.toSource().replaceFirst('indexOf', 'contains')}',
+      (true, false) => '!${right.toSource().replaceFirst('indexOf', 'contains')}',
     };
 
     await builder.addDartFileEdit(file, (builder) {
