@@ -46,15 +46,23 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitIfStatement(IfStatement node) {
-    if (node.expression case BinaryExpression(
+    if (node.isReplacable) {
+      rule.reportAtNode(node);
+    }
+
+    super.visitIfStatement(node);
+  }
+}
+
+extension IfStatmentExtensions on IfStatement {
+  bool get isReplacable {
+    if (expression case BinaryExpression(
       leftOperand: SimpleIdentifier(:final name),
       operator: Token(type: TokenType.EQ_EQ),
       rightOperand: NullLiteral(),
     )) {
-      final elseStatement = node.elseStatement;
-      if (elseStatement != null) return;
+      if (elseStatement != null) return false;
 
-      final thenStatement = node.thenStatement;
       if (thenStatement case Block(:final statements) when statements.length == 1) {
         final actualStatement = statements.single;
         if (actualStatement case ExpressionStatement(
@@ -63,11 +71,10 @@ class _Visitor extends RecursiveAstVisitor<void> {
             operator: Token(type: TokenType.EQ),
           ),
         ) when name == exprName) {
-          rule.reportAtNode(node);
+          return true;
         }
       }
     }
-
-    super.visitIfStatement(node);
+    return false;
   }
 }
