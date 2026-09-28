@@ -36,13 +36,13 @@ import 'package:my_lints/src/rules/avoid_deep_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_disposable_state_field_leaks_rule.dart';
 import 'package:my_lints/src/rules/avoid_high_cyclomatic_complexity_rule.dart';
 import 'package:my_lints/src/rules/avoid_long_conditions_rule.dart';
-import 'package:my_lints/src/rules/avoid_context_in_initState_rule.dart';
+import 'package:my_lints/src/rules/avoid_context_in_init_state_rule.dart';
 import 'package:my_lints/src/rules/avoid_double_negation_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_empty_set_state_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_for_each_rule.dart';
-import 'package:my_lints/src/rules/avoid_i18n_current_rule.dart';
+import 'package:my_lints/src/rules/avoid_I18n_current_rule.dart';
 import 'package:my_lints/src/rules/avoid_join_on_nullable_item_rule.dart';
 import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_interpolation_rule.dart';
@@ -95,7 +95,6 @@ import 'package:my_lints/src/rules/prefer_first_rule.dart';
 import 'package:my_lints/src/rules/prefer_function_typedefs_rule.dart';
 import 'package:my_lints/src/rules/prefer_is_empty_rule.dart';
 import 'package:my_lints/src/rules/prefer_last_rule.dart';
-import 'package:my_lints/src/rules/prefer_map_entries_rule.dart';
 import 'package:my_lints/src/rules/prefer_named_bool_parameters_rule.dart';
 import 'package:my_lints/src/rules/record/prefer_named_record_fields_rule.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_elements_rule.dart';
@@ -132,11 +131,9 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferSpacingOverDivideWidgetsRule())
       ..registerWarningRule(DoNotCallToListAfterDivideWidgetsRule())
       ..registerWarningRule(AvoidIncompleteCopyWithRule())
-      // ..registerWarningRule(PreferBlocExtensionsRule())
       ..registerWarningRule(ProperSuperCallsRule())
       ..registerWarningRule(PreferFactoryConstructorRule())
       ..registerWarningRule(PreferNullAwareAssignmentRule())
-      // ..registerWarningRule(AvoidNullableInterpolationRule())
       ..registerWarningRule(PreferExplicitFunctionType())
       ..registerWarningRule(PreferAnyRule())
       ..registerWarningRule(PreferNullAwareSpreadRule())
@@ -148,24 +145,17 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferCollectionIfForConditionalElementsRule())
       ..registerWarningRule(PreferIsEmptyRule())
       ..registerWarningRule(AvoidPositionalRecordFieldAccessRule())
-      // ..registerWarningRule(AvoidDynamicTypeRule())
       ..registerWarningRule(PreferNullAwareElementsRule())
       ..registerWarningRule(PreferConstEmptyListAfterIfNullRule())
       ..registerWarningRule(AvoidDisposableStateFieldLeaksRule())
       ..registerWarningRule(PreferNullAwareNotationRule())
       ..registerWarningRule(PreferVoidCallbackRule())
       ..registerWarningRule(AvoidNestedAssignmentRule())
-      // ..registerWarningRule(AvoidAlwaysNullParametersRule())
       ..registerWarningRule(AvoidMapKeysContainsRule())
       ..registerWarningRule(AvoidShadowedExtensionMethodsRule())
-      // ..registerWarningRule(PreferUsageOfValueGetterRule())
       ..registerWarningRule(PreferCorrectCallbackFieldNameRule())
       ..registerWarningRule(AvoidCompareSameValueRule())
-      // ..registerWarningRule(AvoidUnsafeReduceRule())
       ..registerWarningRule(UseJoinOnStringsRule())
-      // ..registerWarningRule(AvoidMagicNumbersRule())
-      // ..registerWarningRule(AvoidComplexLoopConditionsRule())
-      // ..registerWarningRule(AvoidLongConditionsRule(maxTokens: 50, maxVariables: 4, maxOperatorTypes: 3))
       ..registerWarningRule(AvoidRedundantDurationRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
@@ -173,34 +163,22 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidThrowLiteralRule())
       ..registerWarningRule(AvoidNestedTernaryRule())
       ..registerWarningRule(AvoidExtensionsOnRecordsRule())
-      // ..registerWarningRule(EdgeInsetsRule())
       ..registerWarningRule(AvoidAssignationInConditionRule())
-      // ..registerWarningRule(AvoidUnnecessaryGestureDetectorRule())
       ..registerWarningRule(AvoidNegativeBooleanRule())
       ..registerWarningRule(AvoidDoubleNegationConditionsRule())
       ..registerWarningRule(AvoidIdenticalIfBranchRule())
-      // ..registerWarningRule(PreferNamedBooleanParametersRule())
-      // ..registerWarningRule(PreferFunctionTypedefsRule())
       ..registerWarningRule(AvoidRedundantCollectionRule())
       ..registerWarningRule(PreferTryGetValueRule())
       ..registerWarningRule(AvoidRedundantSpreadRule())
-      // ..registerWarningRule(AvoidContextInInitStateRule())
       ..registerWarningRule(PreferReturnAwaitRule())
       ..registerWarningRule(UnnecessaryStringInterpolationRule())
       ..registerWarningRule(UnnecessaryToStringInInterpolationRule())
-      // ..registerWarningRule(AvoidForEachRule())
       ..registerWarningRule(AvoidToListBeforeJoinRule())
       ..registerWarningRule(AvoidJoinOnNullableItemRule())
       ..registerWarningRule(PreferWhereTypeRule())
       ..registerWarningRule(AvoidI18nCurrentRule())
       ..registerWarningRule(PreferFirstRule())
       ..registerWarningRule(PreferLastRule());
-    // ..registerWarningRule(PreferCompoundAssignmentRule())
-    // ..registerWarningRule(PreferKeyedWidgetsRule())
-    // ..registerWarningRule(AvoidDeepConditionsRule(maxDepth: 3));
-    // ..registerWarningRule(AvoidLongConditionsRule(maxTokens: 10, maxVariables: 3, maxOperatorTypes: 3))
-    // ..registerWarningRule(AvoidComplicatedConditionalRule(threshold: 5))
-    // ..registerWarningRule(AvoidHighCyclomaticComplexityRule(threshold: 10));
 
     registry
       ..registerFixForRule(PreferVoidCallbackRule.code, PreferVoidCallbackFix.new)
@@ -225,7 +203,6 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(PreferLastRule.code, PreferLastFixInFile.new)
       ..registerFixForRule(AvoidEnumValuesByIndexRule.code, AvoidEnumValuesByIndexFix.new)
       ..registerFixForRule(PreferExplicitFunctionType.code, PreferExplicitFunctionTypeFix.new)
-      // ..registerFixForRule(PreferUsageOfValueGetterRule.code, PreferUsageOfValueGetterFix.new)
       ..registerFixForRule(AvoidRedundantCollectionRule.code, AvoidRedundantMapFromFix.new)
       ..registerFixForRule(AvoidRedundantCollectionRule.code, AvoidRedundantMapFromFixInFile.new)
       ..registerFixForRule(PreferWhereTypeRule.code, PreferWhereTypeFix.new)
