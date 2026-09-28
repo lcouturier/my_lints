@@ -42,7 +42,7 @@ import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_empty_set_state_rule.dart';
 import 'package:my_lints/src/rules/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/avoid_for_each_rule.dart';
-import 'package:my_lints/src/rules/avoid_i18n_current_rule.dart';
+import 'package:my_lints/src/rules/avoid_I18n_current_rule.dart';
 import 'package:my_lints/src/rules/avoid_join_on_nullable_item_rule.dart';
 import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_interpolation_rule.dart';
