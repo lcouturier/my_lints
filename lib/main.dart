@@ -36,7 +36,7 @@ import 'package:my_lints/src/rules/avoid_deep_condition_rule.dart';
 import 'package:my_lints/src/rules/avoid_disposable_state_field_leaks_rule.dart';
 import 'package:my_lints/src/rules/avoid_high_cyclomatic_complexity_rule.dart';
 import 'package:my_lints/src/rules/avoid_long_conditions_rule.dart';
-import 'package:my_lints/src/rules/avoid_context_in_initState_rule.dart';
+import 'package:my_lints/src/rules/avoid_context_in_init_state_rule.dart';
 import 'package:my_lints/src/rules/avoid_double_negation_conditions_rule.dart';
 import 'package:my_lints/src/rules/avoid_dynamic_type_rule.dart';
 import 'package:my_lints/src/rules/avoid_empty_set_state_rule.dart';
