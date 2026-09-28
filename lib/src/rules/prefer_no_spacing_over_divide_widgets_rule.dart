@@ -33,7 +33,7 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.isFlutterStateClass) return;
+    if (!node.isFlutterWidget) return;
 
     super.visitClassDeclaration(node);
   }

@@ -33,7 +33,7 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.isFlutterStateClass) return;
+    if (!node.isFlutterWidget) return;
 
     super.visitClassDeclaration(node);
   }
@@ -43,7 +43,7 @@ class _Visitor extends RecursiveAstVisitor<void> {
     if (node case InstanceCreationExpression(
       constructorName: ConstructorName(
         type: NamedType(name: Token(lexeme: 'ListView')),
-        name: SimpleIdentifier(token: Token(lexeme: 'builder')),
+        name: SimpleIdentifier(token: Token(lexeme: 'builder')) || null,
       ),
       argumentList: ArgumentList(:final arguments),
     )) {
