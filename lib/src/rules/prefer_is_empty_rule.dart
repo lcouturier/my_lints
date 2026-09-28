@@ -2,9 +2,9 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 class PreferIsEmptyRule extends AnalysisRule {
   PreferIsEmptyRule() : super(name: code.name, description: code.problemMessage);
@@ -32,12 +32,10 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
-    if (node case BinaryExpression(
-      leftOperand: (PropertyAccess(propertyName: SimpleIdentifier(name: 'length')) ||
-          PrefixedIdentifier(identifier: SimpleIdentifier(name: 'length'))),
-      operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
-      rightOperand: IntegerLiteral(value: 0),
-    )) {
+    if (node case BinaryExpression(leftOperand: (PropertyAccess(target: StringLiteral())))) return;
+    if (node case BinaryExpression(leftOperand: (PropertyAccess(target: ListLiteral())))) return;
+
+    if (node.isLengthComparison) {
       rule.reportAtNode(node, arguments: ['length', '==']);
     }
   }

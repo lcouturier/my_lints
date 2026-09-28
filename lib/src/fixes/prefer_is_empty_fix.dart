@@ -6,6 +6,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/fixes/fixes.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 class PreferIsEmptyFix extends ResolvedCorrectionProducer {
   static const _fixKind = FixKind(
@@ -24,19 +25,12 @@ class PreferIsEmptyFix extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    if (node case BinaryExpression(
-      leftOperand: (PropertyAccess(
-            target: SimpleIdentifier(name: final targetName),
-            propertyName: SimpleIdentifier(name: 'length'),
-          ) ||
-          PrefixedIdentifier(
-            prefix: SimpleIdentifier(name: final targetName),
-            identifier: SimpleIdentifier(name: 'length'),
-          )),
-      operator: (Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ)) && final operator,
-      rightOperand: IntegerLiteral(value: 0),
-    )) {
-      final String replacement = operator.type == TokenType.EQ_EQ ? '$targetName.isEmpty' : '$targetName.isNotEmpty';
+    if (node is! BinaryExpression) return;
+    final target = (node as BinaryExpression);
+    if (target.isLengthComparison) {
+      final String replacement = (node as BinaryExpression).operator.type == TokenType.EQ_EQ
+          ? '${target.targetName}.isEmpty'
+          : '${target.targetName}.isNotEmpty';
       await builder.addDartFileEdit(file, (builder) {
         builder.addSimpleReplacement(range.node(node), replacement);
       });
@@ -67,41 +61,43 @@ class PreferIsEmptyFixInFile extends ResolvedCorrectionProducer {
 
     await builder.addDartFileEdit(file, (builder) {
       for (final node in visitor.occurrences) {
-        if (node case BinaryExpression(
-          leftOperand: (PropertyAccess(
-                target: SimpleIdentifier(name: final targetName),
-                propertyName: SimpleIdentifier(name: 'length'),
-              ) ||
-              PrefixedIdentifier(
-                prefix: SimpleIdentifier(name: final targetName),
-                identifier: SimpleIdentifier(name: 'length'),
-              )),
-          operator: (Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ)) && final operator,
-          rightOperand: IntegerLiteral(value: 0),
-        )) {
-          final String replacement = operator.type == TokenType.EQ_EQ
-              ? '$targetName.isEmpty'
-              : '$targetName.isNotEmpty';
-          builder.addSimpleReplacement(range.node(node), replacement);
-        }
+        final String replacement = node.operator.type == TokenType.EQ_EQ
+            ? '${node.targetName}.isEmpty'
+            : '${node.targetName}.isNotEmpty';
+        builder.addSimpleReplacement(range.node(node), replacement);
       }
     });
   }
 }
 
 class _PreferEmptyVisitor extends RecursiveAstVisitor<void> {
-  final List<AstNode> occurrences = [];
+  final List<BinaryExpression> occurrences = [];
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
-    if (node case BinaryExpression(
-      leftOperand: (PropertyAccess(propertyName: SimpleIdentifier(name: 'length')) ||
-          PrefixedIdentifier(identifier: SimpleIdentifier(name: 'length'))),
-      operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
-      rightOperand: IntegerLiteral(value: 0),
-    )) {
+    if (node case BinaryExpression(leftOperand: (PropertyAccess(target: StringLiteral())))) return;
+    if (node case BinaryExpression(leftOperand: (PropertyAccess(target: ListLiteral())))) return;
+    if (node.isLengthComparison) {
       occurrences.add(node);
     }
     super.visitBinaryExpression(node);
+  }
+}
+
+extension on BinaryExpression {
+  String get targetName {
+    if (this case BinaryExpression(
+      leftOperand: (PropertyAccess(
+            target: SimpleIdentifier(name: final targetName),
+            propertyName: SimpleIdentifier(name: 'length'),
+          ) ||
+          PrefixedIdentifier(
+            prefix: SimpleIdentifier(name: final targetName),
+            identifier: SimpleIdentifier(name: 'length'),
+          )),
+    )) {
+      return targetName;
+    }
+    return '';
   }
 }

@@ -463,3 +463,29 @@ extension MethodInvocationExtensions on MethodInvocation {
     return (expression.type as NamedType).type;
   }
 }
+
+extension BinaryExpressionExtensions on BinaryExpression {
+  /// Returns `true` if this binary expression is a comparison of a `.length` property to `0` using `==` or `!=`.
+  /// This is useful for identifying patterns that can be replaced with `.isEmpty` or `.isNotEmpty`.
+  /// Example:
+  /// ```dart
+  ///   if (list.length == 0) {
+  ///     // do something
+  ///   }
+  ///   if (list.length != 0) {
+  ///     // do something
+  ///   }
+  /// ```
+
+  bool get isLengthComparison {
+    if (this case BinaryExpression(
+      leftOperand: (PropertyAccess(propertyName: SimpleIdentifier(name: 'length')) ||
+          PrefixedIdentifier(identifier: SimpleIdentifier(name: 'length'))),
+      operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
+      rightOperand: IntegerLiteral(value: 0),
+    )) {
+      return true;
+    }
+    return false;
+  }
+}
