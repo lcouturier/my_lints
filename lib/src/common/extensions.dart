@@ -377,7 +377,7 @@ extension ClassDeclarationExtensions on ClassDeclaration {
   bool get isEquatable =>
       declaredFragment?.element != null && equatableChecker.isAssignableFromType(declaredFragment!.element.thisType);
 
-  bool get isFlutterStateClass {
+  bool get isFlutterWidget {
     final type = extendsClause?.superclass.type;
     return type is InterfaceType && type.isFlutterState;
   }

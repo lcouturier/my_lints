@@ -37,3 +37,20 @@ class MyWidgetClassic extends StatelessWidget {
     );
   }
 }
+
+class MyWidgetWithItemExtent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(itemCount: 10, itemExtent: 48, itemBuilder: (context, index) => Text('Item $index'));
+  }
+}
+
+// LINT: a builder function is not a widget class, the rule must still see it.
+Widget buildList() {
+  return ListView.builder(itemCount: 100, itemBuilder: (context, index) => Text('Item $index'));
+}
+
+// LINT: a plain class can build widgets too.
+class ListFactory {
+  Widget build() => ListView.builder(itemCount: 100, itemBuilder: (context, index) => Text('Item $index'));
+}

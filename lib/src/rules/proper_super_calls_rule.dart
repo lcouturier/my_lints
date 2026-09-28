@@ -33,7 +33,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.isFlutterStateClass) return;
+    if (!node.isFlutterWidget) return;
 
     for (final member in node.members.whereType<MethodDeclaration>()) {
       if (member.name.lexeme == 'initState') {

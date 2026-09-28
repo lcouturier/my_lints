@@ -32,7 +32,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.isFlutterStateClass) return;
+    if (!node.isFlutterWidget) return;
 
     for (var element in node.members.whereType<MethodDeclaration>()) {
       final visitor = _WatchVisitor();

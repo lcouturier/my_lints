@@ -5,7 +5,6 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/extensions.dart';
 
 class UseItemextentForLargeListRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -22,39 +21,38 @@ class UseItemextentForLargeListRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry.addClassDeclaration(this, visitor);
+    registry.addInstanceCreationExpression(this, visitor);
   }
 }
 
-class _Visitor extends RecursiveAstVisitor<void> {
+class _Visitor extends SimpleAstVisitor<void> {
   final UseItemextentForLargeListRule rule;
 
   _Visitor(this.rule);
 
   @override
-  void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.isFlutterStateClass) return;
-
-    super.visitClassDeclaration(node);
-  }
-
-  @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    if (node case InstanceCreationExpression(
+    if (node.isListViewMissingExtent) {
+      rule.reportAtNode(node);
+    }
+  }
+}
+
+extension ListViewInstanceCreationExtension on InstanceCreationExpression {
+  /// Whether this is a `ListView` laying out children without a known extent.
+  bool get isListViewMissingExtent {
+    if (this case InstanceCreationExpression(
       constructorName: ConstructorName(
         type: NamedType(name: Token(lexeme: 'ListView')),
-        name: SimpleIdentifier(token: Token(lexeme: 'builder')),
+        name: SimpleIdentifier(token: Token(lexeme: 'builder')) || null,
       ),
       argumentList: ArgumentList(:final arguments),
     )) {
-      final hasItemExtent = arguments.any((arg) => arg is NamedExpression && arg.name.label.name == 'itemExtent');
-      final hasPrototypeItem = arguments.any((arg) => arg is NamedExpression && arg.name.label.name == 'prototypeItem');
-
-      if (!(hasItemExtent || hasPrototypeItem)) {
-        rule.reportAtNode(node);
-      }
+      return !arguments.any(
+        (arg) => arg is NamedExpression && const {'itemExtent', 'prototypeItem'}.contains(arg.name.label.name),
+      );
     }
 
-    super.visitInstanceCreationExpression(node);
+    return false;
   }
 }
