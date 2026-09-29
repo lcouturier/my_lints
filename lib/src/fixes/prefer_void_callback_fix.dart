@@ -1,7 +1,6 @@
 import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
 import 'package:analysis_server_plugin/edit/dart/dart_fix_kind_priority.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
@@ -79,15 +78,25 @@ class _Visitor extends RecursiveAstVisitor<void> {
 }
 
 mixin ReplaceByVoidCallback {
+  /// Returns the replacement string for a given [GenericFunctionType] node.
+  /// If the return type is `void` or unspecified, it returns `VoidCallback`.
+  /// Otherwise, it returns `ValueGetter<ReturnType>`.
+  /// The returned string includes a `?` suffix if the original function type is nullable.
+  /// Example:
+  /// ```dart
+  /// int Function() f; // becomes ValueGetter<int>
+  /// void Function() f; // becomes VoidCallback
+  /// int? Function() f; // becomes ValueGetter<int?>
+  /// void Function()? f; // becomes VoidCallback?
+  /// ```
   String getReplacement(GenericFunctionType node) {
+    final suffix = node.question != null ? '?' : '';
     final returnType = node.returnType;
-    final isNullable = node.question != null;
-    final typeName = returnType is NamedType ? returnType.name.lexeme : 'void';
-    return switch (returnType) {
-      NamedType(name: Token(:final lexeme)) when lexeme != 'void' =>
-        'ValueGetter<${isNullable ? '$typeName?' : typeName}>${node.question != null ? '?' : ''}',
-      NamedType(name: Token(:final lexeme)) when lexeme == 'void' => 'VoidCallback${node.question != null ? '?' : ''}',
-      _ => 'VoidCallback${node.question != null ? '?' : ''}',
-    };
+
+    if (returnType == null || returnType.toSource() == 'void') {
+      return 'VoidCallback$suffix';
+    }
+
+    return 'ValueGetter<${returnType.toSource()}>$suffix';
   }
 }
