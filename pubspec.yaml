@@ -1,15 +1,15 @@
 name: my_lints
-description: "description: Custom lint rules using the Dart 3.10 analyzer plugin API."
+description: "description: Custom lint rules using the Dart 3.11 analyzer plugin API."
 version: 0.0.1
 homepage:
 
 environment:
-  sdk: ^3.10.8
+  sdk: ^3.11.5
 
 dependencies:
-  analysis_server_plugin: ^0.3.0
-  analyzer_plugin: ^0.13.0
-  analyzer: ^8.0.0
+  analysis_server_plugin: ^0.3.7
+  analyzer_plugin: ^0.14.1
+  analyzer: ^10.0.1
 
 dev_dependencies:
   flutter_test:

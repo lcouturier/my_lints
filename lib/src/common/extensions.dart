@@ -359,7 +359,7 @@ extension on InterfaceType {
       final element = t.element;
 
       return (element.name == 'State' || element.name == 'StatelessWidget') &&
-          element.library2.firstFragment.source.uri.toString().contains('framework');
+          element.library.firstFragment.source.uri.toString().contains('framework');
     });
   }
 
@@ -368,7 +368,7 @@ extension on InterfaceType {
 
     return allTypes.any((t) {
       final element = t.element;
-      return element.name == 'Cubit' && element.library2.firstFragment.source.uri.toString().contains('bloc');
+      return element.name == 'Cubit' && element.library.firstFragment.source.uri.toString().contains('bloc');
     });
   }
 }
@@ -405,6 +405,26 @@ extension ClassDeclarationExtensions on ClassDeclaration {
     final hasConstructor = members.whereType<ConstructorDeclaration>().isNotEmpty;
 
     return hasFinalFields && hasConstructor && hasCopyWith;
+  }
+}
+
+extension EnclosingDeclarationExtensions on AstNode {
+  /// Instance field names of the class, mixin or extension type declaring this
+  /// node, or an empty set when there is no such declaration.
+  ///
+  /// Since analyzer 10 a `ClassBody` node sits between a declaration and its
+  /// members, so the enclosing declaration is not the direct parent anymore.
+  Set<String> get enclosingInstanceFieldNames {
+    final declaration = thisOrAncestorMatching(
+      (node) => node is ClassDeclaration || node is MixinDeclaration || node is ExtensionTypeDeclaration,
+    );
+
+    return switch (declaration) {
+      final ClassDeclaration declaration => declaration.members.instanceFieldNames,
+      final MixinDeclaration declaration => declaration.members.instanceFieldNames,
+      final ExtensionTypeDeclaration declaration => declaration.members.instanceFieldNames,
+      _ => const <String>{},
+    };
   }
 }
 
