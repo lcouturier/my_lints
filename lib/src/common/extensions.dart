@@ -359,7 +359,7 @@ extension on InterfaceType {
       final element = t.element;
 
       return (element.name == 'State' || element.name == 'StatelessWidget') &&
-          element.library2.firstFragment.source.uri.toString().contains('framework');
+          element.library.firstFragment.source.uri.toString().contains('framework');
     });
   }
 
@@ -368,7 +368,7 @@ extension on InterfaceType {
 
     return allTypes.any((t) {
       final element = t.element;
-      return element.name == 'Cubit' && element.library2.firstFragment.source.uri.toString().contains('bloc');
+      return element.name == 'Cubit' && element.library.firstFragment.source.uri.toString().contains('bloc');
     });
   }
 }
