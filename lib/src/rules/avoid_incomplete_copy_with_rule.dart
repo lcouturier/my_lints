@@ -34,12 +34,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitMethodDeclaration(MethodDeclaration node) {
     if (node.name.lexeme != 'copyWith') return;
 
-    final fields = switch (node.parent) {
-      final ClassDeclaration parent => parent.members.instanceFieldNames,
-      final MixinDeclaration parent => parent.members.instanceFieldNames,
-      final ExtensionTypeDeclaration parent => parent.members.instanceFieldNames,
-      _ => const <String>{},
-    };
+    final fields = node.enclosingInstanceFieldNames;
     if (fields.isEmpty) return;
 
     final missing = node.missingCopyWithParameters(fields);

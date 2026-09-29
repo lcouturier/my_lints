@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_lints/src/common/rule_visitor_extensions.dart';
 import 'package:my_lints/src/rules/avoid_incomplete_copy_with_rule.dart';
@@ -163,26 +164,27 @@ class User {
 }
 
 List<String> _missingFields(String source) {
-  final visitor = _RecordingVisitor();
-  parseString(content: source).unit.accept(visitor);
+  final recorder = _RecordingVisitor();
+  parseString(content: source).unit.accept(_MethodDeclarationForwarder(recorder));
 
-  return visitor.missing;
+  return recorder.missing;
+}
+
+/// Walks the whole tree and forwards every method declaration to [target].
+class _MethodDeclarationForwarder extends RecursiveAstVisitor<void> {
+  final CustomAstVisitor target;
+
+  _MethodDeclarationForwarder(this.target);
+
+  @override
+  void visitMethodDeclaration(MethodDeclaration node) {
+    node.accept(target);
+    super.visitMethodDeclaration(node);
+  }
 }
 
 class _RecordingVisitor extends CustomAstVisitor {
   final List<String> missing = [];
-
-  @override
-  void visitCompilationUnit(CompilationUnit node) => node.visitChildren(this);
-
-  @override
-  void visitClassDeclaration(ClassDeclaration node) => node.visitChildren(this);
-
-  @override
-  void visitMixinDeclaration(MixinDeclaration node) => node.visitChildren(this);
-
-  @override
-  void visitExtensionDeclaration(ExtensionDeclaration node) => node.visitChildren(this);
 
   @override
   void visitCopyWithMethod(MethodDeclaration node, Set<String> fields) {

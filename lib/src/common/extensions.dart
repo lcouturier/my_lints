@@ -408,6 +408,26 @@ extension ClassDeclarationExtensions on ClassDeclaration {
   }
 }
 
+extension EnclosingDeclarationExtensions on AstNode {
+  /// Instance field names of the class, mixin or extension type declaring this
+  /// node, or an empty set when there is no such declaration.
+  ///
+  /// Since analyzer 10 a `ClassBody` node sits between a declaration and its
+  /// members, so the enclosing declaration is not the direct parent anymore.
+  Set<String> get enclosingInstanceFieldNames {
+    final declaration = thisOrAncestorMatching(
+      (node) => node is ClassDeclaration || node is MixinDeclaration || node is ExtensionTypeDeclaration,
+    );
+
+    return switch (declaration) {
+      final ClassDeclaration declaration => declaration.members.instanceFieldNames,
+      final MixinDeclaration declaration => declaration.members.instanceFieldNames,
+      final ExtensionTypeDeclaration declaration => declaration.members.instanceFieldNames,
+      _ => const <String>{},
+    };
+  }
+}
+
 extension ClassMemberListExtensions on List<ClassMember> {
   /// Returns the names of the non-static, non-synthetic fields that can be
   /// provided by a caller. Fields with an initializer are derived state and are

@@ -1,5 +1,5 @@
 name: my_lints
-description: "description: Custom lint rules using the Dart 3.10 analyzer plugin API."
+description: "description: Custom lint rules using the Dart 3.11 analyzer plugin API."
 version: 0.0.1
 homepage:
 
