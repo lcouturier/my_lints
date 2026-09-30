@@ -32,12 +32,22 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
-    if (node case BinaryExpression(
-      leftOperand: MethodInvocation(methodName: SimpleIdentifier(name: 'indexOf')),
-      operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
-      rightOperand: PrefixExpression(operator: Token(type: TokenType.MINUS), operand: IntegerLiteral(value: 1)),
-    )) {
+    if (node.isIndexOfComparedToMinusOne) {
       rule.reportAtNode(node);
     }
+  }
+}
+
+extension BinaryExpressionExtension on BinaryExpression {
+  bool get isIndexOfComparedToMinusOne {
+    return switch (this) {
+      BinaryExpression(
+        leftOperand: MethodInvocation(methodName: SimpleIdentifier(name: 'indexOf')),
+        operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
+        rightOperand: PrefixExpression(operator: Token(type: TokenType.MINUS), operand: IntegerLiteral(value: 1)),
+      ) =>
+        true,
+      _ => false,
+    };
   }
 }
