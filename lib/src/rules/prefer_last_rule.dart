@@ -5,7 +5,6 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/type_checker.dart';
 
 class PreferLastRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -35,34 +34,60 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node case MethodInvocation(
-      methodName: SimpleIdentifier(name: 'elementAt'),
-      argumentList: ArgumentList(
-        arguments: [
-          BinaryExpression(
-            leftOperand: Identifier(name: 'length'),
-            operator: Token(type: TokenType.MINUS),
-            rightOperand: IntegerLiteral(value: 1),
-          ),
-        ],
-      ),
-      target: Expression(staticType: final targetType?),
-    ) when iterableChecker.isAssignableFromType(targetType)) {
+    if (node.isLastElementAccess) {
       rule.reportAtNode(node);
     }
   }
 
   @override
   void visitIndexExpression(IndexExpression node) {
-    if (node case IndexExpression(
+    if (node.isLastElementAccess) {
+      rule.reportAtNode(node);
+    }
+  }
+}
+
+extension MethodInvocationExtension on MethodInvocation {
+  bool get isLastElementAccess {
+    if (this case MethodInvocation(
+      target: SimpleIdentifier(name: final targetName),
+      methodName: SimpleIdentifier(name: 'elementAt'),
+      argumentList: ArgumentList(
+        arguments: [
+          BinaryExpression(
+            leftOperand: PrefixedIdentifier(
+              identifier: SimpleIdentifier(name: 'length'),
+              prefix: SimpleIdentifier(name: final prefixName),
+            ),
+            operator: Token(type: TokenType.MINUS),
+            rightOperand: IntegerLiteral(value: 1),
+          ),
+        ],
+      ),
+    ) when (prefixName == targetName)) {
+      return true;
+    }
+
+    return false;
+  }
+}
+
+extension IndexExpressionExtension on IndexExpression {
+  bool get isLastElementAccess {
+    if (this case IndexExpression(
+      target: SimpleIdentifier(name: final targetName),
       index: BinaryExpression(
-        leftOperand: Identifier(name: 'length'),
+        leftOperand: PrefixedIdentifier(
+          identifier: SimpleIdentifier(name: 'length'),
+          prefix: SimpleIdentifier(name: final prefixName),
+        ),
         operator: Token(type: TokenType.MINUS),
         rightOperand: IntegerLiteral(value: 1),
       ),
-      target: Expression(staticType: final targetType?),
-    ) when iterableChecker.isAssignableFromType(targetType)) {
-      rule.reportAtNode(node);
+    ) when (prefixName == targetName)) {
+      return true;
     }
+
+    return false;
   }
 }
