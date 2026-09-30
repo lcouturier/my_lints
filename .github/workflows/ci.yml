@@ -33,11 +33,3 @@ jobs:
         with:
           name: coverage
           path: coverage/lcov.info
-
-      - name: Generate coverage report
-        run: genhtml coverage/lcov.info -o coverage/html
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: coverage/html
