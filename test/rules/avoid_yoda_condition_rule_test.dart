@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:my_lints/src/common/extensions.dart';
 import 'package:my_lints/src/rules/avoid_yoda_condition_rule.dart';
 
+import '../rule_test_harness.dart';
+
 void main() {
   group('AvoidYodaConditionsRule metadata', () {
     test('exposes expected diagnostic code', () {
@@ -17,29 +19,46 @@ void main() {
   });
 
   group('AvoidYodaConditionsRule detection logic', () {
-    // test('matches when left side is a constant and right side is not', () {
-    //   final expression = _firstBinaryExpression('void f(int value) { if (1 == value) {} }');
+    test('registers every supported condition host', () {
+      expect(
+        registeredNodeTypes(AvoidYodaConditionsRule()),
+        containsAll(['IfStatement', 'WhileStatement', 'DoStatement', 'ForStatement', 'ConditionalExpression']),
+      );
+    });
 
-    //   expect(_matchesRule(expression), isTrue);
-    // });
+    test('reports constants on the left in if, loop, and conditional expressions', () {
+      final diagnostics = runAnalysisRule(AvoidYodaConditionsRule(), '''
+void f(int value) {
+  if (1 == value) {}
+  while (2 == value) {}
+  do {} while (3 != value);
+  for (; 4 != value;) { break; }
+  final result = 5 == value ? 1 : 2;
+}
+''');
 
-    // test('matches in do/while condition', () {
-    //   final expression = _firstBinaryExpression('void f(int value) { do {} while (0 != value); }');
+      expect(diagnostics, hasLength(5));
+    });
 
-    //   expect(_matchesRule(expression), isTrue);
-    // });
+    test('reports constants on the left in while and for loop conditions', () {
+      final diagnostics = runAnalysisRule(AvoidYodaConditionsRule(), '''
+void f(int value) {
+  while (2 == value) {}
+  for (; 4 != value;) { break; }
+}
+''');
 
-    // test('matches in ternary condition', () {
-    //   final expression = _firstBinaryExpression('int f(int value) => 0 == value ? 1 : 2;');
+      expect(diagnostics, hasLength(2));
+    });
 
-    //   expect(_matchesRule(expression), isTrue);
-    // });
+    test('does not report variables on the left or two constants', () {
+      final diagnostics = runAnalysisRule(
+        AvoidYodaConditionsRule(),
+        'void f(int value) { if (value == 1) {} if (1 == 2) {} }',
+      );
 
-    // test('does not match when variable is on the left', () {
-    //   final expression = _firstBinaryExpression('void f(int value) { if (value == 1) {} }');
-
-    //   expect(_matchesRule(expression), isFalse);
-    // });
+      expect(diagnostics, isEmpty);
+    });
 
     test('does not match when both sides are constants', () {
       final expression = _firstBinaryExpression('void f() { if (1 == 2) {} }');

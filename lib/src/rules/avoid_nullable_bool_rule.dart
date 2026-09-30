@@ -17,10 +17,7 @@ class AvoidNullableBoolRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry
-      ..addFieldDeclaration(this, visitor)
-      ..addVariableDeclarationList(this, visitor)
-      ..addSimpleFormalParameter(this, visitor);
+    registry.addNamedType(this, visitor);
   }
 }
 
