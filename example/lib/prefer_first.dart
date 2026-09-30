@@ -10,6 +10,13 @@ void foo() {
   print(second);
 }
 
+void barz() {
+  final List<int>? items = null;
+  final first = items?[0]; // LINT
+  final firstElement = items?.elementAt(0); // LINT
+}
+
+/// Last element access examples.
 void bar() {
   final list = [1, 2, 3];
   final first = list[list.length - 1]; // LINT
@@ -18,10 +25,4 @@ void bar() {
   print(first);
   print(firstElement);
   print(second);
-}
-
-void barz() {
-  final List<int>? items = null;
-  final first = items?[0]; // LINT
-  final firstElement = items?.elementAt(0); // LINT
 }
