@@ -7,7 +7,11 @@ import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
 class PreferFirstRule extends AnalysisRule {
-  static const LintCode code = LintCode('prefer_first_over_index', 'prefer first over index 0');
+  static const LintCode code = LintCode(
+    'prefer_first_over_index',
+    "Use '.first' instead of accessing the first element by index.",
+    correctionMessage: "Replace with '.first'.",
+  );
 
   PreferFirstRule() : super(name: code.name, description: code.problemMessage);
 
@@ -30,21 +34,40 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node case MethodInvocation(
-      methodName: SimpleIdentifier(name: 'elementAt'),
-      argumentList: ArgumentList(arguments: [IntegerLiteral(value: 0)]),
-    )) {
+    if (node.isFirstElementAccess) {
       rule.reportAtOffset(node.methodName.offset, node.methodName.length);
     }
   }
 
   @override
   void visitIndexExpression(IndexExpression node) {
-    if (node case IndexExpression(
-      index: IntegerLiteral(value: 0),
-      target: Expression(staticType: final targetType?),
-    ) when iterableChecker.isAssignableFromType(targetType)) {
+    if (node.isFirstElementAccess) {
       rule.reportAtOffset(node.leftBracket.offset, node.rightBracket.end - node.leftBracket.offset);
     }
+  }
+}
+
+extension PreferFirstRuleOnIndexExpression on IndexExpression {
+  bool get isFirstElementAccess {
+    if (this case IndexExpression(
+      target: Expression(staticType: final targetType),
+      index: IntegerLiteral(value: 0),
+    ) when (targetType != null && iterableChecker.isAssignableFromType(targetType)) || (targetType == null)) {
+      return true;
+    }
+    return false;
+  }
+}
+
+extension PreferFirstRuleOnMethodInvocation on MethodInvocation {
+  bool get isFirstElementAccess {
+    if (this case MethodInvocation(
+      target: Expression(staticType: final targetType),
+      methodName: SimpleIdentifier(name: 'elementAt'),
+      argumentList: ArgumentList(arguments: [IntegerLiteral(value: 0)]),
+    ) when (targetType != null && iterableChecker.isAssignableFromType(targetType)) || (targetType == null)) {
+      return true;
+    }
+    return false;
   }
 }
