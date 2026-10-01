@@ -1,14 +1,69 @@
+import 'dart:io';
+
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
+import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/error/listener.dart';
 
 List<AstNode> runAnalysisRule(AnalysisRule rule, String source) {
   return runAnalysisRuleOnUnit(rule, parseString(content: source).unit);
+}
+
+Future<CompilationUnit> resolveSource(String source, {String fileName = 'test.dart'}) async {
+  final directory = await Directory.systemTemp.createTemp('my_lints_test_');
+  final path = directory.uri.resolve(fileName).toFilePath();
+  await File(path).writeAsString(source);
+
+  try {
+    final collection = AnalysisContextCollection(includedPaths: [directory.path], sdkPath: _findDartSdkPath());
+    try {
+      final result = await collection.contextFor(path).currentSession.getResolvedUnit(path);
+      if (result is! ResolvedUnitResult) {
+        throw StateError('Could not resolve test source: $path');
+      }
+      return result.unit;
+    } finally {
+      await collection.dispose();
+    }
+  } finally {
+    await directory.delete(recursive: true);
+  }
+}
+
+String _findDartSdkPath() {
+  String currentPath = File(Platform.resolvedExecutable).parent.path;
+
+  while (true) {
+    final directSdkMetadata = Directory(
+      currentPath,
+    ).uri.resolve('lib/_internal/sdk_library_metadata/lib/libraries.dart').toFilePath();
+    if (File(directSdkMetadata).existsSync()) {
+      return currentPath;
+    }
+
+    final bundledSdkPath = Directory(currentPath).uri.resolve('bin/cache/dart-sdk').toFilePath();
+    final bundledSdkMetadata = Directory(
+      bundledSdkPath,
+    ).uri.resolve('lib/_internal/sdk_library_metadata/lib/libraries.dart').toFilePath();
+    if (File(bundledSdkMetadata).existsSync()) {
+      return bundledSdkPath;
+    }
+
+    final parentPath = Directory(currentPath).parent.path;
+    if (parentPath == currentPath) {
+      break;
+    }
+    currentPath = parentPath;
+  }
+
+  throw StateError('Could not find Dart SDK from ${Platform.resolvedExecutable}');
 }
 
 Set<String> registeredNodeTypes(AnalysisRule rule) {
@@ -19,7 +74,7 @@ Set<String> registeredNodeTypes(AnalysisRule rule) {
 
 List<AstNode> runAnalysisRuleOnUnit(AnalysisRule rule, CompilationUnit unit) {
   final registry = _TestRuleVisitorRegistry();
-  final reporter = _TestDiagnosticReporter();
+  final reporter = _TestDiagnosticReporter(unit);
   rule.reporter = reporter;
   rule.registerNodeProcessors(registry, _TestRuleContext());
 
@@ -52,12 +107,25 @@ class _TestRuleVisitorRegistry implements RuleVisitorRegistry {
 }
 
 class _TestDiagnosticReporter implements DiagnosticReporter {
+  final CompilationUnit unit;
   final List<AstNode> reportedNodes = [];
+
+  _TestDiagnosticReporter(this.unit);
 
   @override
   dynamic noSuchMethod(Invocation invocation) {
-    if (invocation.memberName.toString() == 'Symbol("atNode")') {
-      final node = invocation.positionalArguments.first as AstNode;
+    final memberName = invocation.memberName.toString();
+    AstNode? node;
+    if (memberName == 'Symbol("atNode")') {
+      node = invocation.positionalArguments.first as AstNode;
+    } else if (memberName == 'Symbol("atToken")') {
+      final token = invocation.positionalArguments.first as Token;
+      final finder = _ClassDeclarationFinder(token);
+      unit.accept(finder);
+      node = finder.declaration;
+    }
+
+    if (node != null) {
       if (!reportedNodes.contains(node)) {
         reportedNodes.add(node);
       }
@@ -72,6 +140,21 @@ class _TestDiagnostic implements Diagnostic {
 
   @override
   dynamic noSuchMethod(Invocation invocation) => null;
+}
+
+class _ClassDeclarationFinder extends RecursiveAstVisitor<void> {
+  final Token token;
+  ClassDeclaration? declaration;
+
+  _ClassDeclarationFinder(this.token);
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    if (node.name.offset == token.offset) {
+      declaration = node;
+    }
+    super.visitClassDeclaration(node);
+  }
 }
 
 class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
@@ -89,6 +172,12 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
   void visitBinaryExpression(BinaryExpression node) {
     _dispatch(node, 'BinaryExpression');
     super.visitBinaryExpression(node);
+  }
+
+  @override
+  void visitClassDeclaration(ClassDeclaration node) {
+    _dispatch(node, 'ClassDeclaration');
+    super.visitClassDeclaration(node);
   }
 
   @override
@@ -137,6 +226,12 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
   void visitIfStatement(IfStatement node) {
     _dispatch(node, 'IfStatement');
     super.visitIfStatement(node);
+  }
+
+  @override
+  void visitInstanceCreationExpression(InstanceCreationExpression node) {
+    _dispatch(node, 'InstanceCreationExpression');
+    super.visitInstanceCreationExpression(node);
   }
 
   @override
