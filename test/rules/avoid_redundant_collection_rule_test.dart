@@ -43,5 +43,21 @@ void f(List<int> values, Map<String, int> entries) {
 
       expect(diagnostics, isEmpty);
     });
+
+    test('does not report non-collection constructors', () async {
+      final unit = await resolveSource('''
+class Person {
+  Person.from(String value) {}
+}
+
+void f(String value) {
+  Person.from(value);
+}
+''');
+
+      final diagnostics = runAnalysisRuleOnUnit(AvoidRedundantCollectionRule(), unit);
+
+      expect(diagnostics, isEmpty);
+    });
   });
 }

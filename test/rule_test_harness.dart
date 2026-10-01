@@ -120,7 +120,7 @@ class _TestDiagnosticReporter implements DiagnosticReporter {
       node = invocation.positionalArguments.first as AstNode;
     } else if (memberName == 'Symbol("atToken")') {
       final token = invocation.positionalArguments.first as Token;
-      final finder = _ClassDeclarationFinder(token);
+      final finder = _NamedDeclarationFinder(token);
       unit.accept(finder);
       node = finder.declaration;
     }
@@ -142,11 +142,11 @@ class _TestDiagnostic implements Diagnostic {
   dynamic noSuchMethod(Invocation invocation) => null;
 }
 
-class _ClassDeclarationFinder extends RecursiveAstVisitor<void> {
+class _NamedDeclarationFinder extends RecursiveAstVisitor<void> {
   final Token token;
-  ClassDeclaration? declaration;
+  AstNode? declaration;
 
-  _ClassDeclarationFinder(this.token);
+  _NamedDeclarationFinder(this.token);
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
@@ -154,6 +154,14 @@ class _ClassDeclarationFinder extends RecursiveAstVisitor<void> {
       declaration = node;
     }
     super.visitClassDeclaration(node);
+  }
+
+  @override
+  void visitMethodDeclaration(MethodDeclaration node) {
+    if (node.name.offset == token.offset) {
+      declaration = node;
+    }
+    super.visitMethodDeclaration(node);
   }
 }
 
@@ -253,6 +261,12 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
   }
 
   @override
+  void visitMethodDeclaration(MethodDeclaration node) {
+    _dispatch(node, 'MethodDeclaration');
+    super.visitMethodDeclaration(node);
+  }
+
+  @override
   void visitNamedType(NamedType node) {
     _dispatch(node, 'NamedType');
     super.visitNamedType(node);
@@ -286,6 +300,12 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
   void visitSetOrMapLiteral(SetOrMapLiteral node) {
     _dispatch(node, 'SetOrMapLiteral');
     super.visitSetOrMapLiteral(node);
+  }
+
+  @override
+  void visitSwitchExpression(SwitchExpression node) {
+    _dispatch(node, 'SwitchExpression');
+    super.visitSwitchExpression(node);
   }
 
   @override

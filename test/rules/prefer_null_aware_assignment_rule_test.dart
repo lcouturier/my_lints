@@ -1,70 +1,62 @@
-import 'package:analyzer/dart/analysis/utilities.dart';
-import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_lints/src/rules/prefer_null_aware_assignment_rule.dart';
 
+import '../rule_test_harness.dart';
+
 void main() {
-  group('PreferVoidCallbackRule metadata', () {
-    test('exposes expected diagnostic code', () {
+  group('PreferNullAwareAssignmentRule', () {
+    test('exposes the expected diagnostic code', () {
       final rule = PreferNullAwareAssignmentRule();
 
       expect(rule.diagnosticCode.name, 'prefer_null_aware_assignment');
       expect(rule.diagnosticCode.correctionMessage, 'Use ??= instead of explicit null check and assignment.');
     });
-  });
 
-  group('PreferNullAwareAssignmentRule detection logic', () {
-    test('matches a void function type without parameters', () {
-      expect(
-        _isReplaceable('''
-void f(int? a)
-{
+    test('reports a replaceable null check followed by assignment', () {
+      final diagnostics = runAnalysisRule(
+        PreferNullAwareAssignmentRule(),
+        '''
+void f(int? a) {
   if (a == null) {
     a = 42;
   }
 }
-      '''),
-        isTrue,
+''',
       );
+
+      expect(diagnostics, hasLength(1));
     });
 
-    test('matches a void function type without parameters', () {
-      expect(
-        _isReplaceable('''
-void f(int? a)
-{
+    test('does not report a null check that contains an else branch', () {
+      final diagnostics = runAnalysisRule(
+        PreferNullAwareAssignmentRule(),
+        '''
+void f(int? a) {
   if (a == null) {
     a = 42;
   } else {
     a = 10;
   }
 }
-      '''),
-        isFalse,
+''',
       );
+
+      expect(diagnostics, isEmpty);
+    });
+
+    test('does not report a null check that assigns a different variable', () {
+      final diagnostics = runAnalysisRule(
+        PreferNullAwareAssignmentRule(),
+        '''
+void f(int? a, int? b) {
+  if (a == null) {
+    b = 42;
+  }
+}
+''',
+      );
+
+      expect(diagnostics, isEmpty);
     });
   });
-}
-
-bool _isReplaceable(String source) {
-  final visitor = _NullAwareAssignmentVisitor();
-  parseString(content: source).unit.accept(visitor);
-
-  final node = visitor.node;
-  if (node == null) {
-    throw StateError('No GenericFunctionType found in source: $source');
-  }
-
-  return node.isReplacable;
-}
-
-class _NullAwareAssignmentVisitor extends RecursiveAstVisitor<void> {
-  IfStatement? node;
-
-  @override
-  void visitIfStatement(IfStatement node) {
-    this.node ??= node;
-    super.visitIfStatement(node);
-  }
 }
