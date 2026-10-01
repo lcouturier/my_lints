@@ -6,6 +6,26 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 
+/// A rule that prefers using `VoidCallback` over `void Function()`.
+///
+/// This rule identifies function types that can be replaced by `VoidCallback`
+/// or `ValueGetter` and reports them for refactoring.
+///
+/// ## Example
+///
+/// Bad:
+/// ```dart
+/// class A {
+///   void Function() cb;
+/// }
+/// ```
+///
+/// Good:
+/// ```dart
+/// class A {
+///   VoidCallback cb;
+/// }
+/// ```
 class PreferVoidCallbackRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_void_callback',

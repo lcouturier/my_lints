@@ -319,4 +319,10 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
     _dispatch(node, 'WhileStatement');
     super.visitWhileStatement(node);
   }
+
+  @override
+  void visitGenericFunctionType(GenericFunctionType node) {
+    _dispatch(node, 'GenericFunctionType');
+    super.visitGenericFunctionType(node);
+  }
 }

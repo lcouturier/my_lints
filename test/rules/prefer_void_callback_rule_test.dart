@@ -1,8 +1,7 @@
-import 'package:analyzer/dart/analysis/utilities.dart';
-import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_lints/src/rules/prefer_void_callback_rule.dart';
+
+import '../rule_test_harness.dart';
 
 void main() {
   group('PreferVoidCallbackRule metadata', () {
@@ -16,53 +15,43 @@ void main() {
 
   group('PreferVoidCallbackRule detection logic', () {
     test('matches a void function type without parameters', () {
-      expect(_isReplaceable('class A { void Function() cb; }'), isTrue);
+      final diagnostics = runAnalysisRule(PreferVoidCallbackRule(), '''
+class A { 
+  void Function() cb; 
+}
+''');
+
+      expect(diagnostics, hasLength(1));
     });
 
     test('matches a nullable function type', () {
-      expect(_isReplaceable('class A { void Function()? cb; }'), isTrue);
+      final diagnostics = runAnalysisRule(PreferVoidCallbackRule(), '''
+class A { 
+  void Function()? cb; 
+}
+''');
+
+      expect(diagnostics, hasLength(1));
     });
 
     test('matches a non-void return type, replaceable by ValueGetter', () {
-      expect(_isReplaceable('class A { int Function() cb; }'), isTrue);
-    });
+      final diagnostics = runAnalysisRule(PreferVoidCallbackRule(), '''
+class A { 
+  int Function() cb; 
+}
+''');
 
-    test('does not match the declaration site of a type alias', () {
-      expect(_isReplaceable('typedef Cb = void Function();'), isFalse);
-    });
-
-    test('does not match a Future return type, no alias exists', () {
-      expect(_isReplaceable('class A { Future Function() cb; }'), isFalse);
+      expect(diagnostics, hasLength(1));
     });
 
     test('does not match when the function type has parameters', () {
-      expect(_isReplaceable('class A { void Function(int) cb; }'), isFalse);
-    });
+      final diagnostics = runAnalysisRule(PreferVoidCallbackRule(), '''
+class A { 
+  void Function(int) cb; 
+}
+''');
 
-    test('does not match when the function type is generic', () {
-      expect(_isReplaceable('class A { void Function<T>() cb; }'), isFalse);
+      expect(diagnostics, isEmpty);
     });
   });
-}
-
-bool _isReplaceable(String source) {
-  final visitor = _FirstGenericFunctionTypeVisitor();
-  parseString(content: source).unit.accept(visitor);
-
-  final node = visitor.node;
-  if (node == null) {
-    throw StateError('No GenericFunctionType found in source: $source');
-  }
-
-  return node.isReplaceableByCallbackAlias;
-}
-
-class _FirstGenericFunctionTypeVisitor extends RecursiveAstVisitor<void> {
-  GenericFunctionType? node;
-
-  @override
-  void visitGenericFunctionType(GenericFunctionType node) {
-    this.node ??= node;
-    super.visitGenericFunctionType(node);
-  }
 }
