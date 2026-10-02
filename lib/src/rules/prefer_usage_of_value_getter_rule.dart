@@ -6,6 +6,7 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+@Deprecated('Do not use anymore this rule, prefer using prefer_void_callable_rule.')
 class PreferUsageOfValueGetterRule extends AnalysisRule {
   static const LintCode code = LintCode('prefer_usage_of_value_getter', 'Prefer using the value getter.');
 
@@ -21,6 +22,7 @@ class PreferUsageOfValueGetterRule extends AnalysisRule {
   }
 }
 
+@Deprecated('Do not use anymore this rule, prefer using prefer_void_callable_rule.')
 class _Visitor extends SimpleAstVisitor<void> {
   final PreferUsageOfValueGetterRule rule;
   _Visitor(this.rule);
@@ -33,6 +35,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   }
 }
 
+@Deprecated('Do not use anymore this rule, prefer using prefer_void_callable_rule.')
 extension GenericFunctionTypeExtension on GenericFunctionType {
   bool get isEligibleForValueGetter {
     if (this case GenericFunctionType(
