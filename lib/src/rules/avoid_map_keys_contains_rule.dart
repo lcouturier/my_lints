@@ -3,10 +3,18 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+/// Avoid using `keys.contains` for map key checks. Use `map.containsKey` instead for better performance.
+/// Example:
+/// ```dart
+/// // LINT
+/// if (myMap.keys.contains('key')) { ... }
+///
+/// // OK
+/// if (myMap.containsKey('key')) { ... }
+/// ```
 class AvoidMapKeysContainsRule extends AnalysisRule {
   static LintCode code = const LintCode(
     'avoid_map_keys_contains',
@@ -33,24 +41,23 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    final element = node.methodName.element;
-
-    if (!(element is MethodElement && element.name == 'contains' && element.library.isDartCore)) return;
-    if (node.argumentList.arguments.length != 1) return;
-
-    final target = switch (node.target) {
-      PrefixedIdentifier(identifier: SimpleIdentifier(name: 'keys'), :final prefix) => prefix,
-      PropertyAccess(propertyName: SimpleIdentifier(name: 'keys'), :final target) => target,
-      _ => null,
-    };
-
-    if (target == null) return;
-    if (target.staticType == null) return;
-    if (!_isMap(target.staticType!)) return;
-
-    rule.reportAtNode(node);
+    if (node case MethodInvocation(
+      target: final target,
+      methodName: SimpleIdentifier(name: 'contains'),
+      argumentList: ArgumentList(arguments: [_]),
+    )) {
+      final mapTarget = switch (target) {
+        PrefixedIdentifier(identifier: SimpleIdentifier(name: 'keys'), :final prefix) => prefix,
+        PropertyAccess(propertyName: SimpleIdentifier(name: 'keys'), :final target) => target,
+        _ => null,
+      };
+      if (mapTarget?.staticType != null && _isMap(mapTarget!.staticType!)) {
+        rule.reportAtNode(node);
+      }
+    }
   }
 
+  // ignore: unused_element
   bool _isMap(DartType type) {
     return type is InterfaceType && type.isDartCoreMap;
   }

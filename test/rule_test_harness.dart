@@ -325,4 +325,10 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
     _dispatch(node, 'GenericFunctionType');
     super.visitGenericFunctionType(node);
   }
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    _dispatch(node, 'MethodInvocation');
+    super.visitMethodInvocation(node);
+  }
 }
