@@ -38,15 +38,15 @@ class _Visitor extends SimpleAstVisitor<void> {
   }
 }
 
-extension BinaryExpressionExtension on BinaryExpression {
+extension on BinaryExpression {
   bool get isIndexOfComparedToMinusOne {
     return switch (this) {
       BinaryExpression(
-        leftOperand: MethodInvocation(methodName: SimpleIdentifier(name: 'indexOf')),
+        leftOperand: MethodInvocation(methodName: SimpleIdentifier(name: 'indexOf'), :final target),
         operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
         rightOperand: PrefixExpression(operator: Token(type: TokenType.MINUS), operand: IntegerLiteral(value: 1)),
       ) =>
-        true,
+        target?.staticType?.isDartCoreList ?? false,
       _ => false,
     };
   }

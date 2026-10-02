@@ -1,8 +1,7 @@
-import 'package:analyzer/dart/analysis/utilities.dart';
-import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_lints/src/rules/prefer_first_rule.dart';
+
+import '../rule_test_harness.dart';
 
 void main() {
   group('PreferFirstRule metadata', () {
@@ -15,71 +14,58 @@ void main() {
     });
   });
 
-  group('isLastElementAccess in index expression', () {
-    test('matches a simple identifier receiver', () {
-      final expression = _firstIndexExpression('''
-void foo() {
-  final List<int> list = [1, 2, 3];
-  final first = list[0]; // LINT
-}
-''');
-      expect(expression.isFirstElementAccess, true);
-    });
-  });
-
-  group('isLastElementAccess in method invocation', () {
-    test('matches a simple identifier receiver', () {
-      final expression = _firstMethodInvocation('''
+  group('isFirstElementAccess in index expression', () {
+    test('reports where results checked for emptiness on iterables', () async {
+      final unit = await resolveSource('''
 void bar() {
   final List<int> list = [1, 2, 3];
-  final first = list.elementAt(0);
+  final first = list[0];
   final second = list[1];
 }
 ''');
-      expect(expression.isFirstElementAccess, true);
+
+      final diagnostics = runAnalysisRuleOnUnit(PreferFirstRule(), unit);
+
+      expect(diagnostics, hasLength(1));
+    });
+
+    test('does not report for non-first element access', () async {
+      final unit = await resolveSource('''
+void bar() {
+  final List<int> list = [1, 2, 3];
+  final second = list[1];
+}
+''');
+
+      final diagnostics = runAnalysisRuleOnUnit(PreferFirstRule(), unit);
+
+      expect(diagnostics, isEmpty);
     });
   });
+
+  group('isFirstElementAccess in method invocation', () {
+    test('reports for first element accessed via elementAt', () async {
+      final unit = await resolveSource('''
+void bar() {
+  final List<int> list = [1, 2, 3];
+  final first = list.elementAt(0);
 }
+''');
+      final diagnostics = runAnalysisRuleOnUnit(PreferFirstRule(), unit);
+      expect(diagnostics, hasLength(1));
+    });
 
-IndexExpression _firstIndexExpression(String source) {
-  final parseResult = parseString(content: source);
-  final visitor = _Visitor();
-  parseResult.unit.accept(visitor);
-
-  final expression = visitor.indexExpression;
-  if (expression == null) {
-    throw StateError('No IndexExpression found in source: $source');
-  }
-
-  return expression;
+    test('does not report for non-first element access', () async {
+      final unit = await resolveSource('''
+void bar() {
+  final List<int> list = [1, 2, 3];
+  final second = list.elementAt(1);
 }
+''');
 
-MethodInvocation _firstMethodInvocation(String source) {
-  final parseResult = parseString(content: source);
-  final visitor = _Visitor();
-  parseResult.unit.accept(visitor);
+      final diagnostics = runAnalysisRuleOnUnit(PreferFirstRule(), unit);
 
-  final expression = visitor.methodInvocation;
-  if (expression == null) {
-    throw StateError('No MethodInvocation found in source: $source');
-  }
-
-  return expression;
-}
-
-class _Visitor extends RecursiveAstVisitor<void> {
-  IndexExpression? indexExpression;
-  MethodInvocation? methodInvocation;
-
-  @override
-  void visitIndexExpression(IndexExpression node) {
-    indexExpression ??= node;
-    super.visitIndexExpression(node);
-  }
-
-  @override
-  void visitMethodInvocation(MethodInvocation node) {
-    methodInvocation ??= node;
-    super.visitMethodInvocation(node);
-  }
+      expect(diagnostics, isEmpty);
+    });
+  });
 }

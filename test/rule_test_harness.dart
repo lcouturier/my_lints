@@ -327,6 +327,12 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
   }
 
   @override
+  void visitIndexExpression(IndexExpression node) {
+    _dispatch(node, 'IndexExpression');
+    super.visitIndexExpression(node);
+  }
+
+  @override
   void visitMethodInvocation(MethodInvocation node) {
     _dispatch(node, 'MethodInvocation');
     super.visitMethodInvocation(node);

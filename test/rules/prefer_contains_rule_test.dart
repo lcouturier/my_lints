@@ -1,8 +1,7 @@
-import 'package:analyzer/dart/analysis/utilities.dart';
-import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_lints/src/rules/prefer_contains_rule.dart';
+
+import '../rule_test_harness.dart';
 
 void main() {
   group('PreferContainsRule metadata', () {
@@ -16,67 +15,52 @@ void main() {
   });
 
   group('isIndexOfComparedToMinusOne', () {
-    test('matches equality comparison', () {
-      final expression = _firstBinaryExpression('''
+    test('reports where results checked for emptiness on iterables', () async {
+      final unit = await resolveSource('''
 void bar(List<int> values, int value) {
   final isMissing = values.indexOf(value) == -1;
 }
 ''');
 
-      expect(expression.isIndexOfComparedToMinusOne, isTrue);
+      final diagnostics = runAnalysisRuleOnUnit(PreferContainsRule(), unit);
+
+      expect(diagnostics, hasLength(1));
     });
+  });
 
-    test('matches inequality comparison', () {
-      final expression = _firstBinaryExpression('''
-void bar(List<int> values, int value) {
-  final isPresent = values.indexOf(value) != -1;
-}
-''');
-
-      expect(expression.isIndexOfComparedToMinusOne, isTrue);
-    });
-
-    test('does not match a different comparison value', () {
-      final expression = _firstBinaryExpression('''
+  test('does not report when indexOf is not compared to -1', () async {
+    final unit = await resolveSource('''
 void bar(List<int> values, int value) {
   final isAtFirstPosition = values.indexOf(value) == 0;
 }
 ''');
 
-      expect(expression.isIndexOfComparedToMinusOne, isFalse);
-    });
+    final diagnostics = runAnalysisRuleOnUnit(PreferContainsRule(), unit);
 
-    test('does not match a different method', () {
-      final expression = _firstBinaryExpression('''
+    expect(diagnostics, isEmpty);
+  });
+
+  test('does not report when indexOf is not used', () async {
+    final unit = await resolveSource('''
 void bar(List<int> values, int value) {
-  final result = values.contains(value) == -1;
+  final isEmpty = values.isEmpty;
 }
 ''');
 
-      expect(expression.isIndexOfComparedToMinusOne, isFalse);
-    });
+    final diagnostics = runAnalysisRuleOnUnit(PreferContainsRule(), unit);
+
+    expect(diagnostics, isEmpty);
   });
+
+  test('reports when indexOf is compared to -1 using !=', () async {
+    final unit = await resolveSource('''
+void bar(List<int> values, int value) {
+  final isPresent = values.indexOf(value) != -1;
 }
+''');
 
-BinaryExpression _firstBinaryExpression(String source) {
-  final parseResult = parseString(content: source);
-  final visitor = _Visitor();
-  parseResult.unit.accept(visitor);
+    final diagnostics = runAnalysisRuleOnUnit(PreferContainsRule(), unit);
 
-  final expression = visitor.binaryExpression;
-  if (expression == null) {
-    throw StateError('No BinaryExpression found in source: $source');
-  }
-
-  return expression;
-}
-
-class _Visitor extends RecursiveAstVisitor<void> {
-  BinaryExpression? binaryExpression;
-
-  @override
-  void visitBinaryExpression(BinaryExpression node) {
-    binaryExpression ??= node;
-    super.visitBinaryExpression(node);
-  }
+    expect(diagnostics, hasLength(1));
+  });
 }

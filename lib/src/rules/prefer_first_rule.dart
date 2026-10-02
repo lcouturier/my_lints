@@ -34,38 +34,31 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node.isFirstElementAccess) {
-      rule.reportAtOffset(node.methodName.offset, node.methodName.length);
+    if (node case MethodInvocation(
+      target: Expression(staticType: final targetType?),
+      methodName: SimpleIdentifier(name: 'elementAt'),
+      argumentList: ArgumentList(arguments: [IntegerLiteral(value: 0)]),
+    ) when (iterableChecker.isAssignableFromType(targetType))) {
+      rule.reportAtNode(node);
     }
+    super.visitMethodInvocation(node);
   }
 
   @override
   void visitIndexExpression(IndexExpression node) {
     if (node.isFirstElementAccess) {
-      rule.reportAtOffset(node.leftBracket.offset, node.rightBracket.end - node.leftBracket.offset);
+      rule.reportAtNode(node);
     }
+    super.visitIndexExpression(node);
   }
 }
 
-extension PreferFirstRuleOnIndexExpression on IndexExpression {
+extension on IndexExpression {
   bool get isFirstElementAccess {
     if (this case IndexExpression(
-      target: Expression(staticType: final targetType),
+      target: Expression(staticType: final targetType?),
       index: IntegerLiteral(value: 0),
-    ) when (targetType != null && iterableChecker.isAssignableFromType(targetType)) || (targetType == null)) {
-      return true;
-    }
-    return false;
-  }
-}
-
-extension PreferFirstRuleOnMethodInvocation on MethodInvocation {
-  bool get isFirstElementAccess {
-    if (this case MethodInvocation(
-      target: Expression(staticType: final targetType),
-      methodName: SimpleIdentifier(name: 'elementAt'),
-      argumentList: ArgumentList(arguments: [IntegerLiteral(value: 0)]),
-    ) when (targetType != null && iterableChecker.isAssignableFromType(targetType)) || (targetType == null)) {
+    ) when (iterableChecker.isAssignableFromType(targetType))) {
       return true;
     }
     return false;
