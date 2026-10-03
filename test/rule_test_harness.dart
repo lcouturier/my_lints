@@ -343,4 +343,10 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
     _dispatch(node, 'RecordTypeAnnotation');
     super.visitRecordTypeAnnotation(node);
   }
+
+  @override
+  void visitAssignmentExpression(AssignmentExpression node) {
+    _dispatch(node, 'AssignmentExpression');
+    super.visitAssignmentExpression(node);
+  }
 }
