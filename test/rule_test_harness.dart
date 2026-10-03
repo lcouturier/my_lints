@@ -337,4 +337,10 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
     _dispatch(node, 'MethodInvocation');
     super.visitMethodInvocation(node);
   }
+
+  @override
+  void visitRecordTypeAnnotation(RecordTypeAnnotation node) {
+    _dispatch(node, 'RecordTypeAnnotation');
+    super.visitRecordTypeAnnotation(node);
+  }
 }
