@@ -5,6 +5,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+@Deprecated('This rule is deprecated and will be removed in a future version. ')
 class AvoidMixingNamedAndPositionalFields extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_mixing_named_and_positional_fields',
@@ -25,6 +26,7 @@ class AvoidMixingNamedAndPositionalFields extends AnalysisRule {
   }
 }
 
+@Deprecated('This rule is deprecated and will be removed in a future version. ')
 class _Visitor extends SimpleAstVisitor<void> {
   final AvoidMixingNamedAndPositionalFields rule;
 
