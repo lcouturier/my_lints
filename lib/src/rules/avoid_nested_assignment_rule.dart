@@ -9,20 +9,18 @@ import 'package:analyzer/error/error.dart';
 /// A rule that detects nested assignments.
 ///
 /// Nested assignments can lead to confusion or indicate an incorrect operator (= instead of ==).
-///
-/// ## Example
-///
-/// ```
-/// // Avoid
-/// if (a = b) {
-///   // ...
+/// For example, the following code will trigger a warning:
+/// ```dart
+/// void f(int a, int b) {
+///  a = b = 42;
 /// }
 ///
-/// // Good
-/// if (a == b) {
-///   // ...
+/// The following code will not trigger a warning:
+/// ```dart
+/// void f(int a, int b) {
+///  a = 42;
+///  b = 42;
 /// }
-/// ```
 class AvoidNestedAssignmentRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_nested_assignment',

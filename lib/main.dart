@@ -138,7 +138,6 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferExplicitFunctionType())
       ..registerWarningRule(PreferAnyRule())
       ..registerWarningRule(PreferNullAwareSpreadRule())
-      ..registerWarningRule(AvoidMixingNamedAndPositionalFields())
       ..registerWarningRule(AvoidNestedSwitchExpressionRule())
       ..registerWarningRule(AvoidNestedRecordRule())
       ..registerWarningRule(AvoidYodaConditionsRule())

@@ -5,6 +5,19 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that detects nested if statements.
+/// Nested if statements can lead to confusion and make code harder to read. This rule checks for if statements that are nested more than 3 levels deep and reports them as a warning.
+/// For example, the following code will trigger a warning:
+/// ```dart
+/// void f(int a) {
+///   if (a > 0) {
+///     if (a < 10) {
+///       if (a % 2 == 0) {
+///         print('a is a positive even number less than 10');
+///       }
+///     }
+///   }
+/// }
 class AvoidNestedIfRule extends AnalysisRule {
   static const LintCode code = LintCode('avoid_nested_if', 'Avoid nested if statements.');
 
@@ -29,7 +42,7 @@ class _Visitor extends RecursiveAstVisitor<void> {
   void visitIfStatement(IfStatement node) {
     _depth++;
 
-    if (_depth > 3) {
+    if (_depth > 2) {
       rule.reportAtNode(node);
     }
 

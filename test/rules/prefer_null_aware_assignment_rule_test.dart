@@ -13,24 +13,33 @@ void main() {
     });
 
     test('reports a replaceable null check followed by assignment', () {
-      final diagnostics = runAnalysisRule(
-        PreferNullAwareAssignmentRule(),
-        '''
+      final diagnostics = runAnalysisRule(PreferNullAwareAssignmentRule(), '''
 void f(int? a) {
   if (a == null) {
     a = 42;
   }
 }
-''',
-      );
+''');
 
       expect(diagnostics, hasLength(1));
     });
 
+    test('does not report a null check with additional assignments', () {
+      final diagnostics = runAnalysisRule(PreferNullAwareAssignmentRule(), '''
+void f(int? a) {
+  int b = 0;
+  if (a == null) {
+    b = 10;
+    a = 42;
+  }
+}
+''');
+
+      expect(diagnostics, isEmpty);
+    });
+
     test('does not report a null check that contains an else branch', () {
-      final diagnostics = runAnalysisRule(
-        PreferNullAwareAssignmentRule(),
-        '''
+      final diagnostics = runAnalysisRule(PreferNullAwareAssignmentRule(), '''
 void f(int? a) {
   if (a == null) {
     a = 42;
@@ -38,23 +47,19 @@ void f(int? a) {
     a = 10;
   }
 }
-''',
-      );
+''');
 
       expect(diagnostics, isEmpty);
     });
 
     test('does not report a null check that assigns a different variable', () {
-      final diagnostics = runAnalysisRule(
-        PreferNullAwareAssignmentRule(),
-        '''
+      final diagnostics = runAnalysisRule(PreferNullAwareAssignmentRule(), '''
 void f(int? a, int? b) {
   if (a == null) {
     b = 42;
   }
 }
-''',
-      );
+''');
 
       expect(diagnostics, isEmpty);
     });
