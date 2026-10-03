@@ -6,6 +6,25 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that enforces the use of factory constructors instead of static methods for object creation.
+///
+/// This rule identifies static methods that create instances of the same class
+/// and suggests converting them to factory constructors for better encapsulation
+/// and flexibility in object creation.
+///
+/// Example:
+/// ```dart
+/// class MyClass {
+///   static MyClass create() => MyClass();
+/// }
+/// ```
+///
+/// Should be:
+/// ```dart
+/// class MyClass {
+///   factory MyClass.create() => MyClass();
+/// }
+/// ```
 class PreferFactoryConstructorRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_factory_constructor',
@@ -31,8 +50,9 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodDeclaration(MethodDeclaration node) {
-    final parent = node.parent;
-    if (parent is! ClassDeclaration) return;
+    final parent = node.thisOrAncestorMatching((node) => node is ClassDeclaration);
+    if (parent == null) return;
+    final parentName = (parent as ClassDeclaration).name;
 
     if (node case MethodDeclaration(
       body: FunctionBody(expression: InstanceCreationExpression(:final constructorName)),
@@ -41,10 +61,8 @@ class _Visitor extends SimpleAstVisitor<void> {
       isGetter: false,
       isSetter: false,
     ) when returnType != null) {
-      final parentName = parent.name.lexeme;
-
-      if (parentName == constructorName.type.name.lexeme) {
-        rule.reportAtToken(node.name);
+      if (parentName.lexeme == constructorName.type.name.lexeme) {
+        rule.reportAtNode(node);
       }
     }
   }

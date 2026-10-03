@@ -6,6 +6,14 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that prevents the use of positional record field access.
+///
+/// Example:
+/// ```dart
+/// final record = (1, 2);
+/// print(record.$1); // ❌ Avoid this
+/// print(record.$2); // ❌ Avoid this
+/// ```
 class AvoidPositionalRecordFieldAccessRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_positional_record_field_access',

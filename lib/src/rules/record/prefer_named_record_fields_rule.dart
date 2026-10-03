@@ -5,6 +5,18 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that enforces the use of named record fields for better readability.
+///
+/// This rule checks for record types and literals that use positional fields
+/// instead of named fields, which can reduce code clarity.
+/// Example:
+/// ```dart
+/// // Bad
+/// typedef MyRecord = (String, String);
+///
+/// // Good
+/// typedef MyRecord = ({String name, String value});
+/// ```
 class PreferNamedRecordFieldsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_named_record_fields',
@@ -42,7 +54,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     final allSimple = positional.every((e) => _isSimpleType(e.type));
     if (!allSimple) return;
 
-    // rule.reportAtNode(node);
+    rule.reportAtNode(node);
   }
 
   bool _isSimpleType(TypeAnnotation type) {
@@ -51,22 +63,8 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitRecordLiteral(RecordLiteral node) {
-    for (final field in node.fields) {
-      if (field is! NamedExpression) {
-        rule.reportAtNode(node);
-        return;
-      }
+    if (node case RecordLiteral(:final fields) when fields.any((e) => e is! NamedExpression)) {
+      rule.reportAtNode(node);
     }
-
-    // final positional = node.fields.positionalFields;
-    // final named = node.fields.namedFields;
-
-    // if (named?.fields.isNotEmpty ?? false) return;
-    // if (positional.length < 2) return;
-
-    // final allSimple = node.fields.every((e) => _isSimpleType(e.));
-    // if (!allSimple) return;
-
-    rule.reportAtNode(node);
   }
 }
