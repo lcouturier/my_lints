@@ -355,4 +355,10 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
     _dispatch(node, 'PostfixExpression');
     super.visitPostfixExpression(node);
   }
+
+  @override
+  void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
+    _dispatch(node, 'FunctionExpressionInvocation');
+    super.visitFunctionExpressionInvocation(node);
+  }
 }
