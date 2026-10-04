@@ -349,4 +349,10 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
     _dispatch(node, 'AssignmentExpression');
     super.visitAssignmentExpression(node);
   }
+
+  @override
+  void visitPostfixExpression(PostfixExpression node) {
+    _dispatch(node, 'PostfixExpression');
+    super.visitPostfixExpression(node);
+  }
 }
