@@ -59,12 +59,6 @@ class _Visitor extends SimpleAstVisitor<void> {
       for (final element in result) {
         rule.reportAtToken(element.left.name, arguments: [element.left.name.lexeme]);
       }
-
-      // for (var element in extensionMethods) {
-      //   if (methods.any((m) => m.name == element.name.lexeme)) {
-      //     rule.reportAtToken(element.name, arguments: [element.name.lexeme]);
-      //   }
-      // }
     }
   }
 }
