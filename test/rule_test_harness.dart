@@ -16,8 +16,14 @@ List<AstNode> runAnalysisRule(AnalysisRule rule, String source) {
   return runAnalysisRuleOnUnit(rule, parseString(content: source).unit);
 }
 
-Future<CompilationUnit> resolveSource(String source, {String fileName = 'test.dart'}) async {
-  final directory = await Directory.systemTemp.createTemp('my_lints_test_');
+Future<CompilationUnit> resolveSource(
+  String source, {
+  String fileName = 'test.dart',
+  bool useWorkspacePackages = false,
+}) async {
+  final directory = useWorkspacePackages
+      ? await Directory.current.createTemp('.my_lints_test_')
+      : await Directory.systemTemp.createTemp('my_lints_test_');
   final path = directory.uri.resolve(fileName).toFilePath();
   await File(path).writeAsString(source);
 

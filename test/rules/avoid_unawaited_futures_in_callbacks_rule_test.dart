@@ -7,15 +7,14 @@ void main() {
   group('AvoidUnawaitedFuturesInCallbacksRule', () {
     test('reports an unawaited future expression in a callback', () async {
       final unit = await resolveSource('''
+import 'package:flutter/material.dart';
+
 Future<void> save() async {}
-void register(void Function() callback) {}
 
 void main() {
-  register(() {
-    save();
-  });
+  ElevatedButton(onPressed: () { save(); }, child: const Text('Save'));
 }
-''');
+''', useWorkspacePackages: true);
 
       final diagnostics = runAnalysisRuleOnUnit(AvoidUnawaitedFuturesInCallbacksRule(), unit);
 
@@ -24,15 +23,14 @@ void main() {
 
     test('does not report an awaited future in a callback', () async {
       final unit = await resolveSource('''
+import 'package:flutter/material.dart';
+
 Future<void> save() async {}
-void register(void Function() callback) {}
 
 void main() {
-  register(() async {
-    await save();
-  });
+  ElevatedButton(onPressed: () async { await save(); }, child: const Text('Save'));
 }
-''');
+''', useWorkspacePackages: true);
 
       final diagnostics = runAnalysisRuleOnUnit(AvoidUnawaitedFuturesInCallbacksRule(), unit);
 
@@ -42,16 +40,14 @@ void main() {
     test('does not report an explicitly unawaited future in a callback', () async {
       final unit = await resolveSource('''
 import 'dart:async';
+import 'package:flutter/material.dart';
 
 Future<void> save() async {}
-void register(void Function() callback) {}
 
 void main() {
-  register(() {
-    unawaited(save());
-  });
+  ElevatedButton(onPressed: () { unawaited(save()); }, child: const Text('Save'));
 }
-''');
+''', useWorkspacePackages: true);
 
       final diagnostics = runAnalysisRuleOnUnit(AvoidUnawaitedFuturesInCallbacksRule(), unit);
 
@@ -64,6 +60,23 @@ Future<void> save() async {}
 
 void main() {
   save();
+}
+''');
+
+      final diagnostics = runAnalysisRuleOnUnit(AvoidUnawaitedFuturesInCallbacksRule(), unit);
+
+      expect(diagnostics, isEmpty);
+    });
+
+    test('does not report an unawaited future in a non-widget callback', () async {
+      final unit = await resolveSource('''
+Future<void> save() async {}
+void register(void Function() callback) {}
+
+void main() {
+  register(() {
+    save();
+  });
 }
 ''');
 

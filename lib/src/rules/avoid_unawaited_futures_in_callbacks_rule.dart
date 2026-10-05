@@ -5,6 +5,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/type_checker.dart';
 
 class AvoidUnawaitedFuturesInCallbacksRule extends AnalysisRule {
   AvoidUnawaitedFuturesInCallbacksRule() : super(name: code.name, description: code.problemMessage);
@@ -32,7 +33,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   @override
   void visitExpressionStatement(ExpressionStatement node) {
     final callback = node.thisOrAncestorOfType<FunctionExpression>();
-    if (callback == null || !callback.isCallback) return;
+    if (callback == null || !callback.isFlutterWidgetCallback) return;
 
     final returnType = node.expression.staticType;
     if (returnType is InterfaceType && returnType.isDartAsyncFuture) {
@@ -42,9 +43,16 @@ class _Visitor extends SimpleAstVisitor<void> {
 }
 
 extension on FunctionExpression {
-  bool get isCallback {
-    final parent = this.parent;
-    if (parent is ArgumentList) return true;
-    return parent is NamedExpression && parent.parent is ArgumentList;
+  bool get isFlutterWidgetCallback {
+    final argumentList = switch (parent) {
+      ArgumentList() => parent,
+      NamedExpression(parent: final ArgumentList argumentList) => argumentList,
+      _ => null,
+    };
+    final widget = argumentList?.parent;
+    if (widget is! InstanceCreationExpression) return false;
+
+    final widgetType = widget.staticType;
+    return widgetType != null && widgetChecker.isAssignableFromType(widgetType);
   }
 }
