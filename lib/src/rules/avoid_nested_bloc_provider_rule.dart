@@ -5,7 +5,30 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that detects nested BlocProvider instances and suggests using MultiBlocProvider instead.
+/// This rule helps maintain a cleaner and more maintainable Bloc structure by avoiding deeply nested BlocProvider widgets.
+/// Example:
+/// ```dart
+/// BlocProvider(
+///   create: (context) => FirstBloc(),
+///   child: BlocProvider(
+///     create: (context) => SecondBloc(),
+///     child: YourWidget(),
+///   ),
+/// )
+/// ```
+/// Recommended usage with MultiBlocProvider:
+/// ```dart
+/// MultiBlocProvider(
+///   providers: [
+///     BlocProvider(create: (context) => FirstBloc()),
+///     BlocProvider(create: (context) => SecondBloc()),
+///   ],
+///   child: YourWidget(),
+/// )
+/// ```
 class AvoidNestedBlocProviderRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_nested_bloc_provider',
@@ -21,7 +44,7 @@ class AvoidNestedBlocProviderRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
-    registry.addInstanceCreationExpression(this, visitor);
+    registry.addMethodInvocation(this, visitor);
   }
 }
 
@@ -31,17 +54,15 @@ class _Visitor extends SimpleAstVisitor<void> {
   _Visitor(this.rule);
 
   @override
-  void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    if (node case InstanceCreationExpression(
-      constructorName: ConstructorName(type: NamedType(name: Token(lexeme: 'BlocProvider'))),
+  void visitMethodInvocation(MethodInvocation node) {
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(token: Token(lexeme: 'BlocProvider')),
       :final argumentList,
     )) {
       for (final argument in argumentList.arguments) {
         if (argument is NamedExpression && argument.name.label.name == 'child') {
           final expression = argument.expression;
-          if (expression case InstanceCreationExpression(
-            constructorName: ConstructorName(type: NamedType(name: Token(lexeme: 'BlocProvider'))),
-          )) {
+          if (expression case MethodInvocation(methodName: SimpleIdentifier(token: Token(lexeme: 'BlocProvider')))) {
             rule
               ..reportAtNode(expression)
               ..reportAtNode(node);

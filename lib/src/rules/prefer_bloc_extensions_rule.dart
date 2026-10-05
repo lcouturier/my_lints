@@ -6,6 +6,16 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// Prefer using BLoC extensions for state and event access instead of direct property access.
+/// This rule encourages the use of BLoC extensions like `context.read<MyBloc>()` and `context.watch<MyBloc>()` instead of directly accessing the `state` or `event` properties of the BLoC.
+/// Example:
+/// ```dart
+/// // Avoid:
+/// BlocProvider.of<MyBloc>(context).update();
+///
+/// // Prefer:
+/// context.read<MyBloc>().update();
+/// ```
 class PreferBlocExtensionsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_bloc_extensions',
@@ -34,21 +44,30 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitClassDeclaration(ClassDeclaration node) {
     if (!node.isFlutterWidget) return;
 
-    super.visitClassDeclaration(node);
+    for (var element in node.members.whereType<MethodDeclaration>()) {
+      final visitor = _BlocProvider();
+      element.body.accept(visitor);
+      if (visitor.matches.isNotEmpty) {
+        for (var item in visitor.matches) {
+          rule.reportAtNode(item);
+        }
+      }
+    }
   }
+}
+
+class _BlocProvider extends RecursiveAstVisitor<void> {
+  _BlocProvider() : matches = [];
+
+  List<AstNode> matches;
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node
-        case MethodInvocation(
-          methodName: SimpleIdentifier(name: 'of'),
-          realTarget: SimpleIdentifier(name: 'BlocProvider'),
-          :final argumentList,
-        )
-        when argumentList.arguments.any(
-          (e) => e is NamedExpression && e.name.label.name == 'listen' && e.expression is BooleanLiteral,
-        )) {
-      rule.reportAtNode(node);
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(name: 'of'),
+      realTarget: SimpleIdentifier(name: 'BlocProvider'),
+    )) {
+      matches.add(node);
     }
 
     super.visitMethodInvocation(node);
