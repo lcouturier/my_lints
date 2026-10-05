@@ -5,7 +5,6 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/extensions.dart';
 
 /// A rule that detects nested BlocProvider instances and suggests using MultiBlocProvider instead.
 /// This rule helps maintain a cleaner and more maintainable Bloc structure by avoiding deeply nested BlocProvider widgets.
