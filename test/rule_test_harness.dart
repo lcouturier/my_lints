@@ -373,4 +373,10 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
     _dispatch(node, 'FunctionExpressionInvocation');
     super.visitFunctionExpressionInvocation(node);
   }
+
+  @override
+  void visitSimpleIdentifier(SimpleIdentifier node) {
+    _dispatch(node, 'SimpleIdentifier');
+    super.visitSimpleIdentifier(node);
+  }
 }
