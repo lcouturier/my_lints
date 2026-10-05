@@ -6,7 +6,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/fixes/fixes.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
-import 'package:my_lints/src/rules/prefer_void_callback_rule.dart';
+import 'package:my_lints/src/rules/types/prefer_void_callback_rule.dart';
 
 class PreferVoidCallbackFix extends ResolvedCorrectionProducer with ReplaceByVoidCallback {
   static const _fixKind = FixKind(

@@ -131,6 +131,9 @@ Pour exécuter les tests du package :
 flutter test
 ```
 
-Les règles sont implémentées dans `lib/src/rules/` et enregistrées dans
-`lib/main.dart`. Lorsqu’une règle est ajoutée ou modifiée, mettez à jour ce
-catalogue et ajoutez ou adaptez les tests correspondants.
+Les règles sont implémentées dans `lib/src/rules/`, regroupées par thème
+(`async`, `bloc`, `classes`, `collections`, `conditions`, `flutter`, `record`,
+`spread`, `strings`, `style` et `types`). Les tests suivent la même organisation
+dans `test/rules/`. Les règles sont enregistrées dans `lib/main.dart`.
+Lorsqu’une règle est ajoutée ou modifiée, mettez à jour ce catalogue et ajoutez
+ou adaptez les tests correspondants.
