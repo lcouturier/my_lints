@@ -48,6 +48,7 @@ import 'package:my_lints/src/rules/avoid_join_on_nullable_item_rule.dart';
 import 'package:my_lints/src/rules/avoid_magic_numbers_rule.dart';
 import 'package:my_lints/src/rules/avoid_nullable_interpolation_rule.dart';
 import 'package:my_lints/src/rules/avoid_tolist_before_join_rule.dart';
+import 'package:my_lints/src/rules/avoid_unawaited_futures_in_callbacks_rule.dart';
 import 'package:my_lints/src/rules/avoid_unnecessary_block_rule.dart';
 import 'package:my_lints/src/rules/avoid_unused_after_null_check_rule.dart';
 import 'package:my_lints/src/rules/cubit_state_must_be_equatable_rule.dart';
@@ -174,6 +175,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(UnnecessaryStringInterpolationRule())
       ..registerWarningRule(UnnecessaryToStringInInterpolationRule())
       ..registerWarningRule(AvoidToListBeforeJoinRule())
+      ..registerWarningRule(AvoidUnawaitedFuturesInCallbacksRule())
       ..registerWarningRule(AvoidJoinOnNullableItemRule())
       ..registerWarningRule(PreferWhereTypeRule())
       ..registerWarningRule(AvoidI18nCurrentRule())
