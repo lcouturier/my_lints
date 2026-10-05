@@ -33,22 +33,37 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitClassDeclaration(ClassDeclaration node) {
     if (!node.isFlutterWidget) return;
 
-    super.visitClassDeclaration(node);
+    for (var element in node.members.whereType<MethodDeclaration>()) {
+      final visitor = _SetStateVisitor();
+      element.body.accept(visitor);
+      if (visitor.matches.isNotEmpty) {
+        for (var item in visitor.matches) {
+          rule.reportAtNode(item);
+        }
+      }
+    }
   }
+}
+
+class _SetStateVisitor extends RecursiveAstVisitor<void> {
+  _SetStateVisitor() : matches = [];
+
+  List<AstNode> matches;
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node case MethodInvocation(
-      methodName: SimpleIdentifier(name: 'setState'),
-      argumentList: ArgumentList(arguments: [FunctionExpression(body: final BlockFunctionBody body)]),
-    )) {
+    if (node case MethodInvocation(methodName: SimpleIdentifier(name: 'setState'))) {
       bool hasMounted = false;
-      body.block.visitChildren(_MountedFinder(() => hasMounted = true));
+      (node.argumentList.arguments.first as FunctionExpression).body.visitChildren(
+        _MountedFinder(() => hasMounted = true),
+      );
 
       if (hasMounted) {
-        rule.reportAtNode(node);
+        matches.add(node);
       }
     }
+
+    super.visitMethodInvocation(node);
   }
 }
 
