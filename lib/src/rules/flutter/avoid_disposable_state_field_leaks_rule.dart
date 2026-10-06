@@ -2,6 +2,7 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
@@ -73,13 +74,13 @@ class _Visitor extends SimpleAstVisitor<void> {
     }
 
     for (final member in node.members) {
-      if (member is MethodDeclaration && member.name.lexeme == 'dispose') {
+      if (member case MethodDeclaration(name: Token(lexeme: 'dispose'), :final body)) {
         _disposeMethod = member;
-        member.body.visitChildren(_DisposeVisitor(_disposed));
+        body.visitChildren(_DisposeVisitor(_disposed));
       }
 
-      if (member is MethodDeclaration && member.name.lexeme == 'initState') {
-        member.body.visitChildren(_InitStateVisitor(fields: _fields, controllers: _controllers));
+      if (member case MethodDeclaration(name: Token(lexeme: 'initState'), :final body)) {
+        body.visitChildren(_InitStateVisitor(fields: _fields, controllers: _controllers));
       }
     }
 
