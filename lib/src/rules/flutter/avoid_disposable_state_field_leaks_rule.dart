@@ -7,6 +7,23 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that enforces that disposable fields in Flutter widgets are properly disposed of in the dispose method.
+/// For example, if a widget has a `TextEditingController` as a field, it should be disposed of in the `dispose` method to avoid memory leaks.
+/// example:
+/// ```dart
+/// class MyWidget extends StatefulWidget {
+///   @override
+///   _MyWidgetState createState() => _MyWidgetState();
+/// }
+/// class _MyWidgetState extends State<MyWidget> {
+///   final TextEditingController _controller = TextEditingController();
+///   @override
+///   void dispose() {
+///     _controller.dispose(); // This should be called to avoid memory leaks.
+///     super.dispose();
+///   }
+/// }
+///
 class AvoidDisposableStateFieldLeaksRule extends AnalysisRule {
   AvoidDisposableStateFieldLeaksRule() : super(name: code.name, description: code.problemMessage);
 
