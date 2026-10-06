@@ -6,6 +6,24 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// Prefer returning the awaited result of a Future inside a try-catch block.
+/// This rule encourages using "return await" inside try-catch blocks to properly handle exceptions.
+/// Good:
+/// ```dart
+/// try {
+///   return await someAsyncFunction();
+/// } catch (e) {
+///   handleError(e);
+/// }
+/// ```
+/// Bad:
+/// ```dart
+/// try {
+///   return someAsyncFunction();
+/// } catch (e) {
+///   handleError(e);
+/// }
+/// ```
 class PreferReturnAwaitRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_return_await',
