@@ -8,6 +8,26 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that enforces proper calls to super.initState() and super.dispose() in Flutter widgets.
+///
+/// example:
+/// ```dart
+/// class MyWidget extends StatefulWidget {
+///   @override
+///   _MyWidgetState createState() => _MyWidgetState();
+/// }
+/// class _MyWidgetState extends State<MyWidget> {
+///   @override
+///   void initState() {
+///     super.initState(); // This should be the first statement in initState()
+///     // Other initialization code...
+///   }
+///  @override
+///  void dispose() {
+///    // Other cleanup code...
+///   super.dispose(); // This should be the last statement in dispose()
+///  }
+/// }
 class ProperSuperCallsRule extends AnalysisRule {
   static LintCode code = const LintCode(
     'proper_super_calls',

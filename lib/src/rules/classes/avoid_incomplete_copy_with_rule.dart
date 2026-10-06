@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that enforces that the copyWith method of a class has all the parameters corresponding to the fields of the class.
+///
+/// example:
+/// ```dart
+/// class MyClass {
+///   final String name;
+///   final int age;
+///   MyClass({required this.name, required this.age});
+///   MyClass copyWith({String? name}) {
+///     return MyClass(
+///       name: name ?? this.name,
+///       age: this.age, // Missing parameter for age
+///     );
+///   }
+/// }
+/// ```
 class AvoidIncompleteCopyWithRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_incomplete_copy_with',

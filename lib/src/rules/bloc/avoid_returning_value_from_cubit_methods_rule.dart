@@ -7,6 +7,18 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that enforces that Cubit methods should not return values, but instead emit states.
+///
+/// example:
+/// ```dart
+/// class MyCubit extends Cubit<MyState> {
+///   MyCubit() : super(MyInitialState());
+///   int increment(int value) {
+///     emit(MyState(value: value + 1));
+///     return value + 1; // This should be avoided
+///   }
+/// }
+/// ```
 class AvoidReturningValueFromCubitMethodsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_returning_value_from_cubit_methods',
