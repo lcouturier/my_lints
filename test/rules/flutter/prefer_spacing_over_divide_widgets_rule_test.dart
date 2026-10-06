@@ -27,6 +27,37 @@ class MyWidget extends StatelessWidget {
       expect(diagnostics, hasLength(1));
     });
 
+    test('reports Column with divideWidgets on children with IgnoreDividerInsertion', () async {
+      final unit = await resolveSource(r'''
+import 'package:flutter/material.dart';
+
+class IgnoreDividerInsertion extends StatelessWidget {
+  const IgnoreDividerInsertion({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox();
+  }
+}
+
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text('Item 1'),
+        Text('Item 2'),
+      ].divideWidgets(const IgnoreDividerInsertion()),
+    );
+  }
+}
+''', useWorkspacePackages: true);
+
+      final diagnostics = runAnalysisRuleOnUnit(PreferSpacingOverDivideWidgetsRule(), unit);
+
+      expect(diagnostics, isEmpty);
+    });
+
     test('does not report Column with spacing property', () async {
       final unit = await resolveSource(r'''
 import 'package:flutter/material.dart';
