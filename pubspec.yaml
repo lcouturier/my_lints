@@ -7,9 +7,9 @@ environment:
   sdk: ^3.11.5
 
 dependencies:
-  analysis_server_plugin: ^0.3.7
-  analyzer_plugin: ^0.14.1
-  analyzer: ^10.0.1
+  analysis_server_plugin: ^0.3.3
+  analyzer_plugin: ^0.13.10
+  analyzer: ^8.4.0
 
 dev_dependencies:
   flutter_test:

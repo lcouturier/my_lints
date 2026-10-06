@@ -6,6 +6,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+@Deprecated("Do not use this rule, it is not working properly")
 class PreferCorrectCallbackFieldNameRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_correct_callback_field_name',
