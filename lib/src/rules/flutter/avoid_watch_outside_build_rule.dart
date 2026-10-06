@@ -3,6 +3,8 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
@@ -53,17 +55,15 @@ class _WatchVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node.methodName.name != 'watch') return;
-
-    final target = node.target;
-    if (target == null) return;
-
-    if (target.staticType?.getDisplayString(withNullability: false) != 'BuildContext') return;
-
-    final enclosingMethod = node.thisOrAncestorOfType<MethodDeclaration>();
-    if (enclosingMethod?.name.lexeme == 'build') return;
-
-    matches.add(node);
+    if (node case MethodInvocation(
+      target: Expression(staticType: DartType(element: Element(name: 'BuildContext'))),
+      methodName: Identifier(name: 'watch'),
+    )) {
+      final enclosingMethod = node.thisOrAncestorOfType<MethodDeclaration>();
+      if (enclosingMethod?.name.lexeme != 'build') {
+        matches.add(node);
+      }
+    }
 
     super.visitMethodInvocation(node);
   }
