@@ -6,6 +6,26 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that enforces using `itemExtent` or `prototypeItem` for `ListView.builder` with large lists.
+///
+/// This helps improve performance by avoiding layout calculations for each item.
+///
+/// ## Example
+///
+/// ```
+/// // Bad
+/// ListView.builder(
+///   itemCount: 100,
+///   itemBuilder: (context, index) => Text('Item $index'),
+/// )
+///
+/// // Good
+/// ListView.builder(
+///   itemCount: 100,
+///   itemExtent: 50.0,
+///   itemBuilder: (context, index) => Text('Item $index'),
+/// )
+/// ```
 class UseItemextentForLargeListRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'use_itemextent_for_large_list',
@@ -38,7 +58,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   }
 }
 
-extension ListViewInstanceCreationExtension on InstanceCreationExpression {
+extension on InstanceCreationExpression {
   /// Whether this is a `ListView` laying out children without a known extent.
   bool get isListViewMissingExtent {
     if (this case InstanceCreationExpression(
