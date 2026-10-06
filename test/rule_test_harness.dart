@@ -20,9 +20,11 @@ Future<CompilationUnit> resolveSource(
   String source, {
   String fileName = 'test.dart',
   bool useWorkspacePackages = false,
+  bool useExamplePackages = false,
 }) async {
-  final directory = useWorkspacePackages
-      ? await Directory.current.createTemp('.my_lints_test_')
+  final packageDirectory = useExamplePackages ? Directory('${Directory.current.path}/example') : Directory.current;
+  final directory = useWorkspacePackages || useExamplePackages
+      ? await packageDirectory.createTemp('.my_lints_test_')
       : await Directory.systemTemp.createTemp('my_lints_test_');
   final path = directory.uri.resolve(fileName).toFilePath();
   await File(path).writeAsString(source);
@@ -129,6 +131,8 @@ class _TestDiagnosticReporter implements DiagnosticReporter {
       final finder = _NamedDeclarationFinder(token);
       unit.accept(finder);
       node = finder.declaration;
+    } else if (memberName == 'Symbol("atOffset")') {
+      node = _findNodeAtOffset(unit, invocation.namedArguments[#offset] as int);
     }
 
     if (node != null) {
@@ -139,6 +143,17 @@ class _TestDiagnosticReporter implements DiagnosticReporter {
     }
     return null;
   }
+}
+
+AstNode? _findNodeAtOffset(AstNode node, int offset) {
+  if (offset < node.offset || offset >= node.end) return null;
+
+  for (final child in node.childEntities.whereType<AstNode>()) {
+    final match = _findNodeAtOffset(child, offset);
+    if (match != null) return match;
+  }
+
+  return node;
 }
 
 class _TestDiagnostic implements Diagnostic {
@@ -169,6 +184,14 @@ class _NamedDeclarationFinder extends RecursiveAstVisitor<void> {
     }
     super.visitMethodDeclaration(node);
   }
+
+  @override
+  void visitVariableDeclaration(VariableDeclaration node) {
+    if (node.name.offset == token.offset) {
+      declaration = node;
+    }
+    super.visitVariableDeclaration(node);
+  }
 }
 
 class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
@@ -186,6 +209,18 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
   void visitBinaryExpression(BinaryExpression node) {
     _dispatch(node, 'BinaryExpression');
     super.visitBinaryExpression(node);
+  }
+
+  @override
+  void visitBlock(Block node) {
+    _dispatch(node, 'Block');
+    super.visitBlock(node);
+  }
+
+  @override
+  void visitCascadeExpression(CascadeExpression node) {
+    _dispatch(node, 'CascadeExpression');
+    super.visitCascadeExpression(node);
   }
 
   @override
@@ -327,6 +362,12 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
   }
 
   @override
+  void visitThrowExpression(ThrowExpression node) {
+    _dispatch(node, 'ThrowExpression');
+    super.visitThrowExpression(node);
+  }
+
+  @override
   void visitVariableDeclarationList(VariableDeclarationList node) {
     _dispatch(node, 'VariableDeclarationList');
     super.visitVariableDeclarationList(node);
@@ -375,6 +416,12 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
   }
 
   @override
+  void visitPrefixExpression(PrefixExpression node) {
+    _dispatch(node, 'PrefixExpression');
+    super.visitPrefixExpression(node);
+  }
+
+  @override
   void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
     _dispatch(node, 'FunctionExpressionInvocation');
     super.visitFunctionExpressionInvocation(node);
@@ -384,5 +431,35 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
   void visitSimpleIdentifier(SimpleIdentifier node) {
     _dispatch(node, 'SimpleIdentifier');
     super.visitSimpleIdentifier(node);
+  }
+
+  @override
+  void visitFormalParameterList(FormalParameterList node) {
+    _dispatch(node, 'FormalParameterList');
+    super.visitFormalParameterList(node);
+  }
+
+  @override
+  void visitNamedExpression(NamedExpression node) {
+    _dispatch(node, 'NamedExpression');
+    super.visitNamedExpression(node);
+  }
+
+  @override
+  void visitStringInterpolation(StringInterpolation node) {
+    _dispatch(node, 'StringInterpolation');
+    super.visitStringInterpolation(node);
+  }
+
+  @override
+  void visitInterpolationExpression(InterpolationExpression node) {
+    _dispatch(node, 'InterpolationExpression');
+    super.visitInterpolationExpression(node);
+  }
+
+  @override
+  void visitVariableDeclaration(VariableDeclaration node) {
+    _dispatch(node, 'VariableDeclaration');
+    super.visitVariableDeclaration(node);
   }
 }
