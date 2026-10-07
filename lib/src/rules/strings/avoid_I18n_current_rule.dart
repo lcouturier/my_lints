@@ -10,6 +10,18 @@ import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
+/// Avoid using I18n.current. Consider using I18n.of(context) instead.
+/// example:
+/// Bad
+/// ```dart
+/// class I18n { static final I18n current = I18n(); }
+/// String title(BuildContext context) => I18n.current.toString();
+/// ```
+/// Good
+/// ```dart
+/// class I18n { static final I18n current = I18n(); }
+/// String title(BuildContext context) => I18n.of(context).toString();
+/// ```
 class AvoidI18nCurrentRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_i18n_current',

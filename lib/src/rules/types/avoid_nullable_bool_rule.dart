@@ -6,6 +6,16 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
+/// Avoid using nullable bool parameters in methods and functions. Consider using non-nullable bool instead.
+/// example:
+/// Bad
+/// ```dart
+/// void update(bool? value) {}
+/// ```
+/// Good
+/// ```dart
+/// void update(bool value) {}
+/// ```
 class AvoidNullableBoolRule extends AnalysisRule {
   static const code = LintCode('avoid_nullable_bool', 'Avoid nullable bool', correctionMessage: 'Avoid nullable bool');
 
@@ -28,23 +38,20 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitNamedType(NamedType node) {
-    if (node case NamedType(element: Element(name: 'bool', library: LibraryElement(isDartCore: true)), question: _?)) {
-      if (_isInsideCopyWith(node)) {
-        return;
-      }
-
+    if (node case NamedType(
+      element: Element(name: 'bool', library: LibraryElement(isDartCore: true)),
+      question: _?,
+      isInsideCopyWith: false,
+    )) {
       rule.reportAtNode(node);
     }
   }
+}
 
-  bool _isInsideCopyWith(AstNode node) {
-    final method = node.thisOrAncestorOfType<MethodDeclaration>();
+extension on NamedType {
+  bool get isInsideCopyWith {
+    final method = thisOrAncestorOfType<MethodDeclaration>();
     if (method?.name.lexeme == 'copyWith') {
-      return true;
-    }
-
-    final function = node.thisOrAncestorOfType<FunctionDeclaration>();
-    if (function?.name.lexeme == 'copyWith') {
       return true;
     }
 

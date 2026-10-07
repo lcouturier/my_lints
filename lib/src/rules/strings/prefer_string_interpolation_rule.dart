@@ -2,13 +2,24 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// Prefer using string interpolation over string concatenation.
+///
+/// example:
+/// ```dart
+/// // BAD
+/// String greet(String name) => 'Hello, ' + name;
+/// // GOOD
+/// String greet(String name) => 'Hello, $name';
+/// ```
 class PreferStringInterpolationRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_string_interpolation',
     'Prefer using string interpolation over string concatenation.',
+    correctionMessage: 'Use string interpolation instead of concatenation.',
   );
 
   PreferStringInterpolationRule() : super(name: code.name, description: code.problemMessage);
@@ -29,58 +40,48 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
-    // On ne s'intéresse qu'à l'opérateur +
-    if (node.operator.type.lexeme != '+') return;
-
-    // Cas rapide : éviter les faux positifs évidents
-    if (!_isStringConcatenation(node)) return;
-
-    // Ne pas lint les cas non-string
-    if (!_isLikelyStringContext(node)) return;
-
-    rule.reportAtNode(node);
-  }
-
-  bool _isLikelyStringContext(BinaryExpression node) {
-    final left = node.leftOperand;
-    final right = node.rightOperand;
-
-    return _looksLikeString(left) || _looksLikeString(right);
-  }
-
-  bool _looksLikeString(Expression expr) {
-    if (expr is StringLiteral) return true;
-
-    if (expr is SimpleIdentifier) {
-      // heuristique : pas parfait mais stable en AST only
-      return true;
+    if (node case BinaryExpression(
+      operator: Token(type: TokenType.PLUS),
+      isLikelyStringContext: true,
+      isStringConcatenation: true,
+    )) {
+      rule.reportAtNode(node);
     }
+  }
+}
 
-    if (expr is MethodInvocation) return true;
+extension on BinaryExpression {
+  bool get isLikelyStringContext {
+    final left = leftOperand;
+    final right = rightOperand;
 
-    return false;
+    return left.islooksLikeString || right.islooksLikeString;
   }
 
-  bool _isStringConcatenation(BinaryExpression node) {
-    final left = node.leftOperand;
-    final right = node.rightOperand;
+  bool get isStringConcatenation {
+    final left = leftOperand;
+    final right = rightOperand;
 
-    return _isStringPart(left) || _isStringPart(right);
+    return left.isStringPart || right.isStringPart;
+  }
+}
+
+extension on Expression {
+  bool get islooksLikeString {
+    return switch (this) {
+      StringLiteral() => true,
+      SimpleIdentifier() => true,
+      MethodInvocation() => true,
+      _ => false,
+    };
   }
 
-  bool _isStringPart(Expression expr) {
-    // String literal direct
-    if (expr is StringLiteral) return true;
-
-    // interpolation déjà correcte => ne pas lint
-    if (expr is InterpolationExpression) return false;
-
-    // évite nombres / bool / etc
-    if (expr is IntegerLiteral || expr is DoubleLiteral || expr is BooleanLiteral || expr is NullLiteral) {
+  bool get isStringPart {
+    if (this is StringLiteral) return true;
+    if (this is InterpolationExpression) return false;
+    if (this is IntegerLiteral || this is DoubleLiteral || this is BooleanLiteral || this is NullLiteral) {
       return false;
     }
-
-    // fallback conservateur (identifiants possibles string)
     return true;
   }
 }
