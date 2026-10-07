@@ -20,5 +20,12 @@ String combine(Iterable<String> values) => values.join(',');
 
       expect(runAnalysisRuleOnUnit(AvoidToListBeforeJoinRule(), unit), isEmpty);
     });
+
+    test('does not report joining a list', () async {
+      final unit = await resolveSource('''
+String combine(List<String> values) => values.join(',');
+''');
+      expect(runAnalysisRuleOnUnit(AvoidToListBeforeJoinRule(), unit), isEmpty);
+    });
   });
 }
