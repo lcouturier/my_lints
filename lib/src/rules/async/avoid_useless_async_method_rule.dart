@@ -84,14 +84,4 @@ class _AwaitFinderVisitor extends RecursiveAstVisitor<void> {
     hasAwait = true;
     super.visitAwaitExpression(node);
   }
-
-  @override
-  void visitExpressionFunctionBody(ExpressionFunctionBody node) {
-    node.expression.visitChildren(this);
-  }
-
-  @override
-  void visitBlockFunctionBody(BlockFunctionBody node) {
-    node.visitChildren(this);
-  }
 }
