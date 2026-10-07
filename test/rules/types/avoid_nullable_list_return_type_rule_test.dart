@@ -7,12 +7,36 @@ void main() {
   group('AvoidNullableListReturnTypeRule', () {
     test('reports a nullable list parameter', () async {
       final unit = await resolveSource('void update(List<int>? values) {}');
-      expect(runAnalysisRuleOnUnit(AvoidNullableListReturnTypeRule(), unit), hasLength(1));
+      expect(runAnalysisRuleOnUnit(AvoidUsageOfNullableListRule(), unit), hasLength(1));
+    });
+
+    test('reports a nullable list return type', () async {
+      final unit = await resolveSource('List<int>? update() { return null; }');
+      expect(runAnalysisRuleOnUnit(AvoidUsageOfNullableListRule(), unit), hasLength(1));
+    });
+
+    test('does not report a non-nullable list return type', () async {
+      final unit = await resolveSource('List<int> update() { return []; }');
+      expect(runAnalysisRuleOnUnit(AvoidUsageOfNullableListRule(), unit), isEmpty);
     });
 
     test('does not report a non-nullable list parameter', () async {
       final unit = await resolveSource('void update(List<int> values) {}');
-      expect(runAnalysisRuleOnUnit(AvoidNullableListReturnTypeRule(), unit), isEmpty);
+      expect(runAnalysisRuleOnUnit(AvoidUsageOfNullableListRule(), unit), isEmpty);
+    });
+
+    test('does not report a non-nullable list parameter in copyWith Method', () async {
+      final unit = await resolveSource('''
+class A {
+  final List<int> values;
+  A({required this.values});
+
+  A copyWith({List<int>? values}) {
+    return A(values: values ?? this.values);
+  }
+}
+''');
+      expect(runAnalysisRuleOnUnit(AvoidUsageOfNullableListRule(), unit), isEmpty);
     });
   });
 }

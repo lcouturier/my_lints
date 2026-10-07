@@ -2,18 +2,35 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
-class AvoidNullableListReturnTypeRule extends AnalysisRule {
+/// A rule that avoids using nullable list return types and parameters.
+///
+/// This rule identifies function return types and parameters that are nullable lists
+/// and reports them for refactoring.
+/// example:
+/// Bad:
+/// ```dart
+/// List<int>? getValues() { return null; }
+/// void updateValues(List<int>? values) {}
+/// ```
+/// Good:
+/// ```dart
+/// List<int> getValues() { return []; }
+/// void updateValues(List<int> values) {}
+/// ```
+class AvoidUsageOfNullableListRule extends AnalysisRule {
   static const LintCode code = LintCode(
-    'avoid_nullable_list_return_type',
-    'Avoid nullable list return type',
-    correctionMessage: 'Avoid nullable list return type',
+    'avoid_usage_of_nullable_list',
+    'Avoid usage of nullable list return type and parameters',
+    correctionMessage:
+        'Avoid using nullable list return type and parameters. Consider using non-nullable list instead.',
   );
 
-  AvoidNullableListReturnTypeRule() : super(name: code.name, description: code.problemMessage);
+  AvoidUsageOfNullableListRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   LintCode get diagnosticCode => code;
@@ -21,14 +38,24 @@ class AvoidNullableListReturnTypeRule extends AnalysisRule {
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _ListVisitor(this);
-    registry.addNamedType(this, visitor);
+    registry
+      ..addNamedType(this, visitor)
+      ..addFunctionDeclaration(this, visitor);
   }
 }
 
 class _ListVisitor extends SimpleAstVisitor<void> {
-  final AvoidNullableListReturnTypeRule rule;
+  final AvoidUsageOfNullableListRule rule;
 
   _ListVisitor(this.rule);
+
+  @override
+  void visitFunctionDeclaration(FunctionDeclaration node) {
+    final returnType = node.returnType;
+    if (returnType case NamedType(element: Element(name: 'List'), question: _?)) {
+      rule.reportAtNode(returnType);
+    }
+  }
 
   @override
   void visitNamedType(NamedType node) {
@@ -44,20 +71,13 @@ class _ListVisitor extends SimpleAstVisitor<void> {
     }
   }
 
+  ///
   bool _isInsideCopyWith(AstNode node) {
     final method = node.thisOrAncestorOfType<MethodDeclaration>();
-
-    if (method?.name.lexeme == 'copyWith') {
-      return true;
-    }
-
-    final function = node.thisOrAncestorOfType<FunctionDeclaration>();
-
-    if (function?.name.lexeme == 'copyWith') {
-      return true;
-    }
-
-    return false;
+    return switch (method) {
+      MethodDeclaration(name: Token(lexeme: 'copyWith')) => true,
+      _ => false,
+    };
   }
 
   bool _isRelevantUsage(NamedType node) {
