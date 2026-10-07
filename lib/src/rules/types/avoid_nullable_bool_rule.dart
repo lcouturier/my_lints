@@ -6,6 +6,16 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
+/// Avoid using nullable bool parameters in methods and functions. Consider using non-nullable bool instead.
+/// example:
+/// Bad
+/// ```dart
+/// void update(bool? value) {}
+/// ```
+/// Good
+/// ```dart
+/// void update(bool value) {}
+/// ```
 class AvoidNullableBoolRule extends AnalysisRule {
   static const code = LintCode('avoid_nullable_bool', 'Avoid nullable bool', correctionMessage: 'Avoid nullable bool');
 
