@@ -7,6 +7,7 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+@Deprecated('This rule is unused.')
 class AvoidJoinOnNullableItemRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_join_on_nullable_item',

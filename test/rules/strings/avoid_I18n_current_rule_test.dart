@@ -23,5 +23,15 @@ String title() => I18n.current.toString();
 
       expect(runAnalysisRuleOnUnit(AvoidI18nCurrentRule(), unit), isEmpty);
     });
+
+    test('does not report I18n.current in a function with BuildContext but using I18n.of(context)', () async {
+      final unit = await resolveSource('''
+import 'package:flutter/widgets.dart';
+class I18n { static final I18n current = I18n(); static I18n of(BuildContext context) => I18n(); }
+String title(BuildContext context) => I18n.of(context).toString();
+''', useExamplePackages: true);
+
+      expect(runAnalysisRuleOnUnit(AvoidI18nCurrentRule(), unit), isEmpty);
+    });
   });
 }
