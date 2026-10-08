@@ -3,10 +3,21 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/type_checker.dart';
 
-/// A rule that detects when a parameter's field or setter is reassigned.
+/// A rule that detects when firstWhere(), lastWhere() or singleWhere() are used without an orElse parameter.
+///
+/// This is dangerous because these methods throw a StateError if no element matches.
+/// Using orElse provides a safe fallback.
+/// Example:
+/// ```dart
+/// final result = list.firstWhere((e) => e == 42);
+/// ```
+/// Should be:
+/// ```dart
+/// final result = list.firstWhere((e) => e == 42, orElse: () => defaultValue);
+/// ```
 class PreferSafeFirstWhereRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_safe_first_where',
@@ -38,22 +49,14 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitMethodInvocation(MethodInvocation node) {
     if (node
         case MethodInvocation(
-          target: final target?,
+          target: Expression(staticType: final targetType?),
           methodName: SimpleIdentifier(name: final methodName),
           argumentList: ArgumentList(arguments: final args),
         )
         when !args.any((arg) => arg is NamedExpression && arg.name.label.name == 'orElse') &&
             _methods.contains(methodName) &&
-            _isIterable(target)) {
+            iterableChecker.isAssignableFromType(targetType)) {
       rule.reportAtNode(node);
     }
-  }
-
-  bool _isIterable(Expression target) {
-    final type = target.staticType;
-    if (type == null) return false;
-
-    if (type.isDartCoreIterable) return true;
-    return (type as InterfaceType).allSupertypes.any((t) => t.isDartCoreIterable);
   }
 }

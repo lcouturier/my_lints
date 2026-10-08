@@ -22,5 +22,32 @@ final ready = isReady == true;
 
       expect(runAnalysisRuleOnUnit(PreferNullAwareNotationRule(), unit), isEmpty);
     });
+
+    test('reports comparing a nullable boolean with false', () async {
+      final unit = await resolveSource('''
+bool? isReady;
+final ready = isReady == false;
+''');
+
+      expect(runAnalysisRuleOnUnit(PreferNullAwareNotationRule(), unit), hasLength(1));
+    });
+
+    test('reports comparing a nullable boolean with != true', () async {
+      final unit = await resolveSource('''
+bool? isReady;
+final ready = isReady != true;
+''');
+
+      expect(runAnalysisRuleOnUnit(PreferNullAwareNotationRule(), unit), hasLength(1));
+    });
+
+    test('reports comparing a nullable boolean with != false', () async {
+      final unit = await resolveSource('''
+bool? isReady;
+final ready = isReady != false;
+''');
+
+      expect(runAnalysisRuleOnUnit(PreferNullAwareNotationRule(), unit), hasLength(1));
+    });
   });
 }

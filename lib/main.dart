@@ -26,6 +26,7 @@ import 'package:my_lints/src/fixes/prefer_void_callback_fix.dart';
 import 'package:my_lints/src/fixes/prefer_where_type_fix.dart';
 import 'package:my_lints/src/fixes/unprotected_emit_after_await_fix.dart';
 import 'package:my_lints/src/rules/bloc/add_cubit_suffix_rule.dart';
+import 'package:my_lints/src/rules/collections/prefer_safe_first_where_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_assignation_in_condition_rule.dart';
 import 'package:my_lints/src/rules/strings/prefer_string_interpolation_rule.dart';
 import 'package:my_lints/src/rules/types/avoid_always_null_parameters_rule.dart';
@@ -124,6 +125,7 @@ class MyLintsPlugin extends Plugin {
   @override
   void register(PluginRegistry registry) {
     registry
+      ..registerWarningRule(PreferSafeFirstWhereRule())
       ..registerWarningRule(PreferStringInterpolationRule())
       ..registerWarningRule(AvoidUsageOfNullableListRule())
       ..registerWarningRule(UseItemextentForLargeListRule())

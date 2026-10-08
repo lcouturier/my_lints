@@ -4,9 +4,20 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that enforces using null-aware notation (?.) instead of explicit null checks.
+///
+/// This rule detects comparisons like `nullableBool == true` or `nullableBool != false`
+/// and suggests using the null-aware notation `nullableBool ?? false` instead.
+/// Example:
+/// ```dart
+/// bool? isReady;
+/// final ready = isReady == true; // ❌
+/// final ready = isReady ?? false; // ✅
+/// ```
 class PreferNullAwareNotationRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_null_aware_notation',
@@ -37,16 +48,14 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
-    if (node
-        case BinaryExpression(
-          leftOperand: final expr,
-          operator: Token(type: final operatorType),
-          rightOperand: BooleanLiteral(value: final rightValue),
-        )
-        when (operatorType == TokenType.EQ_EQ || operatorType == TokenType.BANG_EQ) &&
-            (expr.staticType?.isNullable ?? false)) {
+    if (node case BinaryExpression(
+      leftOperand: Expression(staticType: DartType(isNullable: true)),
+      operator: Token(type: TokenType.EQ_EQ || TokenType.BANG_EQ),
+      rightOperand: BooleanLiteral(value: final rightValue),
+    )) {
       final isCheckingTrue = rightValue;
-      final message = 'Use ${isCheckingTrue ? '$expr ?? false' : '!($expr ?? false)'} instead of ${node.toSource()}.';
+      final message =
+          "Use ${isCheckingTrue ? '${node.leftOperand} ?? false' : '!(${node.leftOperand} ?? false)'} instead of ${node.toSource()}.";
 
       rule.reportAtNode(node, arguments: [message]);
     }
