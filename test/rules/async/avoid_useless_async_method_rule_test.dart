@@ -15,5 +15,25 @@ void main() {
         isEmpty,
       );
     });
+
+    test('does not report an async expression body', () async {
+      final unit = await resolveSource('''
+Future<void> save() async => await Future<void>.value();
+''');
+
+      final diagnostics = runAnalysisRuleOnUnit(AvoidUselessAsyncMethodRule(), unit);
+
+      expect(diagnostics, isEmpty);
+    });
+
+    test('does not report an async expression body', () async {
+      final unit = await resolveSource('''
+Future<void> save() async => Future<void>.value();
+''');
+
+      final diagnostics = runAnalysisRuleOnUnit(AvoidUselessAsyncMethodRule(), unit);
+
+      expect(diagnostics, hasLength(1));
+    });
   });
 }
