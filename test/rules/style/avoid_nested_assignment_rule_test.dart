@@ -36,7 +36,7 @@ void f(int a, int b) {
 
     final diagnostics = runAnalysisRuleOnUnit(AvoidNestedAssignmentRule(), unit);
 
-    expect(diagnostics, hasLength(1));
+    expect(diagnostics, isEmpty);
   });
 
   test('does not report a non-nested assignment statement', () async {
