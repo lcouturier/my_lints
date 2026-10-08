@@ -126,7 +126,6 @@ class MyLintsPlugin extends Plugin {
   void register(PluginRegistry registry) {
     registry
       ..registerWarningRule(PreferSafeFirstWhereRule())
-      ..registerWarningRule(PreferStringInterpolationRule())
       ..registerWarningRule(AvoidUsageOfNullableListRule())
       ..registerWarningRule(UseItemextentForLargeListRule())
       ..registerWarningRule(AddCubitSuffixRule())
