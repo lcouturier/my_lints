@@ -7,6 +7,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 
+@Deprecated('Do not use anymore')
 class AvoidUnsafeReduceRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_unsafe_reduce',

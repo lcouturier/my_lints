@@ -351,7 +351,7 @@ extension ExpressionExtensions on Expression {
   }
 }
 
-extension on InterfaceType {
+extension InterfaceTypeExtensions on InterfaceType {
   bool get isFlutterState {
     final allTypes = [this, ...allSupertypes];
 
@@ -371,12 +371,18 @@ extension on InterfaceType {
       return element.name == 'Cubit' && element.library.firstFragment.source.uri.toString().contains('bloc');
     });
   }
+
+  bool get isEquatable {
+    final allTypes = [this, ...allSupertypes];
+
+    return allTypes.any((t) {
+      final element = t.element;
+      return element.name == 'Equatable' && element.library.firstFragment.source.uri.toString().contains('equatable');
+    });
+  }
 }
 
 extension ClassDeclarationExtensions on ClassDeclaration {
-  bool get isEquatable =>
-      declaredFragment?.element != null && equatableChecker.isAssignableFromType(declaredFragment!.element.thisType);
-
   bool get isFlutterWidget {
     final type = extendsClause?.superclass.type;
     return type is InterfaceType && type.isFlutterState;
@@ -385,6 +391,11 @@ extension ClassDeclarationExtensions on ClassDeclaration {
   bool get isCubitClass {
     final type = extendsClause?.superclass.type;
     return type is InterfaceType && type.isCubitLike;
+  }
+
+  bool get isEquatable {
+    final type = extendsClause?.superclass.type;
+    return type is InterfaceType && type.isEquatable;
   }
 
   /// Returns the instance field names of the class.

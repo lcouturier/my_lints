@@ -6,6 +6,15 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
+/// Avoid accessing enum values by index.
+///
+/// This rule reports cases where enum values are accessed using an index,
+/// which can be fragile and less readable than using the enum constant directly.
+/// Example:
+/// ```dart
+/// enum Status { ready, done }
+/// final status = Status.values[0]; // ❌
+/// ```
 class AvoidEnumValuesByIndexRule extends AnalysisRule {
   static const code = LintCode(
     'avoid_enum_values_by_index',

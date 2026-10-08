@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
 /// Avoid assignation in condition rule
+///
+/// This rule detects when an assignment is used in a condition, which can lead to unexpected behavior.
+/// Example:
+/// ```dart
+/// if (x = 5) { // ❌
+///   // ...
+/// }
+/// ```
+///
+/// Correct:
+/// ```dart
+/// int x = 5; // ✅
+/// if (x == 5) {
+///   // ...
+/// }
+/// ```
 class AvoidAssignationInConditionRule extends AnalysisRule {
   static final code = const LintCode(
     'avoid_assignation_in_condition',
@@ -32,8 +48,10 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitBinaryExpression(BinaryExpression node) {
-    if (node case BinaryExpression(:final leftOperand) when leftOperand.unParenthesized is AssignmentExpression) {
-      rule.reportAtNode(leftOperand.unParenthesized);
+    if (node case BinaryExpression(leftOperand: final leftOperand, rightOperand: final rightOperand)) {
+      if (leftOperand.unParenthesized is AssignmentExpression || rightOperand.unParenthesized is AssignmentExpression) {
+        rule.reportAtNode(node);
+      }
     }
   }
 }

@@ -6,6 +6,14 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that reports when the same value is compared to itself.
+///
+/// This rule detects cases like `value == value` or `value != value`
+/// which are always true or false respectively.
+/// Example:
+/// ```dart
+/// bool same(bool value) => value == value;
+/// ```
 class AvoidCompareSameValueRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_compare_same_value',

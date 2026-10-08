@@ -13,26 +13,42 @@ void main() {
         'Nested assignments can lead to confusion or indicate an incorrect operator (= instead of ==).',
       );
     });
+  });
 
-    test('reports a nested assignment statement', () {
-      final diagnostics = runAnalysisRule(AvoidNestedAssignmentRule(), '''
+  test('reports a nested assignment statement', () async {
+    final unit = await resolveSource('''
 void f(int a, int b) {
   a = b = 42;
 }
-''');
+''', useWorkspacePackages: true);
 
-      expect(diagnostics, hasLength(1));
-    });
+    final diagnostics = runAnalysisRuleOnUnit(AvoidNestedAssignmentRule(), unit);
 
-    test('does not report a non-nested assignment statement', () {
-      final diagnostics = runAnalysisRule(AvoidNestedAssignmentRule(), '''
+    expect(diagnostics, hasLength(1));
+  });
+
+  test('reports a nested assignment statement with compound assignment', () async {
+    final unit = await resolveSource('''
+void f(int a, int b) {
+  a += b = 42;
+}
+''', useWorkspacePackages: true);
+
+    final diagnostics = runAnalysisRuleOnUnit(AvoidNestedAssignmentRule(), unit);
+
+    expect(diagnostics, isEmpty);
+  });
+
+  test('does not report a non-nested assignment statement', () async {
+    final unit = await resolveSource('''
 void f(int a, int b) {
   a = 42;
   b = 42;
 }
-''');
+''', useWorkspacePackages: true);
 
-      expect(diagnostics, isEmpty);
-    });
+    final diagnostics = runAnalysisRuleOnUnit(AvoidNestedAssignmentRule(), unit);
+
+    expect(diagnostics, isEmpty);
   });
 }

@@ -20,7 +20,6 @@ class CubitStateMustBeEquatableRule extends AnalysisRule {
   DiagnosticCode get diagnosticCode => code;
 
   @override
-  @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this);
     registry.addClassDeclaration(this, visitor);
@@ -34,23 +33,31 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.isCubitClass) return;
+    if (node case ClassDeclaration(
+      isCubitClass: true,
+      extendsClause: ExtendsClause(superclass: NamedType(typeArguments: TypeArgumentList(arguments: [final firstArg]))),
+    )) {
+      final type = firstArg.type;
+      if (type is! InterfaceType) return;
+      if (type.isEquatable) return;
+      rule.reportAtNode(node);
+    }
+    // if (!node.isCubitClass) return;
 
-    final superclassClause = node.extendsClause;
-    if (superclassClause == null) return;
+    // final superclassClause = node.extendsClause;
+    // if (superclassClause == null) return;
 
-    final typeArguments = superclassClause.superclass.typeArguments?.arguments;
-    if (typeArguments == null || typeArguments.isEmpty) return;
+    // final typeArguments = superclassClause.superclass.typeArguments?.arguments;
+    // if (typeArguments == null || typeArguments.isEmpty) return;
 
-    final stateType = typeArguments.first.type;
-    if (stateType is! InterfaceType) return;
+    // final stateType = typeArguments.first.type;
+    // if (stateType is! InterfaceType) return;
 
-    final isEquatable = stateType.allSupertypes.any((e) {
-      return e.element.name == 'Equatable' && e.element.library.identifier.contains('equatable');
-    });
+    // final isEquatable = stateType.allSupertypes.any((e) {
+    //   return e.element.name == 'Equatable' && e.element.library.identifier.contains('equatable');
+    // });
 
-    if (isEquatable) return;
-
-    rule.reportAtNode(typeArguments.first, arguments: [stateType.element.name ?? '']);
+    // if (isEquatable) return;
+    // rule.reportAtNode(node, arguments: ['']);
   }
 }

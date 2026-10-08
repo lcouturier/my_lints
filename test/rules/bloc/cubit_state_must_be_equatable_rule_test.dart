@@ -18,6 +18,23 @@ class CounterCubit extends Cubit<CounterState> {
       expect(runAnalysisRuleOnUnit(CubitStateMustBeEquatableRule(), unit), hasLength(1));
     });
 
+    test('does not report a Cubit state that extends Equatable', () async {
+      final unit = await resolveSource('''
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:equatable/equatable.dart';
+
+class CounterState extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
+class CounterCubit extends Cubit<CounterState> {
+  CounterCubit() : super(CounterState());
+}
+''', useExamplePackages: true);
+
+      expect(runAnalysisRuleOnUnit(CubitStateMustBeEquatableRule(), unit), isEmpty);
+    });
+
     test('does not report state classes outside a Cubit', () async {
       final unit = await resolveSource('''
 import 'package:flutter_bloc/flutter_bloc.dart';
