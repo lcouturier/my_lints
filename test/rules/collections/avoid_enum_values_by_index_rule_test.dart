@@ -24,5 +24,15 @@ final status = Status.ready;
 
       expect(runAnalysisRuleOnUnit(AvoidEnumValuesByIndexRule(), unit), isEmpty);
     });
+
+    test('does not report accessing an enum value by name with byName()', () async {
+      final unit = await resolveSource('''
+enum Status { ready, done }
+
+final status = Status.values.byName('ready');
+''');
+
+      expect(runAnalysisRuleOnUnit(AvoidEnumValuesByIndexRule(), unit), isEmpty);
+    });
   });
 }
