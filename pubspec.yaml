@@ -1,7 +1,7 @@
 name: my_lints
 description: "description: Custom lint rules using the Dart 3.11 analyzer plugin API."
 version: 0.0.1
-homepage:
+homepage: https://github.com/lcouturier/my_lints
 
 environment:
   sdk: ^3.11.5
