@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyCubit extends Cubit<bool> {
@@ -21,5 +22,22 @@ class MyCubit extends Cubit<bool> {
     } catch (e) {
       emit(false); // LINT
     }
+  }
+}
+
+class CounterState extends Equatable {
+  const CounterState(this.count);
+
+  final int count;
+
+  @override
+  List<Object?> get props => [count];
+}
+
+class CounterCubit extends Cubit<CounterState> {
+  CounterCubit() : super(const CounterState(0));
+
+  void increment() {
+    emit(CounterState(state.count + 1));
   }
 }
