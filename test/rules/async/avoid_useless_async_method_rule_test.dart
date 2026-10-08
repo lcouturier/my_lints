@@ -35,5 +35,24 @@ Future<void> save() async => Future<void>.value();
 
       expect(diagnostics, hasLength(1));
     });
+
+    test('does not report an async method with await', () async {
+      final unit = await resolveSource('''
+class MyClass {
+  MyClass();
+  Future<int> getValue() async {
+    return getValue2();
+  }
+
+  Future<int> getValue2() async {
+    return 42;
+  }
+}
+''');
+
+      final diagnostics = runAnalysisRuleOnUnit(AvoidUselessAsyncMethodRule(), unit);
+
+      expect(diagnostics, hasLength(2));
+    });
   });
 }
