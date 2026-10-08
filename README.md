@@ -76,6 +76,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `prefer_last_over_index` | Préfère `last` aux calculs d’index qui désignent le dernier élément d’une collection. |
 | `prefer_map_over_mapIndexed` | Préfère `map` à `mapIndexed` lorsque l’index n’est pas utilisé. |
 | `prefer_collection_if_for_conditional_elements` | Préfère les éléments `if`/`for` intégrés aux collections aux constructions conditionnelles intermédiaires. |
+| `prefer_spread_for_addAll` | Remplace `addAll()` par l'opérateur spread `...` quand c'est possible. |
 
 ### Dart : records, chaînes et durées
 
