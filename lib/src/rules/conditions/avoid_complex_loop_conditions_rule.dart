@@ -22,6 +22,7 @@ import 'package:analyzer/error/error.dart';
 /// for (int i = 0; isValidItem(i); i++) {
 ///   // do something
 /// }
+/// ```
 class AvoidComplexLoopConditionsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_complex_loop_conditions',
