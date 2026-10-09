@@ -69,6 +69,7 @@ import 'package:my_lints/src/rules/classes/proper_super_calls_rule.dart';
 import 'package:my_lints/src/rules/record/avoid_extensions_on_records_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_identical_if_branch_rule.dart';
 import 'package:my_lints/src/rules/classes/avoid_incomplete_copy_with_rule.dart';
+import 'package:my_lints/src/rules/classes/equatable_props_must_include_all_fields_rule.dart';
 import 'package:my_lints/src/rules/style/avoid_magic_duration_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_negative_boolean_names_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_nested_ternary_rule.dart';
@@ -136,6 +137,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidUnnecessaryBlockRule())
       ..registerWarningRule(AvoidUnusedAfterNullCheckRule())
       ..registerWarningRule(CubitStateMustBeEquatableRule()) // pas utile
+      ..registerWarningRule(EquatablePropsMustIncludeAllFieldsRule())
       ..registerWarningRule(UnProtectedEmitAfterAwaitRule())
       ..registerWarningRule(PreferSpacingOverDivideWidgetsRule())
       ..registerWarningRule(DoNotCallToListAfterDivideWidgetsRule())
