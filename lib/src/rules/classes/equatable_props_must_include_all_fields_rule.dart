@@ -66,6 +66,17 @@ extension on MethodDeclaration {
     return switch (body) {
       ExpressionFunctionBody(expression: final ListLiteral items) =>
         items.elements.whereType<SimpleIdentifier>().map((id) => id.name).toSet(),
+      ExpressionFunctionBody(
+        expression: CascadeExpression(
+          cascadeSections: [
+            MethodInvocation(
+              methodName: SimpleIdentifier(name: "addAll"),
+              argumentList: ArgumentList(arguments: [final ListLiteral items]),
+            ),
+          ],
+        ),
+      ) =>
+        items.elements.whereType<SimpleIdentifier>().map((id) => id.name).toSet(),
       _ => <String>{},
     };
   }

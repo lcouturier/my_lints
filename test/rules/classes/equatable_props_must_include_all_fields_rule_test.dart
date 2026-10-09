@@ -120,5 +120,22 @@ class Person extends Equatable {
 
       expect(runAnalysisRuleOnUnit(EquatablePropsMustIncludeAllFieldsRule(), unit), isEmpty);
     });
+
+    test('handles props with super.props..addAll', () async {
+      final unit = await resolveSource('''
+import 'package:equatable/equatable.dart';
+
+class Person extends Equatable {
+  final String name;
+  final int age;
+  Person({required this.name, required this.age});
+
+  @override
+  List<Object?> get props => super.props..addAll([name, age]);
+}
+''', useExamplePackages: true);
+
+      expect(runAnalysisRuleOnUnit(EquatablePropsMustIncludeAllFieldsRule(), unit), isEmpty);
+    });
   });
 }
