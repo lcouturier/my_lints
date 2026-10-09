@@ -68,6 +68,7 @@ extension on MethodDeclaration {
         items.elements.whereType<SimpleIdentifier>().map((id) => id.name).toSet(),
       ExpressionFunctionBody(
         expression: CascadeExpression(
+          target: PropertyAccess(propertyName: SimpleIdentifier(name: "props"), realTarget: SuperExpression()),
           cascadeSections: [
             MethodInvocation(
               methodName: SimpleIdentifier(name: "addAll"),
