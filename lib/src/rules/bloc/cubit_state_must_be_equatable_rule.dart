@@ -37,27 +37,9 @@ class _Visitor extends SimpleAstVisitor<void> {
       isCubitClass: true,
       extendsClause: ExtendsClause(superclass: NamedType(typeArguments: TypeArgumentList(arguments: [final firstArg]))),
     )) {
-      final type = firstArg.type;
-      if (type is! InterfaceType) return;
-      if (type.isEquatable) return;
-      rule.reportAtNode(node);
+      if (firstArg.type case InterfaceType(isEquatable: false)) {
+        rule.reportAtNode(node);
+      }
     }
-    // if (!node.isCubitClass) return;
-
-    // final superclassClause = node.extendsClause;
-    // if (superclassClause == null) return;
-
-    // final typeArguments = superclassClause.superclass.typeArguments?.arguments;
-    // if (typeArguments == null || typeArguments.isEmpty) return;
-
-    // final stateType = typeArguments.first.type;
-    // if (stateType is! InterfaceType) return;
-
-    // final isEquatable = stateType.allSupertypes.any((e) {
-    //   return e.element.name == 'Equatable' && e.element.library.identifier.contains('equatable');
-    // });
-
-    // if (isEquatable) return;
-    // rule.reportAtNode(node, arguments: ['']);
   }
 }

@@ -136,7 +136,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferMapOverMapIndexedRule())
       ..registerWarningRule(AvoidUnnecessaryBlockRule())
       ..registerWarningRule(AvoidUnusedAfterNullCheckRule())
-      ..registerWarningRule(CubitStateMustBeEquatableRule()) // pas utile
+      ..registerWarningRule(CubitStateMustBeEquatableRule())
       ..registerWarningRule(EquatablePropsMustIncludeAllFieldsRule())
       ..registerWarningRule(UnProtectedEmitAfterAwaitRule())
       ..registerWarningRule(PreferSpacingOverDivideWidgetsRule())
@@ -153,7 +153,6 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidYodaConditionsRule())
       ..registerWarningRule(PreferContainsRule())
       ..registerWarningRule(PreferCollectionIfForConditionalElementsRule())
-      ..registerWarningRule(PreferIsEmptyRule())
       ..registerWarningRule(AvoidPositionalRecordFieldAccessRule())
       ..registerWarningRule(PreferNullAwareElementsRule())
       ..registerWarningRule(PreferConstEmptyListAfterIfNullRule())
@@ -176,7 +175,6 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidRedundantCollectionRule())
       ..registerWarningRule(AvoidRedundantSpreadRule())
       ..registerWarningRule(PreferReturnAwaitRule())
-      ..registerWarningRule(UnnecessaryStringInterpolationRule())
       ..registerWarningRule(UnnecessaryToStringInInterpolationRule())
       ..registerWarningRule(AvoidToListBeforeJoinRule())
       ..registerWarningRule(AvoidUnawaitedFuturesInCallbacksRule())
@@ -186,8 +184,6 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferLastRule());
 
     registry
-      ..registerFixForRule(PreferIsEmptyRule.code, PreferIsEmptyFix.new)
-      ..registerFixForRule(PreferIsEmptyRule.code, PreferIsEmptyFixInFile.new)
       ..registerFixForRule(PreferVoidCallbackRule.code, PreferVoidCallbackFix.new)
       ..registerFixForRule(PreferVoidCallbackRule.code, PreferVoidCallbackFixInFile.new)
       ..registerFixForRule(UnProtectedEmitAfterAwaitRule.code, UnProtectedEmitAfterAwaitInsertFix.new)

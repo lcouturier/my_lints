@@ -8,6 +8,7 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+@Deprecated('Existe déjà, https://dart.dev/tools/linter-rules/unnecessary_string_interpolations')
 class UnnecessaryStringInterpolationRule extends AnalysisRule {
   static const code = LintCode(
     'unnecessary_string_interpolation',
