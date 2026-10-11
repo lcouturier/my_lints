@@ -284,6 +284,12 @@ class _RuleVisitorDispatcher extends RecursiveAstVisitor<void> {
   }
 
   @override
+  void visitFunctionExpression(FunctionExpression node) {
+    _dispatch(node, 'FunctionExpression');
+    super.visitFunctionExpression(node);
+  }
+
+  @override
   void visitIfStatement(IfStatement node) {
     _dispatch(node, 'IfStatement');
     super.visitIfStatement(node);
