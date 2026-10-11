@@ -2,6 +2,7 @@
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:my_lints/src/common/type_checker.dart';
@@ -34,13 +35,10 @@ extension DartTypeExtensions on DartType {
   }
 
   bool get isFutureVoid {
-    if (this is InterfaceType &&
-        (this as InterfaceType).element.name == 'Future' &&
-        (this as InterfaceType).typeArguments.length == 1 &&
-        (this as InterfaceType).typeArguments.first is VoidType) {
-      return true;
-    }
-    return false;
+    return switch (this) {
+      InterfaceType(element: InterfaceElement(name: "Future"), typeArguments: [VoidType()]) => true,
+      _ => false,
+    };
   }
 }
 
@@ -61,17 +59,8 @@ bool isNullableType(DartType? type) => type?.nullabilitySuffix == NullabilitySuf
 
 extension DartTypeNullableExtensions on DartType? {
   bool get isNullable => isNullableType(this);
-  // Checks if a type is an Iterable or a subclass of Iterable.
-  // bool get isIterableOrSubclass => isIterableOrSubclassCore(this);
-  // Checks if a type is nullable.
-  // bool get isNullable => isNullableType(this);
   // Checks if a type is a Widget.
   bool get isWidget => this?.getDisplayString(withNullability: false) == 'Widget';
-
-  // Checks if a type is a callback function.
-  // bool get isCallbackType {
-  //   return toString().startsWith('Null') || _isCallbackType(this);
-  // }
 
   // Checks if a type has a constructor with a given name.
   bool hasConstructor(String name) {
@@ -97,33 +86,11 @@ extension FormalParameterExtension on FormalParameter {
   bool get isBool =>
       this is SimpleFormalParameter && ((this as SimpleFormalParameter).type?.type?.isDartCoreBool ?? false);
 
-  // Checks if a formal parameter is nullable.
-  // bool get isNullable =>
-  //     this is SimpleFormalParameter &&
-  //     ((this as SimpleFormalParameter).type?.type?.isNullable ?? false);
-
-  // Checks if a formal parameter is dynamic.
-  // bool get isDynamic => declaredElement?.type is DynamicType;
-
   bool get isBuildContext =>
       this is SimpleFormalParameter &&
       (this as SimpleFormalParameter).type != null &&
-      (this as SimpleFormalParameter).type.toString() == 'BuildContext';
+      (this as SimpleFormalParameter).type?.type?.getDisplayString(withNullability: false) == 'BuildContext';
 }
-
-// extension ExpressionExtensions on Expression {
-//   // Extracts field names from a props list literal.
-//   List<String> getFieldsFromProps() {
-//     if (this is ListLiteral) {
-//       return (this as ListLiteral).elements
-//           .whereType<SimpleIdentifier>()
-//           .map((id) => id.staticElement)
-//           .map((e) => e?.displayName ?? '')
-//           .toList();
-//     }
-//     return [];
-//   }
-// }
 
 extension FunctionBodyExtensions on FunctionBody {
   // Returns the expression from a function body.
@@ -305,13 +272,10 @@ extension ExpressionExtensions on Expression {
     return current;
   }
 
-  bool get isSimpleLiteral {
-    return this is IntegerLiteral ||
-        this is DoubleLiteral ||
-        this is BooleanLiteral ||
-        this is NullLiteral ||
-        this is SimpleStringLiteral;
-  }
+  bool get isSimpleLiteral => switch (this) {
+    IntegerLiteral() || DoubleLiteral() || BooleanLiteral() || NullLiteral() || SimpleStringLiteral() => true,
+    _ => false,
+  };
 
   bool get isNegativeOne {
     return switch (this) {
@@ -329,12 +293,12 @@ extension ExpressionExtensions on Expression {
   /// this.items.reduce(...)
   /// items.reduce(...)
   /// widget.items.reduce(...)
-  String? getNormalizedName() {
-    if (this is SimpleIdentifier) return (this as SimpleIdentifier).name;
-    if (this is PropertyAccess) return (this as PropertyAccess).propertyName.name;
-    if (this is PrefixedIdentifier) return (this as PrefixedIdentifier).identifier.name;
-    return null;
-  }
+  String? getNormalizedName() => switch (this) {
+    SimpleIdentifier(:final name) => name,
+    PropertyAccess(:final propertyName) => propertyName.name,
+    PrefixedIdentifier(:final identifier) => identifier.name,
+    _ => null,
+  };
 
   /// Checks if the expression is a constant.
   /// This includes:
