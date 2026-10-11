@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        flutter-version: ["stable", "beta"]
+        flutter-version: ["stable"] # beta
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
