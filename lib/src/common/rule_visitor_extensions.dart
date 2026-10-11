@@ -1,5 +1,3 @@
-// ignore_for_file: unused_element
-
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
@@ -34,17 +32,6 @@ abstract class CustomAstVisitor extends SimpleAstVisitor<void> {
 }
 
 extension CopyWithRegistryExtension on RuleVisitorRegistry {
-  /// This method registers a rule only for classes that declare a `copyWith` method.
-  ///
-  /// [rule] The rule to register.
-  /// [visitor] The visitor to use for the rule.
-  ///
-  /// Returns nothing.
-  // void addCopyWithMethod(AnalysisRule rule, AstVisitor<void> visitor) {
-  //   final conditionalVisitor = _CopyWithClassVisitor(visitor);
-  //   addClassDeclaration(rule, conditionalVisitor);
-  // }
-
   /// Enregistre spécifiquement les processeurs pour la méthode copyWith
   void addCopyWithMethod(AnalysisRule rule, CustomAstVisitor visitor) {
     // On enregistre le visiteur sur les déclarations de méthodes
@@ -54,24 +41,5 @@ extension CopyWithRegistryExtension on RuleVisitorRegistry {
   void addCubitClass(AnalysisRule rule, CustomAstVisitor visitor) {
     // On enregistre le visiteur sur les déclarations de classes
     addClassDeclaration(rule, visitor);
-  }
-}
-
-@Deprecated("Use addCopyWithMethod instead")
-class _CopyWithClassVisitor extends SimpleAstVisitor<void> {
-  final AstVisitor<void> delegate;
-
-  _CopyWithClassVisitor(this.delegate);
-
-  @override
-  void visitClassDeclaration(ClassDeclaration node) {
-    // Vérifie la présence d'une méthode nommée 'copyWith' dans les membres de la classe
-    final hasCopyWith = node.members.whereType<MethodDeclaration>().any((method) => method.name.lexeme == 'copyWith');
-
-    // Si la méthode existe, on transmet le nœud au visiteur de la règle
-    if (hasCopyWith) {
-      // node.visitChildren(delegate); // ou delegate.visitClassDeclaration(node);
-      delegate.visitClassDeclaration(node);
-    }
   }
 }
