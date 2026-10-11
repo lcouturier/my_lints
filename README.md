@@ -50,6 +50,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `avoid_cascade_after_if_null` | Signale l’opérateur cascade appliqué directement après `??`, qui peut nécessiter des parenthèses pour lever l’ambiguïté. |
 | `avoid_shadowed_extension_methods` | Signale les méthodes d’extension qui masquent une méthode portant le même nom sur le type étendu. |
 | `avoid_throw_literal` | Évite de lever une valeur littérale au lieu d’une exception ou d’une erreur explicite. |
+| `avoid_unused_callback_parameters` | Signale les paramètres de callback qui ne sont pas utilisés dans le corps de la fonction. |
 | `prefer_explicit_function_type` | Préfère une signature de fonction explicite au type générique `Function`. |
 | `prefer_return_await` | Préserve `await` dans un `return` lorsque cela est nécessaire au comportement attendu, notamment à la gestion des erreurs. |
 | `avoid_useless_async_method` | Signale les méthodes `async` qui n’effectuent aucune opération asynchrone utile. |

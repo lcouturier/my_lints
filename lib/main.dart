@@ -34,6 +34,7 @@ import 'package:my_lints/src/rules/async/avoid_unawaited_futures_in_callbacks_ru
 import 'package:my_lints/src/rules/style/avoid_unnecessary_block_rule.dart';
 import 'package:my_lints/src/rules/types/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_lints/src/rules/types/avoid_unused_after_null_check_rule.dart';
+import 'package:my_lints/src/rules/types/avoid_unused_callback_parameters_rule.dart';
 import 'package:my_lints/src/rules/bloc/cubit_state_must_be_equatable_rule.dart';
 import 'package:my_lints/src/rules/flutter/do_not_call_to_list_after_divide_widgets_rule.dart';
 import 'package:my_lints/src/rules/collections/prefer_map_over_map_indexed_rule.dart';
@@ -95,6 +96,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferMapOverMapIndexedRule())
       ..registerWarningRule(AvoidUnnecessaryBlockRule())
       ..registerWarningRule(AvoidUnusedAfterNullCheckRule())
+      ..registerWarningRule(AvoidUnusedCallbackParametersRule())
       ..registerWarningRule(CubitStateMustBeEquatableRule())
       ..registerWarningRule(EquatablePropsMustIncludeAllFieldsRule())
       ..registerWarningRule(UnProtectedEmitAfterAwaitRule())
