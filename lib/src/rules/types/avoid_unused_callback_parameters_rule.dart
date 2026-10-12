@@ -4,6 +4,7 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/type_checker.dart';
 
 /// A rule that identifies unused parameters in inline callbacks.
 ///
@@ -47,19 +48,19 @@ class _Visitor extends RecursiveAstVisitor<void> {
       isCallback: true,
       parameters: FormalParameterList(parameters: final params),
     ) when params.isNotEmpty) {
-      for (final param
-          in params
-              .whereType<NormalFormalParameter>()
-              .where((e) => e.name?.lexeme != null)
-              .where((e) => !e.name!.lexeme.startsWith('_'))) {
-        final paramName = param.name!.lexeme;
-
-        var isUsed = false;
-        final finder = _ParameterUsageFinder(paramName, (_) => isUsed = true);
-        node.body.accept(finder);
-        if (!isUsed) {
-          rule.reportAtNode(param, arguments: [paramName]);
-        }
+      final paramNames = params
+          .whereType<NormalFormalParameter>()
+          .where((e) => e.name?.lexeme != null)
+          .where((e) => !e.name!.lexeme.startsWith('_'))
+          .toSet();
+      final Set<NormalFormalParameter> usedParams = {};
+      final finder = _ParameterUsageFinder(paramNames, (node) {
+        usedParams.add(node);
+      });
+      node.body.accept(finder);
+      final unusedParams = paramNames.toSet().difference(usedParams);
+      for (final p in unusedParams) {
+        rule.reportAtNode(p, arguments: [p.name!.lexeme]);
       }
     }
 
@@ -68,15 +69,16 @@ class _Visitor extends RecursiveAstVisitor<void> {
 }
 
 class _ParameterUsageFinder extends RecursiveAstVisitor<void> {
-  _ParameterUsageFinder(this.paramName, this.onFound);
+  _ParameterUsageFinder(this.params, this.onFound);
 
-  final String paramName;
-  final void Function(SimpleIdentifier node) onFound;
+  final Set<NormalFormalParameter> params;
+  final void Function(NormalFormalParameter node) onFound;
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
-    if (node.name == paramName) {
-      onFound(node);
+    final p = params.firstWhereOrNull((e) => e.name!.lexeme == node.name);
+    if (p != null) {
+      onFound(p);
     }
     super.visitSimpleIdentifier(node);
   }
