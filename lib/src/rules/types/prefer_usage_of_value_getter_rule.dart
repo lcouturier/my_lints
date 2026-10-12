@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that prefers a value over a zero-argument callback returning it.
+///
+/// A function type with no parameters and a non-void return type can often be
+/// represented directly as a value instead of a callable field.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// String Function() title = () => 'Welcome';
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// String title = 'Welcome';
+/// ```
 @Deprecated('Do not use anymore this rule, prefer using prefer_void_callable_rule.')
 class PreferUsageOfValueGetterRule extends AnalysisRule {
   static const LintCode code = LintCode('prefer_usage_of_value_getter', 'Prefer using the value getter.');

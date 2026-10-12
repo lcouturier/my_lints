@@ -6,20 +6,32 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-// Bad
-// @override
-// void initState() {
-//   super.initState();
-//   Navigator.of(context).push(...);
-// }
-//- Good
-// @override
-// void initState() {
-//   super.initState();
-//   WidgetsBinding.instance.addPostFrameCallback((_) {
-//     Navigator.of(context).push(...);
-//   });
-// }
+/// A rule that discourages using BuildContext in initState and dispose methods.
+///
+/// Using context in initState can be unsafe because the widget is not fully built yet.
+/// Using context in dispose can also cause issues. Use post-frame callbacks instead.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// @override
+/// void initState() {
+///   super.initState();
+///   Navigator.of(context).push(...);
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// @override
+/// void initState() {
+///   super.initState();
+///   WidgetsBinding.instance.addPostFrameCallback((_) {
+///     Navigator.of(context).push(...);
+///   });
+/// }
+/// ```
 class AvoidContextInInitStateRule extends AnalysisRule {
   static LintCode code = const LintCode('avoid_context_in_initState', "Don't use 'context' in this method.");
 

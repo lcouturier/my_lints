@@ -6,6 +6,23 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that avoids inline non-zero values in `Duration` components.
+///
+/// Give a duration component a descriptive constant name so its meaning can be
+/// understood and reused at the call site.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// final timeout = Duration(seconds: 30);
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// const timeoutSeconds = 30;
+/// final timeout = Duration(seconds: timeoutSeconds);
+/// ```
 class AvoidMagicDurationRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_magic_duration',

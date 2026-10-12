@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that enforces the 'Cubit' suffix for Cubit classes.
+///
+/// This rule ensures that all classes extending Cubit have the 'Cubit' suffix
+/// in their class name for consistency and clarity.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// class UserState extends Cubit<UserState> {}
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// class UserStateCubit extends Cubit<UserState> {}
+/// ```
 class AddCubitSuffixRule extends AnalysisRule {
   static LintCode code = const LintCode('add_cubit_suffix_rule', 'Consider add cubit suffix to {0}.');
 

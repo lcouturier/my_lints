@@ -7,6 +7,26 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that avoids double negation in conditions.
+///
+/// Double negation (e.g., `!isDisabled`) when the variable name is already negative
+/// makes the code harder to read. Use positive boolean names instead.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// if (!isDisabled) { }
+/// if (!isInvalid) { }
+/// if (!hasNoErrors) { }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// if (isEnabled) { }
+/// if (isValid) { }
+/// if (hasErrors) { }
+/// ```
 class AvoidDoubleNegationConditionsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_double_negation_conditions',

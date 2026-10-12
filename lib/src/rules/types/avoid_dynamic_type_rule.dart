@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that avoids declarations using the `dynamic` type.
+///
+/// Prefer a concrete type when known, or `Object?` when a value may have any
+/// type but should still be type-checked before use.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// dynamic result;
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// Object? result;
+/// ```
 class AvoidDynamicTypeRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_dynamic_type',

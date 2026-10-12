@@ -5,6 +5,22 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that identifies unused parameters in inline callbacks.
+///
+/// Rename an intentionally unused parameter with an underscore prefix so its
+/// purpose is clear and it is not mistaken for an accidental omission.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// values.map((value) => 0);
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// values.map((_) => 0);
+/// ```
 class AvoidUnusedCallbackParametersRule extends AnalysisRule {
   AvoidUnusedCallbackParametersRule() : super(name: code.name, description: code.problemMessage);
 

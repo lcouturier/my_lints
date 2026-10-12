@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that avoids materializing `divideWidgets` results with `toList()`.
+///
+/// Keep the iterable returned by `divideWidgets` when the receiving API accepts
+/// an iterable, rather than creating an unnecessary list.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// final children = widgets.divideWidgets(const SizedBox()).toList();
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final children = widgets.divideWidgets(const SizedBox());
+/// ```
 class DoNotCallToListAfterDivideWidgetsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'do_not_call_to_list_after_divide_widgets',

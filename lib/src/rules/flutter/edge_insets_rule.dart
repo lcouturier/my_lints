@@ -9,6 +9,22 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that prefers symmetric insets when opposing values are equal.
+///
+/// Use `EdgeInsets.symmetric` to express equal horizontal or vertical padding
+/// without repeating the same value on both sides.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// const EdgeInsets.only(left: 8, right: 8);
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// const EdgeInsets.symmetric(horizontal: 8);
+/// ```
 class EdgeInsetsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_edge_insets_symmetric',

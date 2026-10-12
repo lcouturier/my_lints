@@ -6,6 +6,24 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that avoids interpolating nullable values without a fallback.
+///
+/// A nullable value can produce an unexpected `null` in the resulting string.
+/// Provide a default value before interpolating it.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// String? name;
+/// final greeting = 'Hello, $name';
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// String? name;
+/// final greeting = 'Hello, ${name ?? 'guest'}';
+/// ```
 class AvoidNullableInterpolationRule extends AnalysisRule {
   AvoidNullableInterpolationRule() : super(name: code.name, description: code.problemMessage);
 

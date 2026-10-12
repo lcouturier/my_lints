@@ -5,6 +5,23 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that limits chained property access to three levels.
+///
+/// Break a long access chain into intermediate values to make each step easier
+/// to read and inspect.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// final city = user.profile.address.city.name;
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final address = user.profile.address;
+/// final city = address.city.name;
+/// ```
 class AvoidDeepPropertyAccessRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_deep_property_access',

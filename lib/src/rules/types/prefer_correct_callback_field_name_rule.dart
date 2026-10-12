@@ -6,6 +6,26 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that requires widget callback fields to start with `on`.
+///
+/// Consistent callback names make event properties easier to recognize in a
+/// widget's public API.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// class SaveButton extends StatelessWidget {
+///   final VoidCallback save;
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// class SaveButton extends StatelessWidget {
+///   final VoidCallback onSave;
+/// }
+/// ```
 @Deprecated("Do not use this rule, it is not working properly")
 class PreferCorrectCallbackFieldNameRule extends AnalysisRule {
   static const LintCode code = LintCode(

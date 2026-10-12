@@ -5,6 +5,28 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that prefers a conditional expression for simple return branches.
+///
+/// When both branches return a literal or simple property value, a ternary
+/// keeps the condition and its two results together.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// String label(bool ready) {
+///   if (ready) {
+///     return 'Ready';
+///   } else {
+///     return 'Waiting';
+///   }
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// String label(bool ready) => ready ? 'Ready' : 'Waiting';
+/// ```
 class PreferTernaryOverIfElseRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_ternary_over_if_else',

@@ -8,6 +8,22 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that removes comparisons of non-nullable booleans with literals.
+///
+/// A boolean expression already evaluates to `true` or `false`; use it
+/// directly or negate it instead of comparing it to a boolean literal.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// if (isReady == true) {}
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// if (isReady) {}
+/// ```
 @Deprecated('Do not use')
 class NoBooleanLiteralCompareRule extends AnalysisRule {
   static const LintCode code = LintCode(

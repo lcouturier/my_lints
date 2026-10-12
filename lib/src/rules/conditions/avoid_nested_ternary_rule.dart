@@ -5,6 +5,27 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that detects nested ternary operators.
+///
+/// Nested ternary operators make code harder to read and understand.
+/// Use a regular if-else statement instead.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// final result = condition1 ? (condition2 ? 'A' : 'B') : 'C';
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// String result;
+/// if (condition1) {
+///   result = condition2 ? 'A' : 'B';
+/// } else {
+///   result = 'C';
+/// }
+/// ```
 class AvoidNestedTernaryRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_nested_ternary',

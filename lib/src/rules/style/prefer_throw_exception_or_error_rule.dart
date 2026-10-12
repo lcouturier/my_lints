@@ -6,6 +6,22 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 
+/// A rule that flags a bare `Exception` created with a literal argument.
+///
+/// Use a more specific exception type to describe the failure and make it
+/// easier for callers to distinguish this case.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// throw Exception('Invalid response');
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// throw FormatException('Invalid response');
+/// ```
 class PreferThrowExceptionOrErrorRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_throw_exception_or_error',

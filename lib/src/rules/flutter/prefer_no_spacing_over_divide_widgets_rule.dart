@@ -7,6 +7,29 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that prefers `Column.spacing` over `divideWidgets` for vertical gaps.
+///
+/// The spacing property expresses layout intent directly and avoids inserting
+/// separate spacer widgets between children.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// Column(
+///   children: [Text('First'), Text('Second')].divideWidgets(
+///     const SizedBox(height: 16),
+///   ),
+/// );
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// Column(
+///   spacing: 16,
+///   children: [Text('First'), Text('Second')],
+/// );
+/// ```
 class PreferSpacingOverDivideWidgetsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_spacing_over_divide_widgets',

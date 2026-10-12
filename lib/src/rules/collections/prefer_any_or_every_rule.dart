@@ -6,6 +6,24 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
+/// A rule that prefers using .any() or .every() instead of .where().isEmpty/isNotEmpty.
+///
+/// Using .any() or .every() is more readable and performs better than
+/// .where().isEmpty/isNotEmpty.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// items.where((item) => item.isValid).isEmpty;
+/// items.where((item) => item.isValid).isNotEmpty;
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// !items.any((item) => item.isValid);
+/// items.any((item) => item.isValid);
+/// ```
 class PreferAnyRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_any',

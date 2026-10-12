@@ -5,6 +5,32 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that detects if statements with identical then and else branches.
+///
+/// Having identical branches in an if-else statement is redundant and confusing.
+/// Remove the conditional or ensure the branches are different.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// if (condition) {
+///   print('Hello');
+/// } else {
+///   print('Hello');
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// print('Hello');
+/// // or
+/// if (condition) {
+///   print('Hello');
+/// } else {
+///   print('Goodbye');
+/// }
+/// ```
 class AvoidIdenticalIfBranchRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_identical_if_branch',

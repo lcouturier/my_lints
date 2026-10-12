@@ -6,6 +6,26 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that avoids negative boolean names.
+///
+/// Negative boolean names (e.g., `isDisabled`, `hasNoErrors`) make code harder to read.
+/// Use positive boolean names instead.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// bool isDisabled = false;
+/// bool hasNoErrors = true;
+/// bool isInvalid = false;
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// bool isEnabled = true;
+/// bool hasErrors = false;
+/// bool isValid = true;
+/// ```
 class AvoidNegativeBooleanRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_negative_boolean',
