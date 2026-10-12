@@ -6,19 +6,33 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// A rule that enforces that the copyWith method of a class has all the parameters corresponding to the fields of the class.
+/// A rule that reports `copyWith` methods missing named parameters for instance fields.
 ///
-/// example:
+/// Add a parameter for each instance field so callers can update any field when
+/// copying an object.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// class MyClass {
 ///   final String name;
 ///   final int age;
 ///   MyClass({required this.name, required this.age});
 ///   MyClass copyWith({String? name}) {
-///     return MyClass(
-///       name: name ?? this.name,
-///       age: this.age, // Missing parameter for age
-///     );
+///     return MyClass(name: name ?? this.name, age: this.age);
+///   }
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// class MyClass {
+///   final String name;
+///   final int age;
+///   MyClass({required this.name, required this.age});
+///   MyClass copyWith({String? name, int? age}) {
+///     return MyClass(name: name ?? this.name, age: age ?? this.age);
 ///   }
 /// }
 /// ```

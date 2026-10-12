@@ -7,22 +7,20 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Lint to detect when `join()` is called on an `Iterable` that does not contain `String`s.
+/// A rule whose current implementation reports core `join()` calls on
+/// `Iterable<String>` targets.
 ///
+/// This differs from the diagnostic's stated intent, which is to report
+/// non-string elements. The predicate should be corrected before documenting a
+/// recommended replacement.
+///
+/// ## Current behavior
+///
+/// ⚠️ Reported by the current implementation:
 /// ```dart
-/// Iterable<int> numbers = [1, 2, 3];
-/// numbers.join(); // Lint
+/// Iterable<String> values = ['a', 'b'];
+/// values.join();
 /// ```
-///
-/// ```dart
-/// Iterable<String> strings = ['1', '2', '3'];
-/// strings.join(); // OK
-/// ```
-///
-///
-/// TODO(lcouturier): add regex to find call `join` on `Iterable<String>`
-/// TODO(lcouturier): add suggestions to replace `join` with `toString`
-///
 class UseJoinOnStringsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_join_on_non_strings',

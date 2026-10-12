@@ -6,20 +6,27 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// Prefer returning the awaited result of a Future inside a try-catch block.
-/// This rule encourages using "return await" inside try-catch blocks to properly handle exceptions.
-/// Good:
+/// A rule that recommends `return await` for futures returned inside `try` blocks.
+///
+/// This rule applies in async functions returning a `Future` when the `try`
+/// statement has a `catch` clause. Awaiting the future lets that clause catch
+/// errors raised by the asynchronous operation.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// try {
-///   return await someAsyncFunction();
+///   return loadValue();
 /// } catch (e) {
 ///   handleError(e);
 /// }
 /// ```
-/// Bad:
+///
+/// ✅ Good:
 /// ```dart
 /// try {
-///   return someAsyncFunction();
+///   return await loadValue();
 /// } catch (e) {
 ///   handleError(e);
 /// }

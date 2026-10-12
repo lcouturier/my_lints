@@ -6,23 +6,27 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that enforces using `itemExtent` or `prototypeItem` for `ListView.builder` with large lists.
+/// A rule that reports `ListView` builder constructors without an extent argument.
 ///
-/// This helps improve performance by avoiding layout calculations for each item.
+/// Adding `itemExtent` or `prototypeItem` lets Flutter avoid measuring each
+/// child to determine the list's extent. The rule checks the constructor shape,
+/// not the number of list items.
 ///
 /// ## Example
 ///
-/// ```
-/// // Bad
+/// ❌ Bad:
+/// ```dart
 /// ListView.builder(
-///   itemCount: 100,
+///   itemCount: itemCount,
 ///   itemBuilder: (context, index) => Text('Item $index'),
 /// )
+/// ```
 ///
-/// // Good
+/// ✅ Good:
+/// ```dart
 /// ListView.builder(
-///   itemCount: 100,
-///   itemExtent: 50.0,
+///   itemCount: itemCount,
+///   itemExtent: 48,
 ///   itemBuilder: (context, index) => Text('Item $index'),
 /// )
 /// ```

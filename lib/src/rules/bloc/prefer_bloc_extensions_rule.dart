@@ -6,15 +6,33 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// Prefer using BLoC extensions for state and event access instead of direct property access.
-/// This rule encourages the use of BLoC extensions like `context.read<MyBloc>()` and `context.watch<MyBloc>()` instead of directly accessing the `state` or `event` properties of the BLoC.
-/// Example:
-/// ```dart
-/// // Avoid:
-/// BlocProvider.of<MyBloc>(context).update();
+/// A rule that prefers `BlocProvider.of` calls to BuildContext BLoC extensions.
 ///
-/// // Prefer:
-/// context.read<MyBloc>().update();
+/// In Flutter widget classes, this rule reports calls to `BlocProvider.of`.
+/// Use `context.read` or `context.watch` to access the provided BLoC.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// class MyWidget extends StatelessWidget {
+///   @override
+///   Widget build(BuildContext context) {
+///     BlocProvider.of<MyBloc>(context).update();
+///     return const SizedBox();
+///   }
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// class MyWidget extends StatelessWidget {
+///   @override
+///   Widget build(BuildContext context) {
+///     context.read<MyBloc>().update();
+///     return const SizedBox();
+///   }
+/// }
 /// ```
 class PreferBlocExtensionsRule extends AnalysisRule {
   static const LintCode code = LintCode(

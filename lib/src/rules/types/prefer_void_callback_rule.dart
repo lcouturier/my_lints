@@ -6,21 +6,22 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 
-/// A rule that prefers using `VoidCallback` over `void Function()`.
+/// A rule that reports generic function types with no value parameters that can
+/// use a callback alias.
 ///
-/// This rule identifies function types that can be replaced by `VoidCallback`
-/// or `ValueGetter` and reports them for refactoring.
+/// The rule excludes function type aliases and callbacks returning `Future`.
+/// Use `VoidCallback` for a no-argument `void` callback.
 ///
 /// ## Example
 ///
-/// Bad:
+/// ❌ Bad:
 /// ```dart
 /// class A {
 ///   void Function() cb;
 /// }
 /// ```
 ///
-/// Good:
+/// ✅ Good:
 /// ```dart
 /// class A {
 ///   VoidCallback cb;

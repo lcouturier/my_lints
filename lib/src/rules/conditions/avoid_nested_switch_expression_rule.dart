@@ -7,30 +7,25 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that detects nested switch expressions.
+/// A rule that reports switch expressions used directly as a case expression
+/// of another switch expression.
 ///
 /// ## Example
 ///
+/// ❌ Bad:
+/// ```dart
+/// final result = switch (value) {
+///   1 => switch (otherValue) { 2 => 3, _ => 1 },
+///   _ => 0,
+/// };
 /// ```
-/// // Avoid
-/// switch (value) {
-///   case 1:
-///     switch (value2) {
-///       case 2:
-///         return 3;
-///     }
-///     return 1;
-///   case 2:
-///     return 2;
-/// }
 ///
-/// // Good
-/// switch (value) {
-///   case 1:
-///     return 1;
-///   case 2:
-///     return 2;
-/// }
+/// ✅ Good:
+/// ```dart
+/// final result = switch (value) {
+///   1 => resultFor(otherValue),
+///   _ => 0,
+/// };
 /// ```
 class AvoidNestedSwitchExpressionRule extends AnalysisRule {
   static const LintCode code = LintCode(

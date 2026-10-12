@@ -7,19 +7,22 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that avoids using nullable list return types and parameters.
+/// A rule that reports nullable `List` return types, parameters, variables, and fields.
 ///
-/// This rule identifies function return types and parameters that are nullable lists
-/// and reports them for refactoring.
-/// example:
-/// Bad:
+/// It excludes nullable list types inside methods named `copyWith`. Prefer an
+/// empty list or a non-nullable parameter when `null` is not meaningful.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// List<int>? getValues() { return null; }
+/// List<int>? getValues() => null;
 /// void updateValues(List<int>? values) {}
 /// ```
-/// Good:
+///
+/// ✅ Good:
 /// ```dart
-/// List<int> getValues() { return []; }
+/// List<int> getValues() => [];
 /// void updateValues(List<int> values) {}
 /// ```
 class AvoidUsageOfNullableListRule extends AnalysisRule {

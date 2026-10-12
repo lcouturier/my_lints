@@ -8,16 +8,30 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// A rule that reports when an extension method shadows a method defined in the extended class.
+/// A rule that reports extension methods with names already defined on the extended class.
 ///
-/// For example, if a class `A` has a method `foo`, and an extension on `A` defines a method `foo`, this rule will report a diagnostic for the extension method.
-/// example:
+/// Choose a distinct extension method name to avoid shadowing the class API.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// class A {
 ///   void foo() {}
 /// }
 /// extension AExtension on A {
-///   void foo() {} // This will be reported by the rule.
+///   void foo() {}
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// class A {
+///   void foo() {}
+/// }
+/// extension AExtension on A {
+///   void fooForA() {}
+/// }
 /// }
 class AvoidShadowedExtensionMethodsRule extends AnalysisRule {
   static LintCode code = const LintCode(

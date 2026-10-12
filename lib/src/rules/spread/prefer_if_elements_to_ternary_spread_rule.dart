@@ -5,15 +5,23 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Lint rule that encourages using if elements instead of ternary expressions for spread operations.
-/// For example, instead of writing:
+/// A deprecated rule that reports a spread of a conditional with one list item
+/// in the true branch and an empty false branch.
+///
+/// Use an `if` collection element instead. Prefer
+/// `PreferCollectionIfForConditionalElementsRule`, which covers this pattern
+/// and additional cases.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// var list = [...(condition ? [a] : [])];
+/// final values = [...(condition ? [value] : [])];
 /// ```
-/// It suggests writing:
-/// ```dart/// var list = [
-///   if (condition) a,
-/// ];
+///
+/// ✅ Good:
+/// ```dart
+/// final values = [if (condition) value];
 /// ```
 @Deprecated('Use PreferCollectionIfForConditionalElementsRule instead, which covers this case and more.')
 class PreferIfElementsToTernarySpreadRule extends AnalysisRule {

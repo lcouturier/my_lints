@@ -8,25 +8,44 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// A rule that enforces proper calls to super.initState() and super.dispose() in Flutter widgets.
+/// A rule that checks the position of lifecycle `super` calls in Flutter widgets.
 ///
-/// example:
+/// In a widget `State` class, call `super.initState()` first and
+/// `super.dispose()` last.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// class MyWidget extends StatefulWidget {
-///   @override
-///   _MyWidgetState createState() => _MyWidgetState();
-/// }
-/// class _MyWidgetState extends State<MyWidget> {
+/// class MyState extends State<MyWidget> {
 ///   @override
 ///   void initState() {
-///     super.initState(); // This should be the first statement in initState()
-///     // Other initialization code...
+///     initialize();
+///     super.initState();
 ///   }
-///  @override
-///  void dispose() {
-///    // Other cleanup code...
-///   super.dispose(); // This should be the last statement in dispose()
-///  }
+///
+///   @override
+///   void dispose() {
+///     super.dispose();
+///     cleanUp();
+///   }
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// class MyState extends State<MyWidget> {
+///   @override
+///   void initState() {
+///     super.initState();
+///     initialize();
+///   }
+///
+///   @override
+///   void dispose() {
+///     cleanUp();
+///     super.dispose();
+///   }
 /// }
 class ProperSuperCallsRule extends AnalysisRule {
   static LintCode code = const LintCode(

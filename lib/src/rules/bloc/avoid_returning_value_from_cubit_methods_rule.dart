@@ -7,15 +7,30 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// A rule that enforces that Cubit methods should not return values, but instead emit states.
+/// A rule that reports public Cubit methods with a non-`void` return type.
 ///
-/// example:
+/// Cubit methods communicate changes through emitted states. Use a `void` or
+/// `Future<void>` return type instead of returning a value to callers.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// class MyCubit extends Cubit<MyState> {
 ///   MyCubit() : super(MyInitialState());
 ///   int increment(int value) {
 ///     emit(MyState(value: value + 1));
-///     return value + 1; // This should be avoided
+///     return value + 1;
+///   }
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// class MyCubit extends Cubit<MyState> {
+///   MyCubit() : super(MyInitialState());
+///   void increment(int value) {
+///     emit(MyState(value: value + 1));
 ///   }
 /// }
 /// ```

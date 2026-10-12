@@ -7,23 +7,22 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Lint rule that encourages using if elements instead of unnecessary spreads or ternary expressions in collections.
-/// For example, instead of writing:
-/// ```dart/// var list = [
-///   if (condition) ...[a],
-/// ];/// ```
-/// It suggests writing:
-/// ```dart/// var list = [
-///   if (condition) a,
-/// ];/// ```
-/// Or instead of writing:
-/// ```dart/// var list = [
-///   ...(condition ? [a] : []),
-/// ];/// ```
-/// It suggests writing:
-/// ```dart/// var list = [
-///   if (condition) a,
-/// ];/// ```
+/// A rule that reports single-element list spreads guarded by `if` or a conditional expression.
+///
+/// Use an `if` collection element directly instead of spreading a one-element
+/// list.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// final values = [if (condition) ...[value]];
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final values = [if (condition) value];
+/// ```
 class PreferCollectionIfForConditionalElementsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_collection_if_for_conditional_elements',

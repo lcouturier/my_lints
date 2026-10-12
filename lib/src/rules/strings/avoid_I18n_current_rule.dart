@@ -10,17 +10,22 @@ import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
-/// Avoid using I18n.current. Consider using I18n.of(context) instead.
-/// example:
-/// Bad
+/// A rule that reports `I18n.current` in functions and methods with a
+/// `BuildContext` parameter.
+///
+/// Use the context-based localization accessor so the value follows the active
+/// localization configuration.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// class I18n { static final I18n current = I18n(); }
-/// String title(BuildContext context) => I18n.current.toString();
+/// String title(BuildContext context) => I18n.current.title;
 /// ```
-/// Good
+///
+/// ✅ Good:
 /// ```dart
-/// class I18n { static final I18n current = I18n(); }
-/// String title(BuildContext context) => I18n.of(context).toString();
+/// String title(BuildContext context) => I18n.of(context).title;
 /// ```
 class AvoidI18nCurrentRule extends AnalysisRule {
   static const LintCode code = LintCode(

@@ -8,7 +8,19 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// In progress: This rule is not fully implemented yet and may produce false positives. Use with caution.
+/// A rule under development that reports some conditional map lookups.
+///
+/// It currently recognizes a conditional expression whose condition calls
+/// `containsKey` and whose true branch indexes the same target with an
+/// expression other than a simple identifier. It may produce false positives;
+/// no general replacement is documented until the rule is complete.
+///
+/// ## Example
+///
+/// ⚠️ Currently reported:
+/// ```dart
+/// final result = map.containsKey(key) ? map[key.toString()] : fallback;
+/// ```
 
 class PreferTryGetValueRule extends AnalysisRule {
   static const LintCode code = LintCode(

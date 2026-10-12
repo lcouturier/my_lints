@@ -6,21 +6,27 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that detects nested assignments.
+/// A rule that reports simple assignments whose right-hand side is another
+/// assignment.
 ///
-/// Nested assignments can lead to confusion or indicate an incorrect operator (= instead of ==).
-/// For example, the following code will trigger a warning:
+/// Assign each value on its own line to make the order of updates explicit.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// void f(int a, int b) {
-///  a = b = 42;
+///   a = b = 42;
 /// }
+/// ```
 ///
-/// The following code will not trigger a warning:
+/// ✅ Good:
 /// ```dart
 /// void f(int a, int b) {
-///  a = 42;
-///  b = 42;
+///   a = 42;
+///   b = 42;
 /// }
+/// ```
 class AvoidNestedAssignmentRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_nested_assignment',

@@ -8,15 +8,24 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// A rule that enforces using null-aware notation (?.) instead of explicit null checks.
+/// A rule that reports comparisons of nullable expressions with boolean literals.
 ///
-/// This rule detects comparisons like `nullableBool == true` or `nullableBool != false`
-/// and suggests using the null-aware notation `nullableBool ?? false` instead.
-/// Example:
+/// It recognizes `==` and `!=` comparisons where the nullable expression is on
+/// the left and the right operand is `true` or `false`. For a `== true` check,
+/// using `?? false` gives null the same false result.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// bool? isReady;
-/// final ready = isReady == true; // ❌
-/// final ready = isReady ?? false; // ✅
+/// final ready = isReady == true;
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// bool? isReady;
+/// final ready = isReady ?? false;
 /// ```
 class PreferNullAwareNotationRule extends AnalysisRule {
   static const LintCode code = LintCode(

@@ -6,9 +6,13 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that detects nested BlocProvider instances and suggests using MultiBlocProvider instead.
-/// This rule helps maintain a cleaner and more maintainable Bloc structure by avoiding deeply nested BlocProvider widgets.
-/// Example:
+/// A rule that reports a `BlocProvider` directly nested as another provider's `child`.
+///
+/// Use `MultiBlocProvider` to declare sibling providers without nesting them.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// BlocProvider(
 ///   create: (context) => FirstBloc(),
@@ -18,7 +22,7 @@ import 'package:analyzer/error/error.dart';
 ///   ),
 /// )
 /// ```
-/// Recommended usage with MultiBlocProvider:
+/// ✅ Good:
 /// ```dart
 /// MultiBlocProvider(
 ///   providers: [

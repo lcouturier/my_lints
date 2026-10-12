@@ -6,16 +6,20 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that prefers using `+=` and `-=` instead of `++` and `--`.
+/// A rule that reports postfix `++` and `--` outside `for` loop headers.
 ///
-/// This rule checks for the use of postfix increment (`++`) and decrement (`--`) operators in Dart code. It reports a diagnostic if these operators are used outside of `for` loop declarations or expressions, suggesting that developers should use compound assignment operators (`+=` and `-=`) instead for better readability and maintainability.
-/// example
+/// Use `+= 1` or `-= 1` to make the arithmetic update explicit.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// void main() {
-///   int x = 5;
-///   x++; // This will be reported by the rule.
-///   x--; // This will also be reported by the rule.
-/// }
+/// count++;
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// count += 1;
 /// ```
 class PreferAdditionSubtractionAssignmentsRule extends AnalysisRule {
   static const LintCode code = LintCode(

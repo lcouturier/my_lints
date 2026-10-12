@@ -6,24 +6,21 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that prevents creating extensions on record types.
+/// A rule that reports extensions whose `on` type is a record type.
 ///
-/// Creating an extension on a record type will make that extension available
-/// for every record with the same form (e.g. (String, String)), which can lead
-/// to unexpected results. Also, since extensions are used to add additional
-/// behavior to external objects, and the primary purpose of records is to
-/// group data (not behavior), it's recommended to create a dedicated class instead.
+/// Record extensions apply to every record with the same shape. Use a dedicated
+/// class when the data needs domain-specific behavior.
 ///
 /// ## Example
 ///
-/// Bad:
+/// ❌ Bad:
 /// ```dart
 /// extension on (String, String) {
-///   String get fullName => '$\$1 \$\$2';
+///   String get fullName => $1 + ' ' + $2;
 /// }
 /// ```
 ///
-/// Good:
+/// ✅ Good:
 /// ```dart
 /// class Person {
 ///   final String firstName;

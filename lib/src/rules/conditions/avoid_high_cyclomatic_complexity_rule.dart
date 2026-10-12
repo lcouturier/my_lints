@@ -6,40 +6,26 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Detects functions and methods with high cyclomatic complexity.
+/// A rule that reports functions whose cyclomatic complexity exceeds a threshold.
 ///
-/// Cyclomatic complexity measures the number of linearly independent paths
-/// through a function's source code. High complexity makes code harder to
-/// test, understand, and maintain.
+/// Complexity starts at one and increases for `if`, conditional expressions,
+/// switch cases, loops, catch clauses, and `&&`/`||` operators. Extracting a
+/// calculation into an appropriate library operation can reduce branching.
 ///
-/// This rule counts:
-/// - if/else statements
-/// - switch/case statements
-/// - for/while/do loops
-/// - catch clauses
-/// - conditional expressions (?:)
-/// - logical AND (&&) and OR (||) operators
+/// ## Example
 ///
-/// ✅ GOOD:
+/// ❌ Bad (when the configured threshold is below 3):
 /// ```dart
-/// void processUser(User user) {
-///   if (user == null) return;
-///   final isValid = _validateUser(user);
-///   _saveUser(user);
+/// int classify(int value) {
+///   if (value < 0) return -1;
+///   if (value == 0) return 0;
+///   return 1;
 /// }
 /// ```
 ///
-/// ❌ BAD:
+/// ✅ Good:
 /// ```dart
-/// void processUser(User user) {
-///   if (user == null) return;
-///   if (user.age < 18) { ... }
-///   else if (user.age < 30) { ... }
-///   else if (user.isActive) { ... }
-///   switch (user.status) { ... }
-///   for (var item in items) { ... }
-///   // Too many branching paths
-/// }
+/// int classify(int value) => value.compareTo(0);
 /// ```
 class AvoidHighCyclomaticComplexityRule extends AnalysisRule {
   static const LintCode code = LintCode(

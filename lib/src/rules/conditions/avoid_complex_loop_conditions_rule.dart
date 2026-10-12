@@ -6,21 +6,25 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that checks for complex loop conditions in `for` statements.
-/// Complex loop conditions can make code harder to read and understand. This rule encourages developers to extract complex conditions into separate variables or methods for better readability.
-/// example:
+/// A rule that reports `for` conditions containing `&&`, `||`, or a function call.
+///
+/// Move the additional check into the loop body or simplify the condition so
+/// the loop's continuation logic is easier to scan.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// for (int i = 0; i < items.length && items[i].isValid(); i++) {
-///   // do something
+/// for (var i = 0; i < items.length && items[i].isValid(); i++) {
+///   process(items[i]);
 /// }
 /// ```
-/// This loop condition is complex because it combines multiple conditions using the logical AND operator. A better approach would be to extract the condition into a separate variable or method, like so:
+///
+/// ✅ Good:
 /// ```dart
-/// bool isValidItem(int index) {
-///   return index < items.length && items[index].isValid();
-/// }
-/// for (int i = 0; isValidItem(i); i++) {
-///   // do something
+/// for (var i = 0; i < items.length; i++) {
+///   if (!items[i].isValid()) break;
+///   process(items[i]);
 /// }
 /// ```
 class AvoidComplexLoopConditionsRule extends AnalysisRule {

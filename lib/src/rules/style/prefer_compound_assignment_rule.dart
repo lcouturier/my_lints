@@ -6,13 +6,21 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that suggests using compound assignment operators (e.g., +=, -=) instead of simple assignment with arithmetic operations.
-/// For example, instead of writing `x = x + 1`, it is recommended to use `x += 1`. This rule helps improve code readability and conciseness.
-/// example:
+/// A rule that reports assignments combining a simple identifier with itself
+/// using `+`, `-`, `*`, or `/`.
+///
+/// Use a compound assignment to express the update directly.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// int x = 5;
-/// x = x + 1; // This will be reported by the rule.
-/// x += 1; // This is the preferred way.
+/// value = value + 1;
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// value += 1;
 /// ```
 class PreferCompoundAssignmentRule extends AnalysisRule {
   static const LintCode code = LintCode(

@@ -5,19 +5,23 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
-/// A lint rule that encourages the use of spread operators (`...`) instead of
-/// `addAll()` when adding collections to list/set/map literals.
+/// A rule that reports `addAll` calls with one argument on collection targets.
 ///
-/// Example:
+/// When building a collection literal, use a spread element to include another
+/// collection's elements.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// Bad
-/// final list = [1, 2]..addAll([3, 4]);
-/// final list2 = <int>[1, 2];
-/// list2.addAll([3, 4]);
-/// Good
-/// final list = [1, 2, ...[3, 4]];
-/// final list2 = [1, 2, ...[3, 4]];
+/// final values = <int>[1, 2]..addAll([3, 4]);
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final values = <int>[1, 2, ...[3, 4]];
 /// ```
 class PreferSpreadForAddallRule extends AnalysisRule {
   static const LintCode code = LintCode(
@@ -53,17 +57,4 @@ class _Visitor extends SimpleAstVisitor<void> {
       rule.reportAtNode(node);
     }
   }
-}
-
-extension on DartType {
-  /// Returns true if the type is a list or set.
-  ///
-  /// This includes:
-  /// - `Iterable`
-  /// - `Set`
-  /// - `List`
-  /// - `Map`
-  ///
-  /// Note: `Map` is included because it can be spread in map literals.
-  bool get isListOrSet => isDartCoreIterable || isDartCoreSet || isDartCoreList || isDartCoreMap;
 }

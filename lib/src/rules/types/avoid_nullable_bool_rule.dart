@@ -6,13 +6,20 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Avoid using nullable bool parameters in methods and functions. Consider using non-nullable bool instead.
-/// example:
+/// A rule that reports nullable core `bool` types outside methods named
+/// `copyWith`.
+///
+/// Use a non-nullable boolean when the API does not need to represent a third,
+/// unknown state.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// Bad
 /// ```dart
 /// void update(bool? value) {}
 /// ```
-/// Good
+/// ✅ Good:
 /// ```dart
 /// void update(bool value) {}
 /// ```
