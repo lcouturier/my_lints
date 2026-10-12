@@ -6,7 +6,15 @@ import '../../rule_test_harness.dart';
 void main() {
   group('AvoidUnusedCallbackParametersRule', () {
     test('reports unused parameter in forEach callback', () async {
-      final unit = await resolveSource("void f(List<int> list) { list.forEach((item) { print('processing'); }); }");
+      final unit = await resolveSource('''
+void f(List<int> list) 
+{ 
+  list.forEach((item) 
+  { 
+    print('processing'); 
+  }); 
+}
+      ''');
       expect(runAnalysisRuleOnUnit(AvoidUnusedCallbackParametersRule(), unit), hasLength(1));
     });
 

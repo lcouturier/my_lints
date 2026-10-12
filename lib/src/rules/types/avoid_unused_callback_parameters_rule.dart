@@ -4,6 +4,7 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/type_checker.dart';
 
 /// A rule that identifies unused parameters in inline callbacks.
 ///
@@ -43,35 +44,23 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitFunctionExpression(FunctionExpression node) {
-    // Only check if this is a callback (passed as an argument)
-    if (!node.isCallback) {
-      super.visitFunctionExpression(node);
-      return;
-    }
-
-    final parameters = node.parameters?.parameters;
-    if (parameters == null || parameters.isEmpty) {
-      super.visitFunctionExpression(node);
-      return;
-    }
-
-    // Check each parameter
-    for (final param in parameters) {
-      if (param is NormalFormalParameter && param.name?.lexeme != null) {
-        final paramName = param.name!.lexeme;
-
-        // Skip underscore-prefixed parameters (they're intentionally unused)
-        if (paramName.startsWith('_')) {
-          continue;
-        }
-
-        // Check if the parameter is used in the function body
-        final finder = _ParameterUsageFinder(paramName);
-        node.body.accept(finder);
-
-        if (!finder.isUsed) {
-          rule.reportAtNode(param, arguments: [paramName]);
-        }
+    if (node case FunctionExpression(
+      isCallback: true,
+      parameters: FormalParameterList(parameters: final params),
+    ) when params.isNotEmpty) {
+      final paramNames = params
+          .whereType<NormalFormalParameter>()
+          .where((e) => e.name?.lexeme != null)
+          .where((e) => !e.name!.lexeme.startsWith('_'))
+          .toSet();
+      final Set<NormalFormalParameter> usedParams = {};
+      final finder = _ParameterUsageFinder(paramNames, (node) {
+        usedParams.add(node);
+      });
+      node.body.accept(finder);
+      final unusedParams = paramNames.toSet().difference(usedParams);
+      for (final p in unusedParams) {
+        rule.reportAtNode(p, arguments: [p.name!.lexeme]);
       }
     }
 
@@ -80,15 +69,16 @@ class _Visitor extends RecursiveAstVisitor<void> {
 }
 
 class _ParameterUsageFinder extends RecursiveAstVisitor<void> {
-  _ParameterUsageFinder(this.paramName);
+  _ParameterUsageFinder(this.params, this.onFound);
 
-  final String paramName;
-  bool isUsed = false;
+  final Set<NormalFormalParameter> params;
+  final void Function(NormalFormalParameter node) onFound;
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
-    if (node.name == paramName) {
-      isUsed = true;
+    final p = params.firstWhereOrNull((e) => e.name!.lexeme == node.name);
+    if (p != null) {
+      onFound(p);
     }
     super.visitSimpleIdentifier(node);
   }
@@ -96,8 +86,10 @@ class _ParameterUsageFinder extends RecursiveAstVisitor<void> {
 
 extension on FunctionExpression {
   bool get isCallback {
-    final parent = this.parent;
-    if (parent is ArgumentList) return true;
-    return parent is NamedExpression && parent.parent is ArgumentList;
+    return switch (parent) {
+      ArgumentList() => true,
+      NamedExpression() => parent?.parent is ArgumentList,
+      _ => false,
+    };
   }
 }
