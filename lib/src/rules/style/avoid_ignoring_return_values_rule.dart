@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that detects discarded results from method and function calls.
+///
+/// This includes asynchronous results such as `Future`s; handle the result or
+/// explicitly await an asynchronous operation.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// calculateTotal();
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final total = calculateTotal();
+/// ```
 class AvoidIgnoringReturnValuesRule extends AnalysisRule {
   AvoidIgnoringReturnValuesRule() : super(name: code.name, description: code.problemMessage);
 

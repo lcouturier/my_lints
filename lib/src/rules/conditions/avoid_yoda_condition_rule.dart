@@ -7,6 +7,22 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that keeps constant operands on the right side of comparisons.
+///
+/// Placing the value being tested first makes conditions read naturally and
+/// consistently across `if`, loop, and conditional-expression conditions.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// if (42 < score) {}
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// if (score > 42) {}
+/// ```
 class AvoidYodaConditionsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_yoda_conditions',

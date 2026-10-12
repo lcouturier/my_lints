@@ -8,6 +8,22 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that removes unnecessary braces around simple interpolated values.
+///
+/// Braces are only needed when the expression is more than a simple identifier
+/// or literal, or when following text could be part of the identifier.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// final message = 'Hello, ${name}';
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final message = 'Hello, $name';
+/// ```
 @Deprecated('Existe déjà, https://dart.dev/tools/linter-rules/unnecessary_string_interpolations')
 class UnnecessaryStringInterpolationRule extends AnalysisRule {
   static const code = LintCode(

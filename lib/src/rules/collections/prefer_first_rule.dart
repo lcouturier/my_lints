@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
+/// A rule that prefers `first` over accessing an iterable's first item by index.
+///
+/// The `first` getter communicates intent directly and avoids spelling out the
+/// zero index when retrieving the first element.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// final firstName = names[0];
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final firstName = names.first;
+/// ```
 class PreferFirstRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_first_over_index',

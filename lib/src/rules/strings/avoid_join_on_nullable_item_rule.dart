@@ -7,6 +7,24 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that avoids joining iterables with nullable or dynamic items.
+///
+/// Remove nullable values or narrow the item type before calling `join()` so
+/// the resulting text has a well-defined set of values.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// final names = <String?>['Ada', null];
+/// final text = names.join(', ');
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final names = <String?>['Ada', null];
+/// final text = names.whereType<String>().join(', ');
+/// ```
 @Deprecated('This rule is unused.')
 class AvoidJoinOnNullableItemRule extends AnalysisRule {
   static const LintCode code = LintCode(

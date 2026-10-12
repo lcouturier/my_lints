@@ -9,6 +9,22 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
+/// A rule that prefers `map` when a mapping callback does not use its index.
+///
+/// Avoid requesting an index that has no effect on the mapped value; a regular
+/// `map` callback only needs the item itself.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// values.mapIndexed((index, value) => value * 2);
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// values.map((value) => value * 2);
+/// ```
 class PreferMapOverMapIndexedRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_map_over_mapIndexed',

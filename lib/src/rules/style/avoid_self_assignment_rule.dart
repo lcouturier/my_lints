@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that detects assigning a variable to itself.
+///
+/// A self-assignment does not change the variable's value and can usually be
+/// removed without affecting the surrounding code.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// count = count;
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// // Remove the redundant assignment.
+/// ```
 class AvoidSelfAssignmentRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_self_assignment',

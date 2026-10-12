@@ -7,6 +7,24 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that detects nullable parameters only called with `null`.
+///
+/// If callers never provide a non-null value, the parameter may not need to be
+/// nullable. This rule checks calls found in the same compilation unit.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// void showName(String? name) {}
+/// showName(null);
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// void showName(String name) {}
+/// showName('Ada');
+/// ```
 class AvoidAlwaysNullParametersRule extends AnalysisRule {
   static LintCode code = const LintCode(
     'avoid_always_null_parameters',

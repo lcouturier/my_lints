@@ -6,6 +6,21 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that prefers emptiness getters over comparing `length` with zero.
+///
+/// Use `isEmpty` or `isNotEmpty` to state the collection check directly.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// if (items.length == 0) {}
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// if (items.isEmpty) {}
+/// ```
 @Deprecated('Existe déjà de base, https://dart.dev/tools/linter-rules/prefer_is_empty')
 class PreferIsEmptyRule extends AnalysisRule {
   PreferIsEmptyRule() : super(name: code.name, description: code.problemMessage);

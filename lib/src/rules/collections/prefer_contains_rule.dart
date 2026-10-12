@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that prefers `contains` over comparing `indexOf` with `-1`.
+///
+/// Use `contains` to express a membership check directly instead of inspecting
+/// the sentinel index returned by `indexOf`.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// if (items.indexOf(item) != -1) {}
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// if (items.contains(item)) {}
+/// ```
 class PreferContainsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_contains_over_indexOf',

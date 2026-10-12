@@ -7,6 +7,24 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 
+/// A rule that detects `reduce()` calls without a recognized non-empty guard.
+///
+/// `reduce()` throws on an empty iterable. Check that the collection is not
+/// empty before reducing it, or use an operation with an initial value.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// final total = values.reduce((left, right) => left + right);
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final total = values.isEmpty
+///     ? 0
+///     : values.reduce((left, right) => left + right);
+/// ```
 @Deprecated('Do not use anymore')
 class AvoidUnsafeReduceRule extends AnalysisRule {
   static const LintCode code = LintCode(

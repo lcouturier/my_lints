@@ -9,6 +9,22 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that prefers `whereType` for filtering elements by type or nullness.
+///
+/// `whereType<T>()` filters and promotes matching items in one operation,
+/// avoiding a separate type test followed by a cast.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// values.where((value) => value is String).cast<String>();
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// values.whereType<String>();
+/// ```
 class PreferWhereTypeRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_where_type',

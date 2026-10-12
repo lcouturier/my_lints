@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that flags cascades targeting a null-coalescing expression.
+///
+/// Parenthesize the result of `??` before applying a cascade to make the
+/// cascade target explicit.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// primary ?? fallback..initialize();
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// (primary ?? fallback)..initialize();
+/// ```
 class AvoidCascadeAfterIfNullRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_cascade_after_if_null',

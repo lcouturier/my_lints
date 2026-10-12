@@ -6,6 +6,24 @@ import 'package:analyzer/error/error.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that detects empty `setState` callbacks in Flutter widgets.
+///
+/// An empty callback triggers a rebuild without changing state, so remove it or
+/// update the state that the widget depends on.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// setState(() {});
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// setState(() {
+///   count++;
+/// });
+/// ```
 class AvoidEmptySetStateRule extends AnalysisRule {
   static LintCode code = const LintCode(
     'avoid_empty_set_state',

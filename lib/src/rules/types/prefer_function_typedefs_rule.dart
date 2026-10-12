@@ -6,6 +6,23 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that prefers typedefs over inline function types in parameters.
+///
+/// Naming a function type gives it a reusable meaning and keeps declarations
+/// that accept callbacks easier to read.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// void register(String Function(String) transform) {}
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// typedef StringTransform = String Function(String);
+/// void register(StringTransform transform) {}
+/// ```
 class PreferFunctionTypedefsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_function_typedefs',

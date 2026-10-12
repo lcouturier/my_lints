@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that avoids calling `toString()` inside string interpolation.
+///
+/// String interpolation converts the value to a string automatically, so the
+/// explicit call is redundant.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// final message = 'Count: ${count.toString()}';
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final message = 'Count: $count';
+/// ```
 class UnnecessaryToStringInInterpolationRule extends AnalysisRule {
   static const code = LintCode(
     'unnecessary_to_string_in_interpolation',

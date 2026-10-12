@@ -6,6 +6,24 @@ import 'package:analyzer/error/error.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that prefers named parameters for boolean arguments.
+///
+/// A named boolean makes a call site's intent explicit and helps prevent
+/// accidentally passing `true` or `false` to the wrong parameter.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// void setEnabled(bool enabled) {}
+/// setEnabled(true);
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// void setEnabled({required bool enabled}) {}
+/// setEnabled(enabled: true);
+/// ```
 class PreferNamedBooleanParametersRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_named_boolean_parameters',

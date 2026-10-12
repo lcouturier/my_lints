@@ -5,6 +5,28 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that avoids blocks nested directly inside another block.
+///
+/// A standalone nested block adds indentation without changing control flow;
+/// remove it to keep the surrounding function straightforward.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// void run() {
+///   {
+///     performTask();
+///   }
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// void run() {
+///   performTask();
+/// }
+/// ```
 class AvoidUnnecessaryBlockRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_unnecessary_block',

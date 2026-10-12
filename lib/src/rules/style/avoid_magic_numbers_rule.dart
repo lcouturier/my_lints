@@ -8,6 +8,22 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that avoids unexplained numeric literals in expressions.
+///
+/// Giving a meaningful value a name makes its purpose and intended reuse
+/// clearer. Common values such as `0` and `1` are allowed by this rule.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// final retryLimit = 5;
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// const retryLimit = 5;
+/// ```
 class AvoidMagicNumbersRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_magic_numbers',

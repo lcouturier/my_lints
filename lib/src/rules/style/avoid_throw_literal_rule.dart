@@ -5,6 +5,22 @@ import 'package:analyzer/dart/ast/ast.dart' show ThrowExpression, Literal;
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that avoids throwing literal values.
+///
+/// Throw an `Exception` or `Error` object instead so callers can handle a
+/// meaningful failure type.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// throw 'Request failed';
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// throw StateError('Request failed');
+/// ```
 class AvoidThrowLiteralRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_throw_literal',

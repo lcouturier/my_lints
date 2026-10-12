@@ -6,6 +6,26 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that detects null checks whose guarded block ignores the value.
+///
+/// When the checked variable is not used in the branch, the condition may be
+/// unnecessary or the branch may be missing its intended operation.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// if (name != null) {
+///   print('A name exists');
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// if (name != null) {
+///   print(name);
+/// }
+/// ```
 class AvoidUnusedAfterNullCheckRule extends AnalysisRule {
   AvoidUnusedAfterNullCheckRule() : super(name: code.name, description: code.problemMessage);
 
