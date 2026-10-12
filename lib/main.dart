@@ -27,6 +27,7 @@ import 'package:my_lints/src/rules/style/avoid_cascade_after_if_null_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_compare_same_value_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_disposable_state_field_leaks_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_empty_set_state_rule.dart';
+import 'package:my_lints/src/rules/flutter/edge_insets_rule.dart';
 import 'package:my_lints/src/rules/collections/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/strings/avoid_I18n_current_rule.dart';
 import 'package:my_lints/src/rules/strings/avoid_tolist_before_join_rule.dart';
@@ -127,6 +128,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidRedundantDurationRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
+      ..registerWarningRule(EdgeInsetsRule())
       ..registerWarningRule(AvoidMountedInSetStateRule())
       ..registerWarningRule(AvoidThrowLiteralRule())
       ..registerWarningRule(AvoidNestedTernaryRule())

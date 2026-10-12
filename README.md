@@ -103,6 +103,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `avoid_disposable_state_field_leaks` | Signale les contrôleurs ou ressources détenus par un `State` qui ne sont pas libérés. |
 | `avoid_empty_set_state` | Évite les appels à `setState` dont le callback ne modifie aucun état. |
 | `avoid_mounted_in_set_state` | Évite de vérifier `mounted` à l’intérieur du callback de `setState` ; effectuez la vérification avant l’appel. |
+| `prefer_edge_insets_symmetric` | Préfère `EdgeInsets.symmetric` lorsque les valeurs opposées de `EdgeInsets.only` ou `EdgeInsets.fromLTRB` sont égales. |
 | `prefer_spacing_over_divide_widgets` | Préfère des widgets d’espacement aux séparateurs employés uniquement pour créer un espace entre des widgets. |
 | `do_not_call_to_list_after_divide_widgets` | Évite l’appel superflu à `toList()` après la division de widgets par la méthode concernée. |
 | `use_itemextent_for_large_list` | Pour `ListView.builder`, recommande `itemExtent` ou `prototypeItem` afin d’éviter de mesurer chaque élément. |

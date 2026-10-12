@@ -3,8 +3,9 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/type_checker.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 /// A rule that prefers using .any() or .every() instead of .where().isEmpty/isNotEmpty.
 ///
@@ -53,11 +54,11 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (node case PropertyAccess(
       propertyName: SimpleIdentifier(name: final property && ('isEmpty' || 'isNotEmpty')),
       target: MethodInvocation(
-        target: Expression(staticType: final targetType?),
+        target: Expression(staticType: DartType(isListOrSet: true)),
         methodName: SimpleIdentifier(name: 'where'),
-        argumentList: ArgumentList(:final arguments),
+        argumentList: ArgumentList(arguments: [_]),
       ),
-    ) when iterableChecker.isAssignableFromType(targetType) && arguments.length == 1) {
+    )) {
       final isNotEmpty = property == 'isNotEmpty';
       rule.reportAtNode(node, arguments: [isNotEmpty ? 'any' : '!any', property]);
     }

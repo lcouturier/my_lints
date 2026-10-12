@@ -49,4 +49,28 @@ class ExampleState extends State<ExampleWidget> {
       expect(runAnalysisRuleOnUnit(AvoidDisposableStateFieldLeaksRule(), unit), isEmpty);
     });
   });
+
+  test('does not report when there are no controllers', () async {
+    final unit = await resolveSource('''
+import 'package:flutter/widgets.dart';
+
+class ExampleWidget extends StatefulWidget {
+  const ExampleWidget({super.key});
+  @override
+  State<ExampleWidget> createState() => ExampleState();
+}
+
+class ExampleState extends State<ExampleWidget> {
+  late final TextEditingController controller;
+  @override
+  void initState() { super.initState(); controller = TextEditingController(); }
+  @override
+  void dispose() { controller.dispose(); super.dispose(); }
+  @override
+  Widget build(BuildContext context) => const SizedBox();
+}
+''', useExamplePackages: true);
+
+    expect(runAnalysisRuleOnUnit(AvoidDisposableStateFieldLeaksRule(), unit), isEmpty);
+  });
 }

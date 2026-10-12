@@ -44,6 +44,8 @@ extension DartTypeExtensions on DartType {
     return element.lookUpMethod(name: 'dispose', library: element.library) != null;
   }
 
+  bool get isDisposable => shouldBeDisposed();
+
   bool get isFutureVoid {
     return switch (this) {
       InterfaceType(element: InterfaceElement(name: "Future"), typeArguments: [VoidType()]) => true,

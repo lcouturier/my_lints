@@ -49,9 +49,14 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
     if (node case InstanceCreationExpression(
       constructorName: ConstructorName(type: NamedType(element: ClassElement(name: 'GestureDetector'))),
-      :final argumentList,
-    ) when !argumentList.arguments.whereType<NamedExpression>().any((e) => e.name.label.name.startsWith('on'))) {
+      hasEventHandler: false,
+    )) {
       rule.reportAtNode(node);
     }
   }
+}
+
+extension on InstanceCreationExpression {
+  bool get hasEventHandler =>
+      argumentList.arguments.whereType<NamedExpression>().any((e) => e.name.label.name.startsWith('on'));
 }

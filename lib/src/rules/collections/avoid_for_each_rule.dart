@@ -3,8 +3,9 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/type_checker.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 /// A rule that discourages using forEach on lists.
 ///
@@ -55,8 +56,8 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitMethodInvocation(MethodInvocation node) {
     if (node case MethodInvocation(
       methodName: SimpleIdentifier(name: 'forEach'),
-      target: Expression(staticType: final targetType?),
-    ) when listChecker.isAssignableFromType(targetType)) {
+      target: Expression(staticType: DartType(isListOrSet: true)),
+    )) {
       rule.reportAtOffset(node.methodName.offset, node.methodName.length);
     }
   }
