@@ -56,9 +56,9 @@ class _Visitor extends SimpleAstVisitor<void> {
       target: MethodInvocation(
         target: Expression(staticType: DartType(isListOrSet: true)),
         methodName: SimpleIdentifier(name: 'where'),
-        argumentList: ArgumentList(:final arguments),
+        argumentList: ArgumentList(arguments: [_]),
       ),
-    ) when arguments.length == 1) {
+    )) {
       final isNotEmpty = property == 'isNotEmpty';
       rule.reportAtNode(node, arguments: [isNotEmpty ? 'any' : '!any', property]);
     }
