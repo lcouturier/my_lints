@@ -43,6 +43,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `avoid_identical_if_branch` | Signale les branches `if` qui exécutent le même code. |
 | `avoid_compare_same_value` | Signale les comparaisons dont les deux opérandes sont la même valeur. |
 | `avoid_yoda_conditions` | Préfère placer la valeur ou constante à droite de l’opérateur de comparaison. |
+| `avoid_late_initialization_in_constructor` | Évite les champs `late` qui sont initialisés dans le constructeur. Préfère les paramètres de constructeur ou les listes d'initialisation. |
 | `avoid_double_negation_conditions` | Évite les conditions rendues difficiles à lire par une double négation. |
 | `avoid_negative_boolean` | Évite les noms booléens négatifs qui rendent les conditions et leur négation confuses. |
 | `avoid_nested_switch_expression_rule` | Évite les expressions `switch` imbriquées difficiles à parcourir. |
