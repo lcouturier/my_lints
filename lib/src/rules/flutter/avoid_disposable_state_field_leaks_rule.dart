@@ -5,6 +5,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
@@ -70,13 +71,9 @@ class _Visitor extends SimpleAstVisitor<void> {
     _disposed.clear();
     _disposeMethod = null;
 
-    for (final member in node.members.whereType<FieldDeclaration>()) {
-      final type = member.fields.type?.type;
-      if (type == null) continue;
-
-      final isDisposable = type.shouldBeDisposed();
-      if (!isDisposable) continue;
-
+    for (final member in node.members.whereType<FieldDeclaration>().where(
+      (e) => e.fields.type?.type?.isDisposable ?? false,
+    )) {
       for (final variable in member.fields.variables) {
         final element = variable.declaredFragment?.element;
         if (element is FieldElement) {
@@ -122,12 +119,8 @@ class _InitStateVisitor extends RecursiveAstVisitor<void> {
     final field = fields[name];
     if (field == null) return; // 🔒 garantit que c’est un field
 
-    if (right is InstanceCreationExpression) {
-      final shouldTrack = (right.staticType?.shouldBeDisposed() ?? false);
-
-      if (shouldTrack) {
-        controllers.add(name);
-      }
+    if (right case InstanceCreationExpression(staticType: DartType(isDisposable: true))) {
+      controllers.add(name);
     }
 
     super.visitAssignmentExpression(node);

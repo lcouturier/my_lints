@@ -6,8 +6,9 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/type_checker.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 /// A rule that prefers `map` when a mapping callback does not use its index.
 ///
@@ -54,8 +55,8 @@ class _Visitor extends RecursiveAstVisitor<void> {
     if (node case MethodInvocation(
       methodName: SimpleIdentifier(name: 'mapIndex' || 'mapIndexed'),
       argumentList: ArgumentList(arguments: [final FunctionExpression functionExpr]),
-      target: Expression(staticType: final targetType?),
-    ) when iterableChecker.isAssignableFromType(targetType)) {
+      target: Expression(staticType: DartType(isListOrSet: true)),
+    )) {
       final index =
           (node.methodName.name == 'mapIndexed'
                   ? functionExpr.parameters?.parameters.first

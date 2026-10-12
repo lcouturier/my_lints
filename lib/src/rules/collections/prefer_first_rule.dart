@@ -3,7 +3,9 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
 /// A rule that prefers `first` over accessing an iterable's first item by index.
@@ -51,10 +53,10 @@ class _Visitor extends SimpleAstVisitor<void> {
   @override
   void visitMethodInvocation(MethodInvocation node) {
     if (node case MethodInvocation(
-      target: Expression(staticType: final targetType?),
+      target: Expression(staticType: DartType(isListOrSet: true)),
       methodName: SimpleIdentifier(name: 'elementAt'),
       argumentList: ArgumentList(arguments: [IntegerLiteral(value: 0)]),
-    ) when (iterableChecker.isAssignableFromType(targetType))) {
+    )) {
       rule.reportAtNode(node);
     }
     super.visitMethodInvocation(node);
