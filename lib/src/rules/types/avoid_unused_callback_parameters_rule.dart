@@ -43,33 +43,21 @@ class _Visitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitFunctionExpression(FunctionExpression node) {
-    // Only check if this is a callback (passed as an argument)
-    if (!node.isCallback) {
-      super.visitFunctionExpression(node);
-      return;
-    }
-
-    final parameters = node.parameters?.parameters;
-    if (parameters == null || parameters.isEmpty) {
-      super.visitFunctionExpression(node);
-      return;
-    }
-
-    // Check each parameter
-    for (final param in parameters) {
-      if (param is NormalFormalParameter && param.name?.lexeme != null) {
+    if (node case FunctionExpression(
+      isCallback: true,
+      parameters: FormalParameterList(parameters: final params),
+    ) when params.isNotEmpty) {
+      for (final param
+          in params
+              .whereType<NormalFormalParameter>()
+              .where((e) => e.name?.lexeme != null)
+              .where((e) => !e.name!.lexeme.startsWith('_'))) {
         final paramName = param.name!.lexeme;
 
-        // Skip underscore-prefixed parameters (they're intentionally unused)
-        if (paramName.startsWith('_')) {
-          continue;
-        }
-
-        // Check if the parameter is used in the function body
-        final finder = _ParameterUsageFinder(paramName);
+        var isUsed = false;
+        final finder = _ParameterUsageFinder(paramName, (_) => isUsed = true);
         node.body.accept(finder);
-
-        if (!finder.isUsed) {
+        if (!isUsed) {
           rule.reportAtNode(param, arguments: [paramName]);
         }
       }
@@ -80,15 +68,15 @@ class _Visitor extends RecursiveAstVisitor<void> {
 }
 
 class _ParameterUsageFinder extends RecursiveAstVisitor<void> {
-  _ParameterUsageFinder(this.paramName);
+  _ParameterUsageFinder(this.paramName, this.onFound);
 
   final String paramName;
-  bool isUsed = false;
+  final void Function(SimpleIdentifier node) onFound;
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
     if (node.name == paramName) {
-      isUsed = true;
+      onFound(node);
     }
     super.visitSimpleIdentifier(node);
   }
@@ -96,8 +84,10 @@ class _ParameterUsageFinder extends RecursiveAstVisitor<void> {
 
 extension on FunctionExpression {
   bool get isCallback {
-    final parent = this.parent;
-    if (parent is ArgumentList) return true;
-    return parent is NamedExpression && parent.parent is ArgumentList;
+    return switch (parent) {
+      ArgumentList() => true,
+      NamedExpression() => parent?.parent is ArgumentList,
+      _ => false,
+    };
   }
 }
