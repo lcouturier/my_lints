@@ -9,6 +9,34 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
+/// A rule that protects emit() calls after await operations in Cubit methods.
+///
+/// This rule ensures that emit() calls after await operations are protected
+/// by an isClosed check to prevent errors when the cubit is closed.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// class MyCubit extends Cubit<MyState> {
+///   Future<void> loadData() async {
+///     final data = await fetchData();
+///     emit(LoadedState(data)); // Error: emit after await without isClosed check
+///   }
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// class MyCubit extends Cubit<MyState> {
+///   Future<void> loadData() async {
+///     final data = await fetchData();
+///     if (!isClosed) {
+///       emit(LoadedState(data));
+///     }
+///   }
+/// }
+/// ```
 class UnProtectedEmitAfterAwaitRule extends AnalysisRule {
   static const code = LintCode(
     'unprotected_emit_after_await',

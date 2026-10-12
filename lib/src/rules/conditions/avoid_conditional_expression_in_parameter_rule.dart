@@ -7,6 +7,30 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that discourages using conditional expressions in parameter values.
+///
+/// Using conditional expressions in parameters can make code harder to read.
+/// Extract the value to a variable instead.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// myWidget(
+///   color: isDark ? Colors.black : Colors.white,
+///   text: isValid ? 'Yes' : 'No',
+/// )
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final color = isDark ? Colors.black : Colors.white;
+/// final text = isValid ? 'Yes' : 'No';
+/// myWidget(
+///   color: color,
+///   text: text,
+/// )
+/// ```
 class AvoidConditionalExpressionInParameterRule extends AnalysisRule {
   static final LintCode code = const LintCode(
     'avoid_conditional_expression_in_parameter',

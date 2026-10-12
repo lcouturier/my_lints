@@ -6,9 +6,34 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// Never use mounted in a setState callback.
+/// A rule that discourages using mounted in setState callbacks.
 ///
-/// Instead, use WidgetsBinding.instance.addPostFrameCallback or similar.
+/// Using mounted in setState is redundant because setState already checks if
+/// the widget is mounted before calling the callback.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// setState(() {
+///   if (mounted) {
+///     _value = newValue;
+///   }
+/// });
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// setState(() {
+///   _value = newValue;
+/// });
+/// // or if you need to check mounted:
+/// if (mounted) {
+///   setState(() {
+///     _value = newValue;
+///   });
+/// }
+/// ```
 class AvoidMountedInSetStateRule extends AnalysisRule {
   static LintCode code = const LintCode('avoid_mounted_in_set_state', 'Never use mounted in a setState callback.');
 

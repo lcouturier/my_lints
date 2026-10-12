@@ -8,6 +8,28 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that detects conditions that are nested too deeply.
+///
+/// Deeply nested conditions are hard to read and understand.
+/// Extract parts of the condition into well-named boolean variables.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// if (a && (b || (c && d))) {
+///   // Deeply nested condition
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final conditionA = a;
+/// final conditionB = b || (c && d);
+/// if (conditionA && conditionB) {
+///   // Simpler condition
+/// }
+/// ```
 class AvoidDeepConditionsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_deep_conditions',

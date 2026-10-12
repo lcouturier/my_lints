@@ -6,6 +6,22 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that prefers using .last instead of accessing the last element by index.
+///
+/// Using .last is more readable and idiomatic than list[list.length - 1].
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// final lastItem = items[items.length - 1];
+/// final lastItem = items.elementAt(items.length - 1);
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final lastItem = items.last;
+/// ```
 class PreferLastRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_last_over_index',

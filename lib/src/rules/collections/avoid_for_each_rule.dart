@@ -6,6 +6,26 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
+/// A rule that discourages using forEach on lists.
+///
+/// Using for-in loops is generally preferred over forEach for better readability
+/// and performance.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// items.forEach((item) {
+///   print(item);
+/// });
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// for (final item in items) {
+///   print(item);
+/// }
+/// ```
 class AvoidForEachRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_for_each',

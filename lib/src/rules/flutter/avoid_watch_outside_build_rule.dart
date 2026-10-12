@@ -8,6 +8,38 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that discourages watching streams outside of build methods.
+///
+/// Watching streams outside of build can lead to memory leaks and unexpected behavior.
+/// Always watch streams inside the build method or use proper lifecycle management.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// class MyWidget extends StatelessWidget {
+///   @override
+///   Widget build(BuildContext context) {
+///     // Wrong: watching in build is ok, but this is showing the pattern
+///     return Container();
+///   }
+///
+///   void someMethod(BuildContext context) {
+///     context.watch<MyBloc>(); // Wrong: not in build
+///   }
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// class MyWidget extends StatelessWidget {
+///   @override
+///   Widget build(BuildContext context) {
+///     final bloc = context.watch<MyBloc>(); // Correct: in build
+///     return Container();
+///   }
+/// }
+/// ```
 class AvoidWatchOutsideBuildRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_watch_outside_build',

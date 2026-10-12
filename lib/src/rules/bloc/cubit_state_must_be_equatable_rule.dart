@@ -7,6 +7,39 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
+/// A rule that enforces Cubit state classes to inherit from Equatable.
+///
+/// This rule ensures that Cubit state classes inherit from Equatable
+/// to enable proper value comparison and state updates.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// class MyState {
+///   final int value;
+///   MyState(this.value);
+/// }
+///
+/// class MyCubit extends Cubit<MyState> {
+///   MyCubit() : super(MyState(0));
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// class MyState extends Equatable {
+///   final int value;
+///   MyState(this.value);
+///
+///   @override
+///   List<Object?> get props => [value];
+/// }
+///
+/// class MyCubit extends Cubit<MyState> {
+///   MyCubit() : super(MyState(0));
+/// }
+/// ```
 class CubitStateMustBeEquatableRule extends AnalysisRule {
   static LintCode code = const LintCode(
     'cubit_state_must_be_equatable',

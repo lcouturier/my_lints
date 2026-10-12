@@ -8,6 +8,28 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
+/// A rule that detects complicated conditional expressions.
+///
+/// Complicated conditionals with many logical operators, negations, or ternaries
+/// should be split into smaller expressions for better readability.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// if (a && b && !c || d && e && f && !g) {
+///   // Complex condition
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final firstCondition = a && b && !c;
+/// final secondCondition = d && e && f && !g;
+/// if (firstCondition || secondCondition) {
+///   // Simpler condition
+/// }
+/// ```
 class AvoidComplicatedConditionalRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_complicated_conditionals',
