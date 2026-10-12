@@ -7,9 +7,14 @@ import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
-/// A rule that enforces that Equatable classes include all their fields in the props getter.
+/// A rule that reports Equatable classes whose recognized `props` list omits fields.
 ///
-/// example:
+/// Include each instance field in `props` so Equatable compares the complete
+/// state of the object.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// class Person extends Equatable {
 ///   final String name;
@@ -17,7 +22,19 @@ import 'package:my_lints/src/common/type_checker.dart';
 ///   Person({required this.name, required this.age});
 ///
 ///   @override
-///   List<Object?> get props => [name]; // Missing 'age' in props
+///   List<Object?> get props => [name];
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// class Person extends Equatable {
+///   final String name;
+///   final int age;
+///   Person({required this.name, required this.age});
+///
+///   @override
+///   List<Object?> get props => [name, age];
 /// }
 /// ```
 class EquatablePropsMustIncludeAllFieldsRule extends AnalysisRule {

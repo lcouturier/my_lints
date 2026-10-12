@@ -5,19 +5,35 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that detects nested if statements.
-/// Nested if statements can lead to confusion and make code harder to read. This rule checks for if statements that are nested more than 3 levels deep and reports them as a warning.
-/// For example, the following code will trigger a warning:
+/// A rule that reports `if` statements nested more than two levels deep.
+///
+/// Use guard clauses to handle exceptional cases and keep the main path
+/// unindented.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// void f(int a) {
 ///   if (a > 0) {
 ///     if (a < 10) {
 ///       if (a % 2 == 0) {
-///         print('a is a positive even number less than 10');
+///         print(a);
 ///       }
 ///     }
 ///   }
 /// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// void f(int a) {
+///   if (a <= 0) return;
+///   if (a >= 10) return;
+///   if (a % 2 != 0) return;
+///   print(a);
+/// }
+/// ```
 class AvoidNestedIfRule extends AnalysisRule {
   static const LintCode code = LintCode('avoid_nested_if', 'Avoid nested if statements.');
 

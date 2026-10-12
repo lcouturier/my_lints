@@ -6,20 +6,22 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A lint rule that encourages the use of null-aware spread operators (`...?`)
-/// instead of conditional expressions or null checks when spreading collections.
-/// Example:
+/// A rule that reports several null-check patterns around spread elements.
+///
+/// It recognizes matching null-check and spread identifiers in `if` elements,
+/// conditional set/map literals, and some other conditional or `??` spread
+/// expressions. Use a null-aware spread when the collection itself may be null.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// // Bad
-/// ...{localSet != null ? localSet : {}}
-/// // Good
-/// ...?localSet
+/// final values = [...(items ?? [])];
 /// ```
-/// This rule helps to simplify and make the code more readable by using the null-aware spread operator.
-/// Example usage:
+///
+/// ✅ Good:
 /// ```dart
-/// final localSet = <String>{'a', 'b'};
-/// final result = [...?localSet];
+/// final values = [...?items];
 /// ```
 class PreferNullAwareSpreadRule extends AnalysisRule {
   static const LintCode code = LintCode('prefer_null_aware_spread', 'Use a null-aware spread (...?) instead.');

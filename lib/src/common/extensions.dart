@@ -8,6 +8,16 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
 extension DartTypeExtensions on DartType {
+  /// Returns true if the type is a list or set.
+  ///
+  /// This includes:
+  /// - `Iterable`
+  /// - `Set`
+  /// - `List`
+  /// - `Map`
+  ///
+  /// Note: `Map` is included because it can be spread in map literals.
+  bool get isListOrSet => isDartCoreIterable || isDartCoreSet || isDartCoreList || isDartCoreMap;
   // Checks if a DartType is a nullable list.
   bool get isNullableList {
     final predicates = [

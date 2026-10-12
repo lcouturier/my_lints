@@ -5,27 +5,28 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Detects widgets in lists that should have a key property.
+/// A rule that reports constructor expressions without a `key` in `children` or `slivers` lists.
 ///
-/// Widgets in dynamic lists (Column, Row, ListView, etc.) should have keys
-/// to help Flutter's diffing algorithm identify widgets correctly.
+/// This rule checks constructor expressions in list literals assigned to those
+/// named arguments. Its current check does not verify that each constructed
+/// type is a Flutter widget.
 ///
-/// ✅ GOOD:
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// Column(
 ///   children: [
-///     Text('Hello', key: Key('hello')),
-///     Text('World', key: Key('world')),
+///     Text('Hello'),
 ///   ],
 /// )
 /// ```
 ///
-/// ❌ BAD:
+/// ✅ Good:
 /// ```dart
 /// Column(
 ///   children: [
-///     Text('Hello'),  // Missing key!
-///     Text('World'),  // Missing key!
+///     Text('Hello', key: Key('hello')),
 ///   ],
 /// )
 /// ```

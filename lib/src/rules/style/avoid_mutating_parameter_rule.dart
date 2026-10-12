@@ -7,7 +7,20 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that detects when a parameter's field or setter is reassigned.
+/// A deprecated rule that currently reports reassignment or increment/decrement
+/// of a simple parameter identifier in a function or method.
+///
+/// It reports at most the first matching mutation in each function body. This
+/// rule is deprecated and should not be treated as an active recommendation.
+///
+/// ## Current behavior
+///
+/// ⚠️ Reported by the current implementation:
+/// ```dart
+/// void update(int count) {
+///   count++;
+/// }
+/// ```
 @Deprecated('Do not use.')
 class AvoidMutatingParametersRule extends AnalysisRule {
   static const LintCode code = LintCode(

@@ -6,13 +6,19 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Avoid using `keys.contains` for map key checks. Use `map.containsKey` instead for better performance.
-/// Example:
-/// ```dart
-/// // LINT
-/// if (myMap.keys.contains('key')) { ... }
+/// A rule that reports `contains` calls on a map's `keys` collection.
 ///
-/// // OK
+/// Use `containsKey` to check for a map key directly.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// if (myMap.keys.contains('key')) { ... }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
 /// if (myMap.containsKey('key')) { ... }
 /// ```
 class AvoidMapKeysContainsRule extends AnalysisRule {

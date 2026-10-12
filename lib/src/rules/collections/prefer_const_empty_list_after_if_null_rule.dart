@@ -6,16 +6,20 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Lint rule that encourages using a const empty list as an if-null fallback.
+/// A rule that reports an empty, non-const list literal on the right of `??`.
 ///
-/// Example:
+/// Make the fallback list `const` to avoid creating a mutable empty list.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// var list = someList ?? [];
+/// final values = input ?? [];
 /// ```
 ///
-/// Should be:
+/// ✅ Good:
 /// ```dart
-/// var list = someList ?? const [];
+/// final values = input ?? const [];
 /// ```
 class PreferConstEmptyListAfterIfNullRule extends AnalysisRule {
   static const LintCode code = LintCode(

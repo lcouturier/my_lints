@@ -5,16 +5,21 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A spread element is considered redundant if it spreads an inline literal,
-/// an empty literal, a single-item literal, or a nested spread.
-/// For example:
+/// A rule that reports spreads of empty literals, single-item literals, and nested spreads.
+///
+/// Remove these spreads and include the elements directly. Inline literals with
+/// multiple elements are not currently reported.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// final list = [
-///   ...[1, 2, 3], // Redundant spread of an inline literal.
-///   ...[], // Redundant spread of an empty literal.
-///   ...[42], // Redundant spread of a single-item literal.
-///   ...[...[1, 2, 3]], // Redundant spread of a nested spread.
-/// ];
+/// final values = [...[], ...[42], ...[...[1, 2]]];
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// final values = [42, 1, 2];
 /// ```
 class AvoidRedundantSpreadRule extends AnalysisRule {
   static const LintCode code = LintCode(

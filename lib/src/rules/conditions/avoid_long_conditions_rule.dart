@@ -6,26 +6,27 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Detects conditions that are too long or complex based on structural metrics.
+/// A rule that reports conditions exceeding configured structural limits.
 ///
-/// This rule uses different metrics than AvoidComplicatedConditionalRule:
-/// - Total number of tokens in the condition
-/// - Number of unique variables involved
-/// - Number of different operator types
+/// It checks token count, distinct identifiers, and distinct operator types in
+/// conditions of `if`, `while`, `do`, and conditional expressions. Extracting
+/// meaningful parts into named booleans can reduce these metrics.
 ///
-/// ✅ GOOD:
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// final isLoading = status == Status.loading;
-/// final hasError = status == Status.error;
-/// if (isLoading || hasError) {
-///   // ...
+/// if (user != null && user.isActive && user.hasPermission && user.isVerified) {
+///   process(user);
 /// }
 /// ```
 ///
-/// ❌ BAD:
+/// ✅ Good:
 /// ```dart
-/// if (user != null && user.age > 18 && user.isActive && user.hasPermission && user.isVerified) {
-///   // Too many variables and operators
+/// final canProcess = user != null && user.isActive;
+/// final isAuthorized = user?.hasPermission == true && user?.isVerified == true;
+/// if (canProcess && isAuthorized) {
+///   process(user!);
 /// }
 /// ```
 class AvoidLongConditionsRule extends AnalysisRule {

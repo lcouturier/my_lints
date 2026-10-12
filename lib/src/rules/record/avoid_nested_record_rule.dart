@@ -6,17 +6,20 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that detects nested records within record literals.
+/// A rule that reports record literals containing a field whose expression has a record type.
+///
+/// Flatten the data or use a class to give nested values a clear structure.
 ///
 /// ## Example
 ///
+/// ❌ Bad:
+/// ```dart
+/// final value = (1, (2, 3));
 /// ```
-/// // Avoid
-/// (1, (2, 3))
 ///
-/// // Good
-/// final inner = (2, 3);
-/// (1, inner)
+/// ✅ Good:
+/// ```dart
+/// final value = (1, 2, 3);
 /// ```
 class AvoidNestedRecordRule extends AnalysisRule {
   static const LintCode code = LintCode(

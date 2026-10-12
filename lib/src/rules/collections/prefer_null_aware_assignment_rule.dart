@@ -8,17 +8,23 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that prefers using null-aware assignment (??=) instead of explicit null checks and assignments.
-/// This rule checks for patterns where a variable is explicitly checked for null and then assigned a value, and suggests using the null-aware assignment operator (??=) instead.
-/// Example:
+/// A rule that reports a null check followed by assignment to the same variable.
+///
+/// It recognizes `if (variable == null)` with no `else` and a single assignment
+/// to that variable in the `if` body. Use `??=` to express this pattern directly.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// if (a == null) {
-///   a = 42;
+/// if (value == null) {
+///   value = 42;
 /// }
 /// ```
-/// can be replaced with:
+///
+/// ✅ Good:
 /// ```dart
-/// a ??= 42;
+/// value ??= 42;
 /// ```
 class PreferNullAwareAssignmentRule extends AnalysisRule {
   static const LintCode code = LintCode(

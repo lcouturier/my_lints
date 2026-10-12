@@ -5,22 +5,22 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Avoid assignation in condition rule
+/// A rule that reports binary expressions with an assignment as an operand.
 ///
-/// This rule detects when an assignment is used in a condition, which can lead to unexpected behavior.
-/// Example:
+/// Assign the value separately before evaluating the comparison to make the
+/// operation explicit.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// if (x = 5) { // ❌
-///   // ...
-/// }
+/// final matches = (value = 5) == 5;
 /// ```
 ///
-/// Correct:
+/// ✅ Good:
 /// ```dart
-/// int x = 5; // ✅
-/// if (x == 5) {
-///   // ...
-/// }
+/// value = 5;
+/// final matches = value == 5;
 /// ```
 class AvoidAssignationInConditionRule extends AnalysisRule {
   static final code = const LintCode(

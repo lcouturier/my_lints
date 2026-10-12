@@ -6,23 +6,27 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// A rule that enforces the use of factory constructors instead of static methods for object creation.
+/// A rule that reports static methods returning a direct instance of their class.
 ///
-/// This rule identifies static methods that create instances of the same class
-/// and suggests converting them to factory constructors for better encapsulation
-/// and flexibility in object creation.
+/// A factory constructor expresses instance creation as part of the class
+/// constructor API. This rule recognizes expression-bodied static methods whose
+/// expression directly creates an instance of the enclosing class.
 ///
-/// Example:
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// class MyClass {
 ///   static MyClass create() => MyClass();
 /// }
 /// ```
 ///
-/// Should be:
+/// ✅ Good:
 /// ```dart
 /// class MyClass {
-///   factory MyClass.create() => MyClass();
+///   factory MyClass.create() => MyClass._();
+///
+///   MyClass._();
 /// }
 /// ```
 class PreferFactoryConstructorRule extends AnalysisRule {

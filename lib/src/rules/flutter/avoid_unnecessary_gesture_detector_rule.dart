@@ -6,19 +6,21 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 
-/// Detects [GestureDetector] widgets without any event handlers.
+/// A rule that reports `GestureDetector` constructors without a named `on...` argument.
 ///
-/// A [GestureDetector] without `onTap`, `onLongPress`, etc. is useless
-/// and should either have handlers added or be removed entirely.
+/// Add an event handler when the detector is needed, or remove the wrapper when
+/// it has no gesture behavior.
 ///
-/// ✅ GOOD:
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// GestureDetector(onTap: () => print('tapped'), child: Text('Press'))
+/// GestureDetector(child: Text('Press'))
 /// ```
 ///
-/// ❌ BAD:
+/// ✅ Good:
 /// ```dart
-/// GestureDetector(child: Text('Press'))  // No handlers!
+/// GestureDetector(onTap: handleTap, child: Text('Press'))
 /// ```
 class AvoidUnnecessaryGestureDetectorRule extends AnalysisRule {
   static const LintCode code = LintCode(

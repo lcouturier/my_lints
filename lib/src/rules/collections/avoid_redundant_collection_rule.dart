@@ -6,30 +6,25 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Avoid creating a collection from an other collection.
+/// A rule that reports `List`, `Set`, or `Map` `from`/`of` constructors given one identifier.
 ///
-/// Example:
+/// Use a collection spread to copy the source into a collection literal.
+/// The rule only recognizes a single identifier argument; it does not report
+/// other constructor forms such as `Map.fromIterable`.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// // Bad
-/// var otherMap = {'key': 'value'};
-/// var myMap = Map.from(otherMap);
-/// // Good
-/// var myMap = {...otherMap};
+/// final source = <String, int>{'a': 1};
+/// final copy = Map<String, int>.from(source);
 /// ```
 ///
-/// This lint also triggers for:
-/// - `List.from(otherList)` -> `[...otherList]`
-/// - `Set.from(otherSet)` -> `{...otherSet}`
-///
-/// This rule does not trigger for:
-/// - `Map.fromIterable()`
-/// - `Map.fromIterable(..., key: (e) => e.key, value: (e) => e.value)`
-/// - `Map.fromIterable(..., value: (e) => e)`
-/// - `List.from([1, 2])` (if there's no clear other collection to spread)
-///
-/// The main idea is to avoid `Map.from(otherMap)` and favor `Map.fromIterable()` when it's possible, or even just a map literal with spread operators ` {...otherMap}`.
-///
-///
+/// ✅ Good:
+/// ```dart
+/// final source = <String, int>{'a': 1};
+/// final copy = <String, int>{...source};
+/// ```
 class AvoidRedundantCollectionRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_redundant_collection',

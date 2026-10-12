@@ -6,19 +6,21 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that reports async methods or functions that do not contain any `await` expressions, making the `async` modifier unnecessary.
+/// A rule that reports public async methods and functions without `await`.
 ///
-/// Example:
+/// Removing an unnecessary `async` modifier avoids wrapping an already returned
+/// future in another asynchronous function.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// // Bad
-/// Future<void> foo() async {
-///   print('Hello');
-/// }
+/// Future<int> loadValue() async => Future.value(1);
+/// ```
 ///
-/// // Good
-/// Future<void> foo() {
-///   print('Hello');
-/// }
+/// ✅ Good:
+/// ```dart
+/// Future<int> loadValue() => Future.value(1);
 /// ```
 class AvoidUselessAsyncMethodRule extends AnalysisRule {
   AvoidUselessAsyncMethodRule() : super(name: code.name, description: code.problemMessage);

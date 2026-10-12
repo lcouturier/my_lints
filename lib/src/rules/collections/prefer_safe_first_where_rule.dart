@@ -3,21 +3,34 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/type_checker.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
-/// A rule that detects when firstWhere(), lastWhere() or singleWhere() are used without an orElse parameter.
+/// A rule that recommends an `orElse` callback for where-method calls.
 ///
-/// This is dangerous because these methods throw a StateError if no element matches.
-/// Using orElse provides a safe fallback.
-/// Example:
+/// This rule reports `firstWhere`, `lastWhere`, and `singleWhere` calls without
+/// a named `orElse` argument when the target's static type is `Iterable`,
+/// `List`, `Set`, or `Map`. Without `orElse`, these methods throw a
+/// `StateError` when no element matches. `singleWhere` also throws when more
+/// than one element matches.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// final result = list.firstWhere((e) => e == 42);
+/// final result = values.firstWhere((value) => value == 42);
 /// ```
-/// Should be:
+///
+/// ✅ Good:
 /// ```dart
-/// final result = list.firstWhere((e) => e == 42, orElse: () => defaultValue);
+/// final result = values.firstWhere((value) => value == 42, orElse: () => 0);
 /// ```
+///
+/// See also:
+/// - [List.firstWhere](https://api.dart.dev/stable/dart-core/List/firstWhere.html)
+/// - [List.lastWhere](https://api.dart.dev/stable/dart-core/List/lastWhere.html)
+/// - [List.singleWhere](https://api.dart.dev/stable/dart-core/List/singleWhere.html)
 class PreferSafeFirstWhereRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_safe_first_where',
@@ -47,16 +60,17 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node
-        case MethodInvocation(
-          target: Expression(staticType: final targetType?),
-          methodName: SimpleIdentifier(name: final methodName),
-          argumentList: ArgumentList(arguments: final args),
-        )
-        when !args.any((arg) => arg is NamedExpression && arg.name.label.name == 'orElse') &&
-            _methods.contains(methodName) &&
-            iterableChecker.isAssignableFromType(targetType)) {
+    if (node case MethodInvocation(
+      target: Expression(staticType: DartType(isListOrSet: true)),
+      methodName: SimpleIdentifier(name: final methodName),
+      hasElseParameter: false,
+    ) when _methods.contains(methodName)) {
       rule.reportAtNode(node);
     }
   }
+}
+
+extension on MethodInvocation {
+  bool get hasElseParameter =>
+      argumentList.arguments.any((arg) => arg is NamedExpression && arg.name.label.name == 'orElse');
 }

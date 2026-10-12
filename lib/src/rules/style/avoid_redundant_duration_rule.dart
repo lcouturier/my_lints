@@ -6,14 +6,21 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Lint rule that encourages avoiding redundant Duration constructors with zero values.
-/// For example, instead of writing:
-/// ```dart/// Duration(seconds: 0);
+/// A rule that reports named `Duration` components given the integer literal `0`.
+///
+/// Remove zero-valued components because they do not change the duration.
+///
+/// ## Example
+///
+/// ❌ Bad:
+/// ```dart
+/// const duration = Duration(seconds: 0);
 /// ```
-/// It suggests writing:
-/// ```dart/// Duration();
+///
+/// ✅ Good:
+/// ```dart
+/// const duration = Duration();
 /// ```
-/// This rule helps to simplify code and improve readability by removing unnecessary arguments that do not affect the behavior of the Duration object.
 class AvoidRedundantDurationRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_redundant_duration',

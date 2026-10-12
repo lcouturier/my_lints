@@ -5,17 +5,22 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that enforces the use of named record fields for better readability.
+/// A rule that reports record types with two or more simple positional fields and positional record literals.
 ///
-/// This rule checks for record types and literals that use positional fields
-/// instead of named fields, which can reduce code clarity.
-/// Example:
+/// Name record fields so their meaning is clear at the declaration and call site.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// // Bad
 /// typedef MyRecord = (String, String);
+/// final person = ('Ada', 'Lovelace');
+/// ```
 ///
-/// // Good
-/// typedef MyRecord = ({String name, String value});
+/// ✅ Good:
+/// ```dart
+/// typedef MyRecord = ({String firstName, String lastName});
+/// final person = (firstName: 'Ada', lastName: 'Lovelace');
 /// ```
 class PreferNamedRecordFieldsRule extends AnalysisRule {
   static const LintCode code = LintCode(

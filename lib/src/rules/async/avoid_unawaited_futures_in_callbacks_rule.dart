@@ -7,15 +7,38 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// Avoids unawaited futures in callbacks within Flutter widget classes.
-/// This rule checks for unawaited futures in callback functions of Flutter widget classes and reports them.
-/// Example:
+/// A rule that reports unawaited futures in callbacks declared in widget classes.
+///
+/// This rule detects expression statements that return a `Future` inside a
+/// callback in a method of a Flutter widget class. Await the future or handle it
+/// explicitly so asynchronous work is not accidentally discarded.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// ElevatedButton(
-///   onPressed: () {
-///     someAsyncFunction(); // This will be reported if not awaited
-///   },
-/// )
+/// class SaveButton extends StatelessWidget {
+///   @override
+///   Widget build(BuildContext context) => ElevatedButton(
+///     onPressed: () {
+///       save();
+///     },
+///     child: const Text('Save'),
+///   );
+/// }
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// class SaveButton extends StatelessWidget {
+///   @override
+///   Widget build(BuildContext context) => ElevatedButton(
+///     onPressed: () async {
+///       await save();
+///     },
+///     child: const Text('Save'),
+///   );
+/// }
 /// ```
 class AvoidUnawaitedFuturesInCallbacksRule extends AnalysisRule {
   AvoidUnawaitedFuturesInCallbacksRule() : super(name: code.name, description: code.problemMessage);

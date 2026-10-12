@@ -6,13 +6,21 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that reports when the same value is compared to itself.
+/// A rule that reports `==` or `!=` between identical simple identifiers.
 ///
-/// This rule detects cases like `value == value` or `value != value`
-/// which are always true or false respectively.
-/// Example:
+/// Such a comparison is always true for `==` and always false for `!=`.
+/// Remove the redundant comparison or use the intended boolean result directly.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// bool same(bool value) => value == value;
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// bool same(bool value) => true;
 /// ```
 class AvoidCompareSameValueRule extends AnalysisRule {
   static const LintCode code = LintCode(

@@ -6,13 +6,21 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 
-/// Prefer using string interpolation over string concatenation.
+/// A rule that reports `+` expressions that appear to concatenate strings.
 ///
-/// example:
+/// Interpolation makes the string and its embedded values easier to scan.
+/// The current check uses expression shapes to identify likely string
+/// concatenation.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
-/// // BAD
 /// String greet(String name) => 'Hello, ' + name;
-/// // GOOD
+/// ```
+///
+/// ✅ Good:
+/// ```dart
 /// String greet(String name) => 'Hello, $name';
 /// ```
 class PreferStringInterpolationRule extends AnalysisRule {

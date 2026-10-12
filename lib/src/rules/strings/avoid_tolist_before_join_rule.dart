@@ -6,12 +6,21 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 
-/// A rule that reports when an iterable is converted to a list before calling `join()`.
+/// A rule that reports a core `Iterable.toList().join()` call chain.
 ///
-/// This is unnecessary because `join()` can be called directly on an iterable without converting it to a list first.
-/// example:
+/// `join()` is available directly on an iterable, so the intermediate list is
+/// unnecessary.
+///
+/// ## Example
+///
+/// ❌ Bad:
 /// ```dart
 /// String combine(Iterable<String> values) => values.toList().join(',');
+/// ```
+///
+/// ✅ Good:
+/// ```dart
+/// String combine(Iterable<String> values) => values.join(',');
 /// ```
 class AvoidToListBeforeJoinRule extends AnalysisRule {
   static const LintCode code = LintCode(
