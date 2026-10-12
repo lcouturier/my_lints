@@ -8,11 +8,15 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
+import 'package:my_lints/src/common/type_checker.dart';
+
+const _edgeInsetsTypeChecker = TypeChecker.fromName('EdgeInsets', packageName: 'flutter');
 
 /// A rule that prefers symmetric insets when opposing values are equal.
 ///
-/// Use `EdgeInsets.symmetric` to express equal horizontal or vertical padding
-/// without repeating the same value on both sides.
+/// In widget methods, this rule reports `EdgeInsets.only` and `EdgeInsets.fromLTRB`
+/// when their opposing horizontal or vertical values are equal and the other
+/// axis is omitted or zero.
 ///
 /// ## Example
 ///
@@ -28,15 +32,14 @@ import 'package:my_lints/src/common/extensions.dart';
 class EdgeInsetsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_edge_insets_symmetric',
-    'Prefer using EdgeInsets.symmetric instead of EdgeInsets.only when left and right (or top and bottom) values are the same.',
-    correctionMessage: 'Use EdgeInsets.symmetric instead of EdgeInsets.only.',
+    'Prefer using EdgeInsets.symmetric when opposing EdgeInsets values are equal.',
+    correctionMessage: 'Use EdgeInsets.symmetric to express the equal opposing values.',
   );
 
   EdgeInsetsRule() : super(name: code.name, description: code.problemMessage);
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
-    // registry.addInstanceCreationExpression(this, _Visitor(this));
     registry.addClassDeclaration(this, _Visitor(this));
   }
 
@@ -51,20 +54,17 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.isFlutterWidget) return;
-
-    final visitor = _EdgeInsetsOnlyVisitor();
-
-    for (var element in node.members.whereType<MethodDeclaration>()) {
-      element.body.accept(visitor);
-      if (visitor.matches.isNotEmpty) {
-        for (var item in visitor.matches) {
-          rule.reportAtNode(item);
+    if (node case ClassDeclaration(isFlutterWidget: true)) {
+      for (var element in node.members.whereType<MethodDeclaration>()) {
+        final visitor = _EdgeInsetsOnlyVisitor();
+        element.body.accept(visitor);
+        if (visitor.matches.isNotEmpty) {
+          for (var item in visitor.matches) {
+            rule.reportAtNode(item);
+          }
         }
       }
     }
-
-    super.visitClassDeclaration(node);
   }
 }
 
@@ -75,19 +75,18 @@ class _EdgeInsetsOnlyVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    super.visitInstanceCreationExpression(node);
-
     if (node case InstanceCreationExpression(
-      constructorName: ConstructorName(type: NamedType(name: final typeName), name: final constructorName?),
-    )) {
-      if (typeName.lexeme == 'EdgeInsets' && constructorName.token.lexeme == 'only') {
-        _handleEdgeInsetsOnly(node);
-      }
-
-      if (typeName.lexeme == 'EdgeInsets' && constructorName.token.lexeme == 'fromLTRB') {
-        _handleEdgeInsetsFromLTRB(node);
-      }
+      constructorName: ConstructorName(name: Identifier(:final name), type: NamedType(:final element?)),
+    ) when ((name == 'only' || name == 'fromLTRB') && _edgeInsetsTypeChecker.isExactly(element))) {
+      final handle = switch (name) {
+        'only' => () => _handleEdgeInsetsOnly(node),
+        'fromLTRB' => () => _handleEdgeInsetsFromLTRB(node),
+        _ => null,
+      };
+      handle?.call();
     }
+
+    super.visitInstanceCreationExpression(node);
   }
 
   void _handleEdgeInsetsOnly(InstanceCreationExpression node) {
@@ -108,25 +107,23 @@ class _EdgeInsetsOnlyVisitor extends RecursiveAstVisitor<void> {
   }
 
   void _handleEdgeInsetsFromLTRB(InstanceCreationExpression node) {
-    final args = {for (final arg in node.argumentList.arguments.whereType<IntegerLiteral>().indexed) arg.$1: arg.$2};
+    final values = node.argumentList.arguments.map(_extractNumeric).toList();
+    if (values.length != 4) return;
 
-    final left = args[0];
-    final top = args[1];
-    final right = args[2];
-    final bottom = args[3];
+    final left = values[0];
+    final top = values[1];
+    final right = values[2];
+    final bottom = values[3];
 
     if (left == null || right == null || top == null || bottom == null) return;
-    final sameHorizontal = (left.value == right.value);
-    final sameVertical = (top.value == bottom.value);
-    final allEqual = (left.value == top.value) && (top.value == right.value) && (right.value == bottom.value);
+    final sameHorizontal = left == right;
+    final sameVertical = top == bottom;
 
-    if (allEqual) {
+    if (sameHorizontal && sameVertical) {
       matches.add(node);
-    } else if (sameHorizontal && sameVertical) {
+    } else if (sameHorizontal && top == 0 && bottom == 0) {
       matches.add(node);
-    } else if (sameHorizontal && top.isZero && bottom.isZero) {
-      matches.add(node);
-    } else if (sameVertical && left.isZero && right.isZero) {
+    } else if (sameVertical && left == 0 && right == 0) {
       matches.add(node);
     }
   }
@@ -146,14 +143,4 @@ num? _extractNumeric(Expression expr) {
   if (expr is DoubleLiteral) return expr.value;
 
   return null;
-}
-
-extension on Expression? {
-  bool get isZero {
-    return switch (this) {
-      IntegerLiteral(:final value) => value == 0,
-      DoubleLiteral(:final value) => value == 0.0,
-      _ => false,
-    };
-  }
 }
