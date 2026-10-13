@@ -28,7 +28,7 @@ argument-hint: "[comportement ou nom de règle]"
    `AnalysisRule`, `LintCode` statique, constructeur qui transmet `code.name` et
    `code.problemMessage` à `super`, getter `diagnosticCode`, puis
    `registerNodeProcessors` et visiteur privé. Garder le nom du diagnostic
-   stable, en `snake_case`, et fournir un `correctionMessage` seulement s'il
+   stable, en `snake_case`, toujours définir la sévérité en warning, et fournir un `correctionMessage` seulement s'il
    indique une correction réellement valable.
 4. **Faire correspondre registre et visitor.** Pour chaque appel
    `registry.add<Type>(...)`, implémenter l'override correspondant
@@ -63,7 +63,7 @@ argument-hint: "[comportement ou nom de règle]"
 8. **Mettre à jour les surfaces publiques utiles.** Ajouter un extrait
    représentatif dans `example/lib/` lorsque cela suit les exemples voisins,
    puis mettre à jour la table des règles de `README.md` avec l'identifiant
-   exact de `LintCode`.
+   exact de `LintCode` et mettre à jour le changelog.
 9. **Valider la modification.** Formater les fichiers Dart touchés, exécuter le
    test ciblé puis les contrôles du dépôt, au minimum :
 
@@ -76,6 +76,9 @@ argument-hint: "[comportement ou nom de règle]"
    Examiner le diff et vérifier que les exemples `Bad` déclenchent la règle,
    que les exemples `Good` ne la déclenchent pas, et que les fichiers
    d'enregistrement et de documentation sont cohérents.
+
+## Style de code
+Avoir une approche fonctionnelle et utiliser les patterns de programmation fonctionnelle.
 
 ## Correctif rapide
 

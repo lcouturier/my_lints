@@ -43,6 +43,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `avoid_identical_if_branch` | Signale les branches `if` qui exécutent le même code. |
 | `avoid_compare_same_value` | Signale les comparaisons dont les deux opérandes sont la même valeur. |
 | `avoid_yoda_conditions` | Préfère placer la valeur ou constante à droite de l’opérateur de comparaison. |
+| `avoid_late_initialization_in_constructor` | Évite les champs `late` qui sont initialisés dans le constructeur. Préfère les paramètres de constructeur ou les listes d'initialisation. |
 | `avoid_double_negation_conditions` | Évite les conditions rendues difficiles à lire par une double négation. |
 | `avoid_negative_boolean` | Évite les noms booléens négatifs qui rendent les conditions et leur négation confuses. |
 | `avoid_nested_switch_expression_rule` | Évite les expressions `switch` imbriquées difficiles à parcourir. |
@@ -54,6 +55,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `prefer_explicit_function_type` | Préfère une signature de fonction explicite au type générique `Function`. |
 | `prefer_return_await` | Préserve `await` dans un `return` lorsque cela est nécessaire au comportement attendu, notamment à la gestion des erreurs. |
 | `avoid_useless_async_method` | Signale les méthodes `async` qui n’effectuent aucune opération asynchrone utile. |
+|| `avoid_unchecked_stream_subscriptions` | Signale les appels à `listen()` sur des streams dont le résultat n'est pas stocké, ce qui empêche leur annulation et peut causer des fuites de mémoire. |
 | `prefer_void_callback` | Préfère le type de retour `void` pour les callbacks qui ne renvoient pas de valeur exploitable. |
 
 ### Dart : collections et null safety
@@ -104,6 +106,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `avoid_empty_set_state` | Évite les appels à `setState` dont le callback ne modifie aucun état. |
 | `avoid_mounted_in_set_state` | Évite de vérifier `mounted` à l’intérieur du callback de `setState` ; effectuez la vérification avant l’appel. |
 | `prefer_edge_insets_symmetric` | Préfère `EdgeInsets.symmetric` lorsque les valeurs opposées de `EdgeInsets.only` ou `EdgeInsets.fromLTRB` sont égales. |
+|| `prefer_value_notifier_over_stateful` | Préfère l'utilisation de ValueNotifier pour les StatefulWidget simples avec un seul champ mutable et une gestion d'état basique. |
 | `prefer_spacing_over_divide_widgets` | Préfère des widgets d’espacement aux séparateurs employés uniquement pour créer un espace entre des widgets. |
 | `do_not_call_to_list_after_divide_widgets` | Évite l’appel superflu à `toList()` après la division de widgets par la méthode concernée. |
 | `use_itemextent_for_large_list` | Pour `ListView.builder`, recommande `itemExtent` ou `prototypeItem` afin d’éviter de mesurer chaque élément. |

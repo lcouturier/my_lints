@@ -32,6 +32,7 @@ import 'package:my_lints/src/rules/collections/avoid_enum_values_by_index_rule.d
 import 'package:my_lints/src/rules/strings/avoid_I18n_current_rule.dart';
 import 'package:my_lints/src/rules/strings/avoid_tolist_before_join_rule.dart';
 import 'package:my_lints/src/rules/async/avoid_unawaited_futures_in_callbacks_rule.dart';
+import 'package:my_lints/src/rules/async/avoid_unchecked_stream_subscriptions_rule.dart';
 import 'package:my_lints/src/rules/style/avoid_unnecessary_block_rule.dart';
 import 'package:my_lints/src/rules/types/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_lints/src/rules/types/avoid_unused_after_null_check_rule.dart';
@@ -50,6 +51,7 @@ import 'package:my_lints/src/rules/record/avoid_extensions_on_records_rule.dart'
 import 'package:my_lints/src/rules/conditions/avoid_identical_if_branch_rule.dart';
 import 'package:my_lints/src/rules/classes/avoid_incomplete_copy_with_rule.dart';
 import 'package:my_lints/src/rules/classes/equatable_props_must_include_all_fields_rule.dart';
+import 'package:my_lints/src/rules/classes/avoid_late_initialization_in_constructor_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_nested_ternary_rule.dart';
 import 'package:my_lints/src/rules/style/avoid_redundant_duration_rule.dart';
 import 'package:my_lints/src/rules/collections/avoid_redundant_collection_rule.dart';
@@ -104,6 +106,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferSpacingOverDivideWidgetsRule())
       ..registerWarningRule(DoNotCallToListAfterDivideWidgetsRule())
       ..registerWarningRule(AvoidIncompleteCopyWithRule())
+      ..registerWarningRule(AvoidLateInitializationInConstructorRule())
       ..registerWarningRule(ProperSuperCallsRule())
       ..registerWarningRule(PreferFactoryConstructorRule())
       ..registerWarningRule(PreferNullAwareAssignmentRule())
@@ -141,6 +144,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(UnnecessaryToStringInInterpolationRule())
       ..registerWarningRule(AvoidToListBeforeJoinRule())
       ..registerWarningRule(AvoidUnawaitedFuturesInCallbacksRule())
+      ..registerWarningRule(AvoidUncheckedStreamSubscriptionsRule())
       ..registerWarningRule(PreferWhereTypeRule())
       ..registerWarningRule(AvoidI18nCurrentRule())
       ..registerWarningRule(PreferFirstRule())

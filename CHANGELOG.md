@@ -7,6 +7,10 @@
 * Add a quick fix for `PreferIsEmpty` to replace length comparisons with
   `isEmpty` or `isNotEmpty`.
 * Add the `UseItemextentForLargeList` lint rule.
+* Add the `AvoidUncheckedStreamSubscriptions` lint rule for detecting stream
+  subscriptions that are not stored or cancelled.
+* Add the `PreferValueNotifierOverStateful` lint rule for detecting simple
+  StatefulWidget that could be replaced with ValueNotifier.
 
 ### Improved
 
