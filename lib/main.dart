@@ -79,7 +79,6 @@ import 'package:my_lints/src/rules/spread/prefer_null_aware_spread_rule.dart';
 import 'package:my_lints/src/rules/types/prefer_void_callback_rule.dart';
 import 'package:my_lints/src/rules/strings/unnecessary_to_string_in_interpolation_rule.dart';
 import 'package:my_lints/src/rules/flutter/use_itemextent_for_large_list_rule.dart';
-import 'package:my_lints/src/rules/flutter/prefer_value_notifier_over_stateful_rule.dart';
 import 'package:my_lints/src/rules/conditions/prefer_ternary_over_if_else_rule.dart';
 
 final plugin = MyLintsPlugin();
@@ -149,8 +148,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferWhereTypeRule())
       ..registerWarningRule(AvoidI18nCurrentRule())
       ..registerWarningRule(PreferFirstRule())
-      ..registerWarningRule(PreferLastRule())
-      ..registerWarningRule(PreferValueNotifierOverStatefulRule());
+      ..registerWarningRule(PreferLastRule());
 
     registry
       ..registerFixForRule(PreferVoidCallbackRule.code, PreferVoidCallbackFix.new)
