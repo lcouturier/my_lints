@@ -74,10 +74,14 @@ class _Visitor extends SimpleAstVisitor<void> {
         (method) => method.name.lexeme == 'dispose',
       );
 
+      /// je crée une liste vide de helper mthodes pour le moment, mais je pourrais ajouter des helpers plus tard
+      /// qui va être alimentée par le _CancelVisitor
       final cancelled = <String>{};
       disposeMethod?.body.visitChildren(
         _CancelVisitor(streamSubscriptions.keys.map((field) => field.name ?? '').toSet(), cancelled),
       );
+
+      /// chaque méthode de la liste de helpers sera visitée pas _CancelVisitor
 
       for (final entry in streamSubscriptions.entries) {
         if (!cancelled.contains(entry.key.name)) {

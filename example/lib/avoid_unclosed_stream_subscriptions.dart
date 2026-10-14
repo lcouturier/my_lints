@@ -60,7 +60,6 @@ class CorrectExampleWithHelperState extends State<ExampleWidget> {
 
   @override
   void dispose() {
-    // GOOD: the subscription is cancelled before the State is disposed.
     _cancelSubscription();
     super.dispose();
   }
