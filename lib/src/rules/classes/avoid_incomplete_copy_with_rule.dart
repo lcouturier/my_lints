@@ -2,6 +2,7 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
@@ -62,15 +63,15 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodDeclaration(MethodDeclaration node) {
-    if (node.name.lexeme != 'copyWith') return;
-
-    final fields = node.enclosingInstanceFieldNames;
-    if (fields.isEmpty) return;
-
-    final missing = node.missingCopyWithParameters(fields);
-    if (missing.isEmpty) return;
-
-    rule.reportAtToken(node.name, arguments: [missing.join(', ')]);
+    if (node case MethodDeclaration(
+      name: Token(lexeme: 'copyWith'),
+      enclosingInstanceFieldNames: final fields,
+    ) when fields.isNotEmpty) {
+      final missing = node.missingCopyWithParameters(fields);
+      if (missing.isNotEmpty) {
+        rule.reportAtToken(node.name, arguments: [missing.join(', ')]);
+      }
+    }
   }
 }
 

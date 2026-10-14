@@ -44,6 +44,7 @@ import 'package:my_lints/src/rules/collections/prefer_map_over_map_indexed_rule.
 import 'package:my_lints/src/rules/flutter/prefer_no_spacing_over_divide_widgets_rule.dart';
 import 'package:my_lints/src/rules/async/unprotected_emit_after_await_rule.dart';
 import 'package:my_lints/src/rules/classes/prefer_factory_constructor_rule.dart';
+import 'package:my_lints/src/rules/classes/avoid_get_prefix_for_properties_rule.dart';
 import 'package:my_lints/src/rules/collections/prefer_null_aware_assignment_rule.dart';
 import 'package:my_lints/src/rules/async/prefer_return_await_rule.dart';
 import 'package:my_lints/src/rules/collections/prefer_where_type_rule.dart';
@@ -96,6 +97,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidUsageOfNullableListRule())
       ..registerWarningRule(UseItemextentForLargeListRule())
       ..registerWarningRule(AddCubitSuffixRule())
+      ..registerWarningRule(AvoidGetPrefixForPropertiesRule())
       ..registerWarningRule(AvoidUselessAsyncMethodRule())
       ..registerWarningRule(PreferMapOverMapIndexedRule())
       ..registerWarningRule(AvoidUnnecessaryBlockRule())
