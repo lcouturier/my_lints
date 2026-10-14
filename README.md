@@ -57,6 +57,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `avoid_useless_async_method` | Signale les méthodes `async` qui n’effectuent aucune opération asynchrone utile. |
 || `avoid_unchecked_stream_subscriptions` | Signale les appels à `listen()` sur des streams dont le résultat n'est pas stocké, ce qui empêche leur annulation et peut causer des fuites de mémoire. |
 | `prefer_void_callback` | Préfère le type de retour `void` pour les callbacks qui ne renvoient pas de valeur exploitable. |
+|| `avoid_unnecessary_nullable_return` | Signale les fonctions et méthodes avec un type de retour nullable qui ne retournent jamais `null` dans leur corps. |
 
 ### Dart : collections et null safety
 
