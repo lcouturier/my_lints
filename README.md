@@ -111,7 +111,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `do_not_call_to_list_after_divide_widgets` | Évite l’appel superflu à `toList()` après la division de widgets par la méthode concernée. |
 | `use_itemextent_for_large_list` | Pour `ListView.builder`, recommande `itemExtent` ou `prototypeItem` afin d’éviter de mesurer chaque élément. |
 | `avoid_i18n_current` | Évite l’accès global `I18n.current` lorsque la règle peut utiliser le contexte de localisation. |
-| `prefer_correct_callback_field_name` | Signale les noms de champs de callback qui ne respectent pas la convention attendue par la règle. |
+| `prefer_on_prefix_for_widget_callbacks` | Signale les champs publics de callback des widgets Flutter dont le nom ne commence pas par `on`. |
 | `prefer_factory_constructor` | Préfère un constructeur `factory` lorsque le constructeur doit renvoyer une instance existante ou une instance d’un sous-type. |
 
 ## Correctifs rapides

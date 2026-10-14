@@ -77,8 +77,20 @@ argument-hint: "[comportement ou nom de règle]"
    que les exemples `Good` ne la déclenchent pas, et que les fichiers
    d'enregistrement et de documentation sont cohérents.
 
-## Style de code
-Avoir une approche fonctionnelle et utiliser les patterns de programmation fonctionnelle.
+## Conventions de code Dart
+
+- Privilégier une approche fonctionnelle lorsque cela rend la transformation
+   des données plus claire, sans ajouter d'abstraction inutile.
+- Utiliser un record pour regrouper quelques valeurs liées sans identité ni
+   comportement propre. Préférer des champs nommés si les valeurs doivent être
+   faciles à comprendre à la lecture ; choisir une classe pour un concept nommé,
+   des invariants ou une API appelée à évoluer. Voir le skill
+   [dart-records](../dart-records/SKILL.md).
+- Employer les patterns Dart 3 pour décomposer une valeur ou exprimer une
+   condition lorsque cela simplifie réellement le code. Vérifier la version du
+   SDK, privilégier les `switch` exhaustifs pour les variantes fermées et ne pas
+   forcer un pattern quand un accès direct est plus lisible. Voir le skill
+   [dart3-patterns](../dart3-patterns/SKILL.md).
 
 ## Correctif rapide
 
