@@ -334,7 +334,7 @@ extension InterfaceTypeExtensions on InterfaceType {
     return allTypes.any((t) {
       final element = t.element;
 
-      return (element.name == 'State' || element.name == 'StatelessWidget') &&
+      return (element.name == 'State' || element.name == 'StatelessWidget' || element.name == 'StatefulWidget') &&
           element.library.firstFragment.source.uri.toString().contains('framework');
     });
   }
@@ -376,6 +376,16 @@ extension ClassDeclarationExtensions on ClassDeclaration {
 
   /// Returns the instance field names of the class.
   Set<String> get fields => members.instanceFieldNames;
+
+  /// Returns the list of instance fields with function types, which are considered widget callback fields.
+  List<VariableDeclaration> get widgetCallbackFields {
+    return members
+        .whereType<FieldDeclaration>()
+        .where((e) => !e.isStatic)
+        .where((e) => e.fields.type?.type is FunctionType || (e.fields.type?.type?.isDartCoreFunction ?? false))
+        .expand((e) => e.fields.variables)
+        .toList();
+  }
 
   /// Checks if the class is a data class.
   ///

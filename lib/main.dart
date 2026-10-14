@@ -27,6 +27,7 @@ import 'package:my_lints/src/rules/style/avoid_cascade_after_if_null_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_compare_same_value_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_disposable_state_field_leaks_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_empty_set_state_rule.dart';
+import 'package:my_lints/src/rules/flutter/prefer_on_prefix_for_widget_callbacks_rule.dart';
 import 'package:my_lints/src/rules/flutter/edge_insets_rule.dart';
 import 'package:my_lints/src/rules/collections/avoid_enum_values_by_index_rule.dart';
 import 'package:my_lints/src/rules/strings/avoid_I18n_current_rule.dart';
@@ -123,6 +124,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferConstEmptyListAfterIfNullRule())
       ..registerWarningRule(AvoidDisposableStateFieldLeaksRule())
       ..registerWarningRule(PreferNullAwareNotationRule())
+      ..registerWarningRule(PreferOnPrefixForWidgetCallbacksRule())
       ..registerWarningRule(PreferVoidCallbackRule())
       ..registerWarningRule(AvoidNestedAssignmentRule())
       ..registerWarningRule(AvoidMapKeysContainsRule())
