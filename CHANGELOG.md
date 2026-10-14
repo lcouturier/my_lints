@@ -2,6 +2,8 @@
 
 ### Added
 
+* Add the `avoid_unclosed_stream_subscriptions` lint rule for subscriptions
+  stored in Flutter `State` fields but not cancelled in `dispose()`.
 * Add the `avoid_get_prefix_for_properties` lint rule for property names with a `get` prefix.
 * Add the `prefer_on_prefix_for_widget_callbacks` lint rule for callback fields
   declared by Flutter widgets.

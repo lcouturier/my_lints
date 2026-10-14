@@ -52,6 +52,8 @@ extension DartTypeExtensions on DartType {
       _ => false,
     };
   }
+
+  bool get isStreamSubscription => (this is InterfaceType) && (this as InterfaceType).isStreamSubscription;
 }
 
 extension FunctionCacheExtensions<F, R> on R Function(F) {
@@ -354,6 +356,16 @@ extension InterfaceTypeExtensions on InterfaceType {
     return allTypes.any((t) {
       final element = t.element;
       return element.name == 'Equatable' && element.library.firstFragment.source.uri.toString().contains('equatable');
+    });
+  }
+
+  bool get isStreamSubscription {
+    final allTypes = [this, ...allSupertypes];
+
+    return allTypes.any((e) {
+      final element = e.element;
+      return element.name == 'StreamSubscription' &&
+          element.library.firstFragment.source.uri.toString().contains('dart:async');
     });
   }
 }
