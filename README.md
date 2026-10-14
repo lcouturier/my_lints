@@ -34,6 +34,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | Identifiant | Documentation |
 | --- | --- |
 | `add_cubit_suffix_rule` | Signale les classes Cubit dont le nom ne suit pas la convention de suffixe `Cubit`. |
+| `avoid_get_prefix_for_properties` | Signale les champs, getters et setters dont le nom commence par `get` suivi d’une majuscule. |
 | `avoid_unnecessary_block` | Évite les blocs `{}` qui n’apportent pas de portée ni de contrôle supplémentaire. |
 | `avoid_unused_after_null_check` | Signale les vérifications de nullité après lesquelles le code ne se sert pas du résultat de cette vérification. |
 | `avoid_incomplete_copy_with` | Détecte les méthodes `copyWith` qui ne recopient pas les propriétés de l’objet comme attendu. |

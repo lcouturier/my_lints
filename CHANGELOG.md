@@ -2,6 +2,7 @@
 
 ### Added
 
+* Add the `avoid_get_prefix_for_properties` lint rule for property names with a `get` prefix.
 * Add the `prefer_on_prefix_for_widget_callbacks` lint rule for callback fields
   declared by Flutter widgets.
 * Add the `PreferLast` lint rule for detecting access to the last element of a
