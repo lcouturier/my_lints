@@ -48,3 +48,27 @@ class CorrectExampleState extends State<ExampleWidget> {
   @override
   Widget build(BuildContext context) => const SizedBox();
 }
+
+class CorrectExampleWithHelperState extends State<ExampleWidget> {
+  late final StreamSubscription<int> _subscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _subscription = const Stream<int>.empty().listen((_) {});
+  }
+
+  @override
+  void dispose() {
+    // GOOD: the subscription is cancelled before the State is disposed.
+    _cancelSubscription();
+    super.dispose();
+  }
+
+  void _cancelSubscription() {
+    _subscription.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox();
+}

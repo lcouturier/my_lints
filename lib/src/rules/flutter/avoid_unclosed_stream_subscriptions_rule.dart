@@ -46,6 +46,8 @@ class AvoidUnclosedStreamSubscriptionsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_unclosed_stream_subscriptions',
     'Stream subscription "{0}" is not cancelled in dispose().',
+    correctionMessage: 'Call cancel() on the subscription in dispose().',
+    severity: ErrorSeverity.WARNING,
   );
 
   @override
@@ -109,6 +111,7 @@ class _CancelVisitor extends RecursiveAstVisitor<void> {
 }
 
 extension on ClassDeclaration {
+  /// Returns a map of stream subscription fields to their name tokens.
   Map<FieldElement, Token> get streamSubscriptions {
     final subscriptions = <FieldElement, Token>{};
     for (final variable in members.whereType<FieldDeclaration>().expand((e) => e.fields.variables)) {
@@ -116,7 +119,6 @@ extension on ClassDeclaration {
       if (element is FieldElement && element.type.isStreamSubscription) {
         subscriptions[element] = variable.name;
       }
-      // }
     }
     return subscriptions;
   }
