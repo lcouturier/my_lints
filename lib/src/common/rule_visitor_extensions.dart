@@ -14,7 +14,7 @@ abstract class CustomAstVisitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (node.isCubitClass) {
+    if (node case ClassDeclaration(isCubitClass: true)) {
       visitCubitClass(node);
     }
   }
