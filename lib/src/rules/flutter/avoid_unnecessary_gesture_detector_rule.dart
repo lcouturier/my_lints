@@ -27,7 +27,6 @@ class AvoidUnnecessaryGestureDetectorRule extends AnalysisRule {
     'avoid_unnecessary_gesture_detector',
     'Try passing an event handler (e.g. onTap) or removing this widget.',
     correctionMessage: 'Add an event handler or remove this widget.',
-    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidUnnecessaryGestureDetectorRule() : super(name: code.name, description: code.problemMessage);
