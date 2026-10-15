@@ -96,18 +96,18 @@ class _TestRuleContext implements RuleContext {
 }
 
 class _TestRuleVisitorRegistry implements RuleVisitorRegistry {
-  final Map<String, List<AstVisitor>> _visitors = {};
+  final Map<String, List<AstVisitor<dynamic>>> _visitors = {};
 
   Set<String> get registeredNodeTypes => _visitors.keys.toSet();
 
-  List<AstVisitor> visitorsFor(String nodeType) => _visitors[nodeType] ?? const [];
+  List<AstVisitor<dynamic>> visitorsFor(String nodeType) => _visitors[nodeType] ?? const [];
 
   @override
   dynamic noSuchMethod(Invocation invocation) {
     final methodName = invocation.memberName.toString();
     if (methodName.startsWith('Symbol("add') && invocation.positionalArguments.length == 2) {
       final nodeType = methodName.substring(11, methodName.length - 2);
-      final visitor = invocation.positionalArguments[1] as AstVisitor;
+      final visitor = invocation.positionalArguments[1] as AstVisitor<dynamic>;
       _visitors.putIfAbsent(nodeType, () => []).add(visitor);
     }
     return null;
