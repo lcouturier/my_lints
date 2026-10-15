@@ -134,7 +134,7 @@ class ExampleState extends State<ExampleWidget> {
   });
 
   void _cancelSubscription() {
-    subscription.cancel();
+    _subscription.cancel();
   }
   ''', useExamplePackages: true);
 
