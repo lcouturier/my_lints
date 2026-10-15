@@ -47,7 +47,7 @@ class AvoidUnclosedStreamSubscriptionsRule extends AnalysisRule {
     'avoid_unclosed_stream_subscriptions',
     'Stream subscription "{0}" is not cancelled in dispose().',
     correctionMessage: 'Call cancel() on the subscription in dispose().',
-    severity: ErrorSeverity.WARNING,
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override
