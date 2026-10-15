@@ -46,6 +46,8 @@ class AvoidUnclosedStreamSubscriptionsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_unclosed_stream_subscriptions',
     'Stream subscription "{0}" is not cancelled in dispose().',
+    correctionMessage: 'Call cancel() on the subscription in dispose().',
+    severity: ErrorSeverity.WARNING,
   );
 
   @override
@@ -72,10 +74,26 @@ class _Visitor extends SimpleAstVisitor<void> {
         (method) => method.name.lexeme == 'dispose',
       );
 
+      final helperMethods = <String>{};
       final cancelled = <String>{};
       disposeMethod?.body.visitChildren(
-        _CancelVisitor(streamSubscriptions.keys.map((field) => field.name ?? '').toSet(), cancelled),
+        _CancelVisitor(
+          subscriptions: streamSubscriptions.keys.map((field) => field.name ?? '').toSet(),
+          onCancelled: (name) => cancelled.add(name),
+          onHelperMethodCalled: (name) => helperMethods.add(name),
+        ),
       );
+      for (final helperMethod in helperMethods) {
+        final m = node.members.whereType<MethodDeclaration>().firstWhereOrNull(
+          (method) => method.name.lexeme == helperMethod,
+        );
+        m?.body.visitChildren(
+          _CancelVisitor(
+            subscriptions: streamSubscriptions.keys.map((field) => field.name ?? '').toSet(),
+            onCancelled: (name) => cancelled.add(name),
+          ),
+        );
+      }
 
       for (final entry in streamSubscriptions.entries) {
         if (!cancelled.contains(entry.key.name)) {
@@ -88,9 +106,9 @@ class _Visitor extends SimpleAstVisitor<void> {
 
 class _CancelVisitor extends RecursiveAstVisitor<void> {
   final Set<String> subscriptions;
-  final Set<String> cancelled;
-
-  _CancelVisitor(this.subscriptions, this.cancelled);
+  final void Function(String) onCancelled;
+  final void Function(String)? onHelperMethodCalled;
+  _CancelVisitor({required this.subscriptions, required this.onCancelled, this.onHelperMethodCalled});
 
   @override
   void visitFunctionExpression(FunctionExpression node) {}
@@ -100,7 +118,12 @@ class _CancelVisitor extends RecursiveAstVisitor<void> {
     if (node case MethodInvocation(methodName: SimpleIdentifier(name: 'cancel'), realTarget: final target?)) {
       final name = target.getNormalizedName();
       if (name != null && subscriptions.contains(name)) {
-        cancelled.add(name);
+        onCancelled(name);
+      }
+    } else {
+      final name = node.methodName.name;
+      if (name != 'dispose') {
+        onHelperMethodCalled?.call(name);
       }
     }
 
@@ -109,6 +132,7 @@ class _CancelVisitor extends RecursiveAstVisitor<void> {
 }
 
 extension on ClassDeclaration {
+  /// Returns a map of stream subscription fields to their name tokens.
   Map<FieldElement, Token> get streamSubscriptions {
     final subscriptions = <FieldElement, Token>{};
     for (final variable in members.whereType<FieldDeclaration>().expand((e) => e.fields.variables)) {
@@ -116,7 +140,6 @@ extension on ClassDeclaration {
       if (element is FieldElement && element.type.isStreamSubscription) {
         subscriptions[element] = variable.name;
       }
-      // }
     }
     return subscriptions;
   }

@@ -109,5 +109,36 @@ class Example {
 
       expect(runAnalysisRuleOnUnit(AvoidUnclosedStreamSubscriptionsRule(), unit), isEmpty);
     });
+
+    test('does not report with helper method', () async {
+      final unit = await resolveSource('''
+import 'dart:async';
+import 'package:flutter/widgets.dart';
+
+class ExampleWidget extends StatefulWidget {
+  const ExampleWidget({super.key});
+  @override
+  State<ExampleWidget> createState() => ExampleState();
+}
+
+class ExampleState extends State<ExampleWidget> {
+  late final StreamSubscription<int> _subscription;
+
+  @override
+  Widget build(BuildContext context) => const SizedBox();
+
+  @override
+  void dispose() {
+    _cancelSubscription();
+    super.dispose();
+  });
+
+  void _cancelSubscription() {
+    _subscription.cancel();
+  }
+  ''', useExamplePackages: true);
+
+      expect(runAnalysisRuleOnUnit(AvoidUnclosedStreamSubscriptionsRule(), unit), isEmpty);
+    });
   });
 }
