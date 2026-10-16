@@ -1,7 +1,11 @@
+# my_lints
+
 ## 0.0.1
 
 ### Added
 
+* Add the `avoid_uncancelled_timers_in_state` lint rule for timers stored in
+  Flutter `State` fields but not cancelled in `dispose()`.
 * Add the `avoid_unclosed_stream_subscriptions` lint rule for subscriptions
   stored in Flutter `State` fields but not cancelled in `dispose()`.
 * Add the `avoid_get_prefix_for_properties` lint rule for property names with a `get` prefix.

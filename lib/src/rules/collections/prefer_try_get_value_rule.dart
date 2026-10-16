@@ -57,10 +57,10 @@ class _Visitor extends SimpleAstVisitor<void> {
       ),
       thenExpression: IndexExpression(target: final indexTarget?, index: final indexArg),
     )) {
-      final targetName = target.unParenthesized.getNormalizedName();
-      final indexTargetName = indexTarget.unParenthesized.getNormalizedName();
-      final keyArgName = keyArg.unParenthesized.getNormalizedName();
-      final indexArgName = indexArg.unParenthesized.getNormalizedName();
+      final targetName = target.unParenthesized.normalizedName;
+      final indexTargetName = indexTarget.unParenthesized.normalizedName;
+      final keyArgName = keyArg.unParenthesized.normalizedName;
+      final indexArgName = indexArg.unParenthesized.normalizedName;
       if (targetName != null && targetName == indexTargetName && indexArgName == null) {
         rule.reportAtNode(node);
       }

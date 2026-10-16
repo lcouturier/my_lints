@@ -5,7 +5,6 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
@@ -38,7 +37,20 @@ import 'package:my_lints/src/common/extensions.dart';
 ///     super.dispose();
 ///   }
 /// }
+/// class MyState extends State<MyWidget> {
+///   final TextEditingController _controller = TextEditingController();
 ///
+///   void _disposeController() {
+///     _controller.dispose();
+///   }
+///
+///   @override
+///   void dispose() {
+///     _disposeController();
+///     super.dispose();
+///   }
+/// }
+/// ```
 class AvoidDisposableStateFieldLeaksRule extends AnalysisRule {
   AvoidDisposableStateFieldLeaksRule() : super(name: code.name, description: code.problemMessage);
 
@@ -58,89 +70,76 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   _Visitor(this.rule);
 
-  final Set<String> _controllers = {};
-  final Set<String> _disposed = {};
-  final Map<String, FieldElement> _fields = {};
-  MethodDeclaration? _disposeMethod;
-
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.isFlutterWidget) return;
+    if (node case ClassDeclaration(isFlutterWidget: true, :final disposables) when disposables.isNotEmpty) {
+      final methods = {for (final method in node.members.whereType<MethodDeclaration>()) method.name.lexeme: method};
+      final disposeMethod = methods['dispose'];
 
-    _controllers.clear();
-    _disposed.clear();
-    _disposeMethod = null;
+      final helperMethods = <String>{};
+      final cancelled = <String>{};
+      disposeMethod?.body.visitChildren(
+        _DisposeVisitor(
+          disposes: disposables.keys.map((field) => field.name ?? '').toSet(),
+          onDispose: (name) => cancelled.add(name),
+          onHelperMethodCalled: (name) => helperMethods.add(name),
+        ),
+      );
+      for (final helperMethod in helperMethods) {
+        final m = methods[helperMethod];
+        m?.body.visitChildren(
+          _DisposeVisitor(
+            disposes: disposables.keys.map((field) => field.name ?? '').toSet(),
+            onDispose: (name) => cancelled.add(name),
+          ),
+        );
+      }
 
-    for (final member in node.members.whereType<FieldDeclaration>().where(
-      (e) => e.fields.type?.type?.isDisposable ?? false,
-    )) {
-      for (final variable in member.fields.variables) {
-        final element = variable.declaredFragment?.element;
-        if (element is FieldElement) {
-          _fields[element.name ?? ''] = element;
-          _controllers.add(element.name ?? '');
+      for (final entry in disposables.entries) {
+        if (!cancelled.contains(entry.key.name)) {
+          rule.reportAtToken(entry.value, arguments: [entry.key.name ?? '']);
         }
       }
     }
-
-    for (final member in node.members) {
-      if (member case MethodDeclaration(name: Token(lexeme: 'dispose'), :final body)) {
-        _disposeMethod = member;
-        body.visitChildren(_DisposeVisitor(_disposed));
-      }
-
-      if (member case MethodDeclaration(name: Token(lexeme: 'initState'), :final body)) {
-        body.visitChildren(_InitStateVisitor(fields: _fields, controllers: _controllers));
-      }
-    }
-
-    if (_disposeMethod == null) return;
-
-    for (final item in _controllers.difference(_disposed)) {
-      rule.reportAtToken(_disposeMethod!.name, arguments: [item]);
-    }
-  }
-}
-
-class _InitStateVisitor extends RecursiveAstVisitor<void> {
-  final Map<String, FieldElement> fields;
-  final Set<String> controllers;
-
-  _InitStateVisitor({required this.fields, required this.controllers});
-
-  @override
-  void visitAssignmentExpression(AssignmentExpression node) {
-    final left = node.leftHandSide;
-    final right = node.rightHandSide;
-
-    final name = left.getNormalizedName();
-    if (name == null) return;
-
-    final field = fields[name];
-    if (field == null) return; // 🔒 garantit que c’est un field
-
-    if (right case InstanceCreationExpression(staticType: DartType(isDisposable: true))) {
-      controllers.add(name);
-    }
-
-    super.visitAssignmentExpression(node);
   }
 }
 
 class _DisposeVisitor extends RecursiveAstVisitor<void> {
-  final Set<String> disposed;
+  final Set<String> disposes;
+  final void Function(String) onDispose;
+  final void Function(String)? onHelperMethodCalled;
+  _DisposeVisitor({required this.disposes, required this.onDispose, this.onHelperMethodCalled});
 
-  _DisposeVisitor(this.disposed);
+  @override
+  void visitFunctionExpression(FunctionExpression node) {}
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node.methodName.name != 'dispose') return;
-
-    final name = node.realTarget?.getNormalizedName();
-    if (name != null) {
-      disposed.add(name);
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(name: 'dispose'),
+      realTarget: final target?,
+    ) when target is! SuperExpression) {
+      final targetName = target.normalizedName;
+      if (targetName != null && disposes.contains(targetName)) {
+        onDispose(targetName);
+      }
+    } else {
+      final name = node.methodName.name;
+      if (name != 'dispose') {
+        onHelperMethodCalled?.call(name);
+      }
     }
 
     super.visitMethodInvocation(node);
   }
+}
+
+extension on ClassDeclaration {
+  /// Returns a map where the keys are the disposable fields and the values are their corresponding name tokens.
+  Map<FieldElement, Token> get disposables => {
+    for (final variable in members.whereType<FieldDeclaration>().expand((field) => field.fields.variables))
+      if (variable.declaredFragment?.element case final FieldElement element
+          when element.type.isDisposable && !element.isStatic)
+        element: variable.name,
+  };
 }

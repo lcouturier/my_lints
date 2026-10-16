@@ -7,7 +7,6 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
-import 'package:my_lints/src/common/type_checker.dart';
 
 /// A rule that reports stream subscriptions in a Flutter `State` that are not cancelled.
 ///
@@ -70,9 +69,8 @@ class _Visitor extends SimpleAstVisitor<void> {
       isFlutterWidget: true,
       :final streamSubscriptions,
     ) when streamSubscriptions.isNotEmpty) {
-      final disposeMethod = node.members.whereType<MethodDeclaration>().firstWhereOrNull(
-        (method) => method.name.lexeme == 'dispose',
-      );
+      final methods = {for (final method in node.members.whereType<MethodDeclaration>()) method.name.lexeme: method};
+      final disposeMethod = methods['dispose'];
 
       final helperMethods = <String>{};
       final cancelled = <String>{};
@@ -84,9 +82,7 @@ class _Visitor extends SimpleAstVisitor<void> {
         ),
       );
       for (final helperMethod in helperMethods) {
-        final m = node.members.whereType<MethodDeclaration>().firstWhereOrNull(
-          (method) => method.name.lexeme == helperMethod,
-        );
+        final m = methods[helperMethod];
         m?.body.visitChildren(
           _CancelVisitor(
             subscriptions: streamSubscriptions.keys.map((field) => field.name ?? '').toSet(),
@@ -115,10 +111,12 @@ class _CancelVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node case MethodInvocation(methodName: SimpleIdentifier(name: 'cancel'), realTarget: final target?)) {
-      final name = target.getNormalizedName();
-      if (name != null && subscriptions.contains(name)) {
-        onCancelled(name);
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(name: 'cancel'),
+      realTarget: Expression(normalizedName: final targetName?),
+    )) {
+      if (subscriptions.contains(targetName)) {
+        onCancelled(targetName);
       }
     } else {
       final name = node.methodName.name;
@@ -132,15 +130,13 @@ class _CancelVisitor extends RecursiveAstVisitor<void> {
 }
 
 extension on ClassDeclaration {
-  /// Returns a map of stream subscription fields to their name tokens.
+  /// Returns a map where the keys are the stream subscription fields and the values are their corresponding name tokens.
   Map<FieldElement, Token> get streamSubscriptions {
-    final subscriptions = <FieldElement, Token>{};
-    for (final variable in members.whereType<FieldDeclaration>().expand((e) => e.fields.variables)) {
-      final element = variable.declaredFragment?.element;
-      if (element is FieldElement && element.type.isStreamSubscription) {
-        subscriptions[element] = variable.name;
-      }
-    }
-    return subscriptions;
+    return {
+      for (final variable in members.whereType<FieldDeclaration>().expand((field) => field.fields.variables))
+        if (variable.declaredFragment?.element case final FieldElement element
+            when element.type.isStreamSubscription && !element.isStatic)
+          element: variable.name,
+    };
   }
 }

@@ -52,4 +52,5 @@ extension DartTypeExtensions on DartType {
   }
 
   bool get isStreamSubscription => (this is InterfaceType) && (this as InterfaceType).isStreamSubscription;
+  bool get isTimer => (this is InterfaceType) && (this as InterfaceType).isTimer;
 }

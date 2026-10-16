@@ -26,6 +26,7 @@ import 'package:my_lints/src/rules/conditions/avoid_assignation_in_condition_rul
 import 'package:my_lints/src/rules/style/avoid_cascade_after_if_null_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_compare_same_value_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_disposable_state_field_leaks_rule.dart';
+import 'package:my_lints/src/rules/flutter/avoid_uncancelled_timers_in_state_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_unclosed_stream_subscriptions_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_empty_set_state_rule.dart';
 import 'package:my_lints/src/rules/flutter/prefer_on_prefix_for_widget_callbacks_rule.dart';
@@ -126,6 +127,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferNullAwareElementsRule())
       ..registerWarningRule(PreferConstEmptyListAfterIfNullRule())
       ..registerWarningRule(AvoidDisposableStateFieldLeaksRule())
+      ..registerWarningRule(AvoidUncancelledTimersInStateRule())
       ..registerWarningRule(AvoidUnclosedStreamSubscriptionsRule())
       ..registerWarningRule(PreferNullAwareNotationRule())
       ..registerWarningRule(PreferOnPrefixForWidgetCallbacksRule())
