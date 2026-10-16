@@ -104,6 +104,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `cubit_state_must_be_equatable` | Encourage des états de Cubit comparables par valeur, notamment en implémentant `Equatable` lorsque c’est approprié. |
 | `unprotected_emit_after_await` | Protège les appels à `emit` effectués après un `await` contre l’émission après la fermeture du Bloc ou du Cubit. |
 | `avoid_disposable_state_field_leaks` | Signale les contrôleurs ou ressources détenus par un `State` qui ne sont pas libérés. |
+| `avoid_uncancelled_timers_in_state` | Signale les champs `Timer` d’un `State` qui ne sont pas annulés dans `dispose()`. |
 | `avoid_unclosed_stream_subscriptions` | Signale les champs `StreamSubscription` d’un `State` qui ne sont pas annulés dans `dispose()`. |
 | `avoid_empty_set_state` | Évite les appels à `setState` dont le callback ne modifie aucun état. |
 | `avoid_mounted_in_set_state` | Évite de vérifier `mounted` à l’intérieur du callback de `setState` ; effectuez la vérification avant l’appel. |

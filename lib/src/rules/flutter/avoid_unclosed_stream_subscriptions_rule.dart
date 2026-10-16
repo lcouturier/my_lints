@@ -7,7 +7,6 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
-import 'package:my_lints/src/common/type_checker.dart';
 
 /// A rule that reports stream subscriptions in a Flutter `State` that are not cancelled.
 ///
@@ -70,9 +69,8 @@ class _Visitor extends SimpleAstVisitor<void> {
       isFlutterWidget: true,
       :final streamSubscriptions,
     ) when streamSubscriptions.isNotEmpty) {
-      final disposeMethod = node.members.whereType<MethodDeclaration>().firstWhereOrNull(
-        (method) => method.name.lexeme == 'dispose',
-      );
+      final methods = {for (final method in node.members.whereType<MethodDeclaration>()) method.name.lexeme: method};
+      final disposeMethod = methods['dispose'];
 
       final helperMethods = <String>{};
       final cancelled = <String>{};
@@ -84,9 +82,7 @@ class _Visitor extends SimpleAstVisitor<void> {
         ),
       );
       for (final helperMethod in helperMethods) {
-        final m = node.members.whereType<MethodDeclaration>().firstWhereOrNull(
-          (method) => method.name.lexeme == helperMethod,
-        );
+        final m = methods[helperMethod];
         m?.body.visitChildren(
           _CancelVisitor(
             subscriptions: streamSubscriptions.keys.map((field) => field.name ?? '').toSet(),
