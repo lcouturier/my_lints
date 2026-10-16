@@ -38,7 +38,20 @@ import 'package:my_lints/src/common/type_checker.dart';
 ///     super.dispose();
 ///   }
 /// }
+/// class MyState extends State<MyWidget> {
+///   final TextEditingController _controller = TextEditingController();
 ///
+///   void _disposeController() {
+///     _controller.dispose();
+///   }
+///
+///   @override
+///   void dispose() {
+///     _disposeController();
+///     super.dispose();
+///   }
+/// }
+/// ```
 class AvoidDisposableStateFieldLeaksRule extends AnalysisRule {
   AvoidDisposableStateFieldLeaksRule() : super(name: code.name, description: code.problemMessage);
 
@@ -106,12 +119,13 @@ class _DisposeVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node case MethodInvocation(methodName: SimpleIdentifier(name: 'dispose'), realTarget: final target?)) {
-      if (target is! SuperExpression) {
-        final name = target.getNormalizedName();
-        if (name != null && disposes.contains(name)) {
-          onDispose(name);
-        }
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(name: 'dispose'),
+      realTarget: final target?,
+    ) when target is! SuperExpression) {
+      final targetName = target.normalizedName;
+      if (targetName != null && disposes.contains(targetName)) {
+        onDispose(targetName);
       }
     } else {
       final name = node.methodName.name;
@@ -125,15 +139,10 @@ class _DisposeVisitor extends RecursiveAstVisitor<void> {
 }
 
 extension on ClassDeclaration {
-  /// Returns a map of disposable fields to their name tokens.
-  Map<FieldElement, Token> get disposables {
-    final subscriptions = <FieldElement, Token>{};
-    for (final variable in members.whereType<FieldDeclaration>().expand((e) => e.fields.variables)) {
-      final element = variable.declaredFragment?.element;
-      if (element is FieldElement && element.type.isDisposable) {
-        subscriptions[element] = variable.name;
-      }
-    }
-    return subscriptions;
-  }
+  /// Returns a map where the keys are the disposable fields and the values are their corresponding name tokens.
+  Map<FieldElement, Token> get disposables => {
+    for (final variable in members.whereType<FieldDeclaration>().expand((field) => field.fields.variables))
+      if (variable.declaredFragment?.element case final FieldElement element when element.type.isDisposable)
+        element: variable.name,
+  };
 }

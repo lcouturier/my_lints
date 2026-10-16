@@ -5,6 +5,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 import 'package:my_lints/src/common/type_checker.dart';
@@ -115,10 +116,12 @@ class _CancelVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node case MethodInvocation(methodName: SimpleIdentifier(name: 'cancel'), realTarget: final target?)) {
-      final name = target.getNormalizedName();
-      if (name != null && subscriptions.contains(name)) {
-        onCancelled(name);
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(name: 'cancel'),
+      realTarget: Expression(normalizedName: final targetName?),
+    )) {
+      if (subscriptions.contains(targetName)) {
+        onCancelled(targetName);
       }
     } else {
       final name = node.methodName.name;
@@ -132,15 +135,12 @@ class _CancelVisitor extends RecursiveAstVisitor<void> {
 }
 
 extension on ClassDeclaration {
-  /// Returns a map of stream subscription fields to their name tokens.
+  /// Returns a map where the keys are the stream subscription fields and the values are their corresponding name tokens.
   Map<FieldElement, Token> get streamSubscriptions {
-    final subscriptions = <FieldElement, Token>{};
-    for (final variable in members.whereType<FieldDeclaration>().expand((e) => e.fields.variables)) {
-      final element = variable.declaredFragment?.element;
-      if (element is FieldElement && element.type.isStreamSubscription) {
-        subscriptions[element] = variable.name;
-      }
-    }
-    return subscriptions;
+    return {
+      for (final variable in members.whereType<FieldDeclaration>().expand((field) => field.fields.variables))
+        if (variable.declaredFragment?.element case final FieldElement element when element.type.isStreamSubscription)
+          element: variable.name,
+    };
   }
 }

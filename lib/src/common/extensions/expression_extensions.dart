@@ -33,7 +33,7 @@ extension ExpressionExtensions on Expression {
   /// this.items.reduce(...)
   /// items.reduce(...)
   /// widget.items.reduce(...)
-  String? getNormalizedName() => switch (this) {
+  String? get normalizedName => switch (this) {
     SimpleIdentifier(:final name) => name,
     PropertyAccess(:final propertyName) => propertyName.name,
     PrefixedIdentifier(:final identifier) => identifier.name,
