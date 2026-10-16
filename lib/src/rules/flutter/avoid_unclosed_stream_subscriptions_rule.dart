@@ -66,7 +66,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   @override
   void visitClassDeclaration(ClassDeclaration node) {
     if (node case ClassDeclaration(
-      isFlutterWidget: true,
+      isFlutterStatefulWidget: true,
       :final streamSubscriptions,
     ) when streamSubscriptions.isNotEmpty) {
       final methods = {for (final method in node.members.whereType<MethodDeclaration>()) method.name.lexeme: method};
