@@ -134,7 +134,8 @@ extension on ClassDeclaration {
   Map<FieldElement, Token> get streamSubscriptions {
     return {
       for (final variable in members.whereType<FieldDeclaration>().expand((field) => field.fields.variables))
-        if (variable.declaredFragment?.element case final FieldElement element when element.type.isStreamSubscription)
+        if (variable.declaredFragment?.element case final FieldElement element
+            when element.type.isStreamSubscription && !element.isStatic)
           element: variable.name,
     };
   }

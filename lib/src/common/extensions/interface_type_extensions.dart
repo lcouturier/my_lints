@@ -39,4 +39,13 @@ extension InterfaceTypeExtensions on InterfaceType {
           element.library.firstFragment.source.uri.toString().contains('dart:async');
     });
   }
+
+  bool get isTimer {
+    final allTypes = [this, ...allSupertypes];
+
+    return allTypes.any((e) {
+      final element = e.element;
+      return element.name == 'Timer' && element.library.firstFragment.source.uri.toString().contains('dart:async');
+    });
+  }
 }

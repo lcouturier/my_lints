@@ -138,7 +138,8 @@ extension on ClassDeclaration {
   /// Returns a map where the keys are the disposable fields and the values are their corresponding name tokens.
   Map<FieldElement, Token> get disposables => {
     for (final variable in members.whereType<FieldDeclaration>().expand((field) => field.fields.variables))
-      if (variable.declaredFragment?.element case final FieldElement element when element.type.isDisposable)
+      if (variable.declaredFragment?.element case final FieldElement element
+          when element.type.isDisposable && !element.isStatic)
         element: variable.name,
   };
 }

@@ -7,7 +7,6 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
-import 'package:my_lints/src/common/type_checker.dart';
 
 /// A rule that reports `Timer` fields not cancelled by a Flutter `State`.
 ///
@@ -74,7 +73,7 @@ class _Visitor extends SimpleAstVisitor<void> {
       final cancelled = <String>{};
       disposeMethod?.body.visitChildren(
         _CancellationVisitor(
-          timerNames: timerFields.keys.toSet(),
+          timerNames: timerFields.keys.map((e) => e.name ?? '').toSet(),
           onCancelled: (name) => cancelled.add(name),
           onHelperMethodCalled: (name) => helperMethods.add(name),
         ),
@@ -83,12 +82,15 @@ class _Visitor extends SimpleAstVisitor<void> {
       for (final helperMethod in helperMethods) {
         final m = methods[helperMethod];
         m?.body.visitChildren(
-          _CancellationVisitor(timerNames: timerFields.keys.toSet(), onCancelled: (name) => cancelled.add(name)),
+          _CancellationVisitor(
+            timerNames: timerFields.keys.map((e) => e.name ?? '').toSet(),
+            onCancelled: (name) => cancelled.add(name),
+          ),
         );
       }
 
       for (final entry in timerFields.entries) {
-        if (!cancelled.contains(entry.key)) {
+        if (!cancelled.contains(entry.key.name)) {
           rule.reportAtToken(entry.value, arguments: [entry.key]);
         }
       }
@@ -126,17 +128,13 @@ class _CancellationVisitor extends RecursiveAstVisitor<void> {
   }
 }
 
-const _timerChecker = TypeChecker.fromUrl('dart:async#Timer');
-
 extension on ClassDeclaration {
   /// Returns a map of timer field names to their corresponding tokens.
   /// The keys are the names of the timer fields, and the values are the tokens corresponding to those fields.
-  Map<String, Token> get timerFields => {
-    for (final field in members.whereType<FieldDeclaration>())
-      if (!field.isStatic)
-        for (final variable in field.fields.variables)
-          if (variable.declaredFragment?.element case final FieldElement element
-              when _timerChecker.isAssignableFromType(element.type))
-            element.name ?? variable.name.lexeme: variable.name,
+  Map<FieldElement, Token> get timerFields => {
+    for (final variable in members.whereType<FieldDeclaration>().expand((field) => field.fields.variables))
+      if (variable.declaredFragment?.element case final FieldElement element
+          when element.type.isTimer && !element.isStatic)
+        element: variable.name,
   };
 }
