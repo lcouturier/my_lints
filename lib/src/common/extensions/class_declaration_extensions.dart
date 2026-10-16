@@ -9,6 +9,11 @@ extension ClassDeclarationExtensions on ClassDeclaration {
     return type is InterfaceType && type.isFlutterState;
   }
 
+  bool get isFlutterStatefulWidget {
+    final type = extendsClause?.superclass.type;
+    return type is InterfaceType && type.isFlutterStateful;
+  }
+
   bool get isCubitClass {
     final type = extendsClause?.superclass.type;
     return type is InterfaceType && type.isCubitLike;

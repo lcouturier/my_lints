@@ -72,7 +72,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (node case ClassDeclaration(isFlutterWidget: true, :final disposables) when disposables.isNotEmpty) {
+    if (node case ClassDeclaration(isFlutterStatefulWidget: true, :final disposables) when disposables.isNotEmpty) {
       final methods = {for (final method in node.members.whereType<MethodDeclaration>()) method.name.lexeme: method};
       final disposeMethod = methods['dispose'];
 

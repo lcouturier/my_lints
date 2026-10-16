@@ -12,6 +12,16 @@ extension InterfaceTypeExtensions on InterfaceType {
     });
   }
 
+  bool get isFlutterStateful {
+    final allTypes = [this, ...allSupertypes];
+
+    return allTypes.any((t) {
+      final element = t.element;
+
+      return (element.name == 'State') && element.library.firstFragment.source.uri.toString().contains('framework');
+    });
+  }
+
   bool get isCubitLike {
     final allTypes = [this, ...allSupertypes];
 
