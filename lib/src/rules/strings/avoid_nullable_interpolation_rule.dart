@@ -3,6 +3,7 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
@@ -56,9 +57,7 @@ class _Visitor extends RecursiveAstVisitor<void> {
     if (parent is IfStatement) return;
 
     for (final element in node.elements) {
-      if (element case InterpolationExpression(
-        expression: SimpleIdentifier(staticType: final type),
-      ) when (type.isNullable)) {
+      if (element case InterpolationExpression(expression: SimpleIdentifier(staticType: DartType(isNullable: true)))) {
         rule.reportAtNode(element);
       }
     }
