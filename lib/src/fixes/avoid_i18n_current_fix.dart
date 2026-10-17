@@ -27,24 +27,16 @@ class AvoidI18nCurrentFix extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    if (_isI18nCurrent(node)) {
-      final contextName = getContextName(node);
-      if (contextName == null) return;
+    final access = node.thisOrAncestorMatching(isI18nCurrentAccess);
+    if (access == null) return;
 
-      final replacement = 'I18n.of($contextName)';
-      await builder.addDartFileEdit(file, (builder) {
-        builder.addSimpleReplacement(range.node(node), replacement);
-      });
-    }
+    final contextName = getContextName(access);
+    if (contextName == null) return;
+
+    await builder.addDartFileEdit(file, (builder) {
+      builder.addSimpleReplacement(range.node(access), 'I18n.of($contextName)');
+    });
   }
-
-  bool _isI18nCurrent(AstNode node) => switch (node) {
-    PropertyAccess(
-      target: PropertyAccess(target: SimpleIdentifier(name: 'I18n'), propertyName: SimpleIdentifier(name: 'current')),
-    ) ||
-    PrefixedIdentifier(prefix: SimpleIdentifier(name: 'I18n'), identifier: SimpleIdentifier(name: 'current')) => true,
-    _ => false,
-  };
 }
 
 class AvoidI18nCurrentFixInFile extends ResolvedCorrectionProducer {
@@ -80,39 +72,26 @@ class AvoidI18nCurrentFixInFile extends ResolvedCorrectionProducer {
 typedef _I18nOccurrence = ({AstNode node, String contextName});
 
 class _I18nCurrentVisitor extends RecursiveAstVisitor<void> {
-  final Map<AstNode, String?> _contextCache = {};
   final List<_I18nOccurrence> occurrences = [];
 
   _I18nCurrentVisitor();
 
   @override
   void visitPropertyAccess(PropertyAccess node) {
-    if (node case PropertyAccess(
-      target: PropertyAccess(target: SimpleIdentifier(name: 'I18n'), propertyName: SimpleIdentifier(name: 'current')),
-    )) {
-      _addOccurrence(node);
-    }
+    _addOccurrence(node);
     super.visitPropertyAccess(node);
   }
 
   @override
   void visitPrefixedIdentifier(PrefixedIdentifier node) {
-    if (node case PrefixedIdentifier(
-      prefix: SimpleIdentifier(name: 'I18n'),
-      identifier: SimpleIdentifier(name: 'current'),
-    )) {
-      _addOccurrence(node);
-    }
+    _addOccurrence(node);
     super.visitPrefixedIdentifier(node);
   }
 
   void _addOccurrence(AstNode node) {
-    final executable = node.thisOrAncestorMatching(
-      (ancestor) => ancestor is MethodDeclaration || ancestor is FunctionDeclaration,
-    );
-    if (executable == null) return;
+    if (!isI18nCurrentAccess(node)) return;
 
-    final contextName = _contextCache.putIfAbsent(executable, () => getContextName(node));
+    final contextName = getContextName(node);
     if (contextName != null) {
       occurrences.add((node: node, contextName: contextName));
     }

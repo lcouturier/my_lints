@@ -4,6 +4,7 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/equatable_props.dart';
 import 'package:my_lints/src/common/extensions.dart';
 import 'package:my_lints/src/common/type_checker.dart';
 
@@ -65,8 +66,9 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitClassDeclaration(ClassDeclaration node) {
     if (node case ClassDeclaration(isEquatable: true, :final fields, members: final members) when fields.isNotEmpty) {
       final propsMethod = members.whereType<MethodDeclaration>().firstWhereOrNull((m) => m.name.lexeme == 'props');
-      if (propsMethod case MethodDeclaration(:final propsFields) when propsFields.isNotEmpty) {
-        final missing = fields.difference(propsFields).toList()..sort();
+      final propsList = propsMethod == null ? null : equatablePropsList(propsMethod);
+      if (propsMethod != null && propsList != null) {
+        final missing = fields.difference(equatablePropsFields(propsList)).toList()..sort();
         if (missing.isNotEmpty) {
           rule.reportAtToken(propsMethod.name, arguments: [missing.join(', ')]);
         }
@@ -75,27 +77,5 @@ class _Visitor extends SimpleAstVisitor<void> {
 
       rule.reportAtToken(node.name, arguments: [fields.join(', ')]);
     }
-  }
-}
-
-extension on MethodDeclaration {
-  Set<String> get propsFields {
-    return switch (body) {
-      ExpressionFunctionBody(expression: final ListLiteral items) =>
-        items.elements.whereType<SimpleIdentifier>().map((id) => id.name).toSet(),
-      ExpressionFunctionBody(
-        expression: CascadeExpression(
-          target: PropertyAccess(propertyName: SimpleIdentifier(name: "props"), realTarget: SuperExpression()),
-          cascadeSections: [
-            MethodInvocation(
-              methodName: SimpleIdentifier(name: "addAll"),
-              argumentList: ArgumentList(arguments: [final ListLiteral items]),
-            ),
-          ],
-        ),
-      ) =>
-        items.elements.whereType<SimpleIdentifier>().map((id) => id.name).toSet(),
-      _ => <String>{},
-    };
   }
 }

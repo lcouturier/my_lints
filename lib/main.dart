@@ -3,6 +3,7 @@ library;
 import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
 import 'package:my_lints/src/fixes/avoid_enum_values_by_index_fix.dart';
+import 'package:my_lints/src/fixes/equatable_props_must_include_all_fields_fix.dart';
 import 'package:my_lints/src/fixes/avoid_i18n_current_fix.dart';
 import 'package:my_lints/src/fixes/avoid_yoda_condition_fix.dart';
 import 'package:my_lints/src/fixes/avoid_redundant_map_from_fix.dart';
@@ -159,6 +160,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferLastRule());
 
     registry
+      ..registerFixForRule(EquatablePropsMustIncludeAllFieldsRule.code, EquatablePropsMustIncludeAllFieldsFix.new)
       ..registerFixForRule(PreferVoidCallbackRule.code, PreferVoidCallbackFix.new)
       ..registerFixForRule(PreferVoidCallbackRule.code, PreferVoidCallbackFixInFile.new)
       ..registerFixForRule(UnProtectedEmitAfterAwaitRule.code, UnProtectedEmitAfterAwaitInsertFix.new)
