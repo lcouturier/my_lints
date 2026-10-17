@@ -90,7 +90,7 @@ argument-hint: "[comportement ou nom de règle]"
    condition lorsque cela simplifie réellement le code. Vérifier la version du
    SDK, privilégier les `switch` exhaustifs pour les variantes fermées et ne pas
    forcer un pattern quand un accès direct est plus lisible. Voir le skill
-   [dart3-patterns](../dart3-patterns/SKILL.md).
+   [dart-use-pattern-matching](../dart-use-pattern-matching/SKILL.md).
 
 ## Correctif rapide
 
@@ -100,6 +100,15 @@ avec `registerFixForRule` dans `lib/main.dart`, puis tester à la fois la
 disponibilité et la sémantique du code produit. Pour une réorganisation
 d'opérandes, vérifier notamment que les opérateurs de comparaison sont inversés
 quand cela est nécessaire.
+
+Pour créer ou modifier le producteur, suivre le skill
+[dart-quick-fix-authoring](../dart-quick-fix-authoring/SKILL.md).
+
+## Débogage AST
+
+Lorsqu'un comportement dépend de la forme de l'AST, de la résolution, des
+parents ou des types statiques, suivre le skill
+[dart-analyzer-ast-debugging](../dart-analyzer-ast-debugging/SKILL.md).
 
 ## Commentaire de règle
 

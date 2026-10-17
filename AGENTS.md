@@ -22,3 +22,7 @@
 - Lance d'abord le test ciblé de la règle modifiée, puis élargis la vérification si le changement affecte des composants partagés.
 - La commande documentée pour l'ensemble du package est `flutter test`.
 - Indique les vérifications exécutées et les limites restantes. Ne présente pas une erreur préexistante et sans lien comme une régression de ton changement.
+
+## Skills
+
+- Avant une tâche couverte par un skill dans `.github/skills/`, lis son `SKILL.md` et applique ses instructions. Ne charge pas les skills sans rapport avec la tâche.
