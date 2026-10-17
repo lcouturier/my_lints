@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:my_lints/src/fixes/equatable_props_must_include_all_fields_fix.dart';
 import 'package:my_lints/src/rules/classes/equatable_props_must_include_all_fields_rule.dart';
 
 import '../../rule_test_harness.dart';
@@ -136,6 +137,133 @@ class Person extends Equatable {
 ''', useExamplePackages: true);
 
       expect(runAnalysisRuleOnUnit(EquatablePropsMustIncludeAllFieldsRule(), unit), isEmpty);
+    });
+
+    test('fix adds missing fields to props', () async {
+      const source = '''
+import 'package:equatable/equatable.dart';
+
+class Person extends Equatable {
+  final String name;
+  final int age;
+  final String email;
+  Person({required this.name, required this.age, required this.email});
+
+  @override
+  List<Object?> get props => [name];
+}
+''';
+
+      final result = await applyResolvedFix(
+        source,
+        EquatablePropsMustIncludeAllFieldsFix.new,
+        selectionOffset: source.indexOf('props =>'),
+        selectionLength: 'props'.length,
+        useExamplePackages: true,
+      );
+
+      expect(result, source.replaceFirst('[name]', '[name, age, email]'));
+    });
+
+    test('fix adds all fields to empty props', () async {
+      const source = '''
+import 'package:equatable/equatable.dart';
+
+class Person extends Equatable {
+  final String name;
+  final int age;
+  Person({required this.name, required this.age});
+
+  @override
+  List<Object?> get props => [];
+}
+''';
+
+      final unit = await resolveSource(source, useExamplePackages: true);
+      expect(runAnalysisRuleOnUnit(EquatablePropsMustIncludeAllFieldsRule(), unit), hasLength(1));
+
+      final result = await applyResolvedFix(
+        source,
+        EquatablePropsMustIncludeAllFieldsFix.new,
+        selectionOffset: source.indexOf('props =>'),
+        selectionLength: 'props'.length,
+        useExamplePackages: true,
+      );
+
+      expect(result, source.replaceFirst('[]', '[age, name]'));
+    });
+
+    test('fix adds missing fields to super.props cascade', () async {
+      const source = '''
+import 'package:equatable/equatable.dart';
+
+class Person extends Equatable {
+  final String name;
+  final int age;
+  Person({required this.name, required this.age});
+
+  @override
+  List<Object?> get props => super.props..addAll([name]);
+}
+''';
+
+      final result = await applyResolvedFix(
+        source,
+        EquatablePropsMustIncludeAllFieldsFix.new,
+        selectionOffset: source.indexOf('props =>'),
+        selectionLength: 'props'.length,
+        useExamplePackages: true,
+      );
+
+      expect(result, source.replaceFirst('[name]', '[name, age]'));
+    });
+
+    test('fix preserves multiline props formatting', () async {
+      const source = '''
+import 'package:equatable/equatable.dart';
+
+class Person extends Equatable {
+  final String name;
+  final int age;
+  Person({required this.name, required this.age});
+
+  @override
+  List<Object?> get props => [
+    name,
+  ];
+}
+''';
+
+      final result = await applyResolvedFix(
+        source,
+        EquatablePropsMustIncludeAllFieldsFix.new,
+        selectionOffset: source.indexOf('props =>'),
+        selectionLength: 'props'.length,
+        useExamplePackages: true,
+      );
+
+      expect(result, source.replaceFirst('    name,\n', '    name,\n    age,\n'));
+    });
+
+    test('fix does not edit a class without a props getter', () async {
+      const source = '''
+import 'package:equatable/equatable.dart';
+
+class Person extends Equatable {
+  final String name;
+  Person({required this.name});
+}
+''';
+
+      final result = await applyResolvedFix(
+        source,
+        EquatablePropsMustIncludeAllFieldsFix.new,
+        selectionOffset: source.indexOf('Person extends'),
+        selectionLength: 'Person'.length,
+        useExamplePackages: true,
+      );
+
+      expect(result, source);
     });
   });
 }

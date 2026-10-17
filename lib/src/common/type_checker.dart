@@ -177,13 +177,6 @@ extension IterableExtensions<T> on Iterable<T> {
     return null;
   }
 
-  ({bool found, T? value}) firstWhereOrNot(bool Function(T element) test) {
-    for (final element in this) {
-      if (test(element)) return (found: true, value: element);
-    }
-    return (found: false, value: null);
-  }
-
   R firstWhereOrElse<R>(bool Function(T element) test, R Function(T) selector, R Function() orElse) {
     for (final element in this) {
       if (test(element)) return selector(element);

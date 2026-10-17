@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
@@ -11,6 +12,10 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer_plugin/protocol/protocol_common.dart';
+import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
+
+typedef ResolvedFixFactory = ResolvedCorrectionProducer Function({required CorrectionProducerContext context});
 
 List<AstNode> runAnalysisRule(AnalysisRule rule, String source) {
   return runAnalysisRuleOnUnit(rule, parseString(content: source).unit);
@@ -37,6 +42,52 @@ Future<CompilationUnit> resolveSource(
         throw StateError('Could not resolve test source: $path');
       }
       return result.unit;
+    } finally {
+      await collection.dispose();
+    }
+  } finally {
+    await directory.delete(recursive: true);
+  }
+}
+
+Future<String> applyResolvedFix(
+  String source,
+  ResolvedFixFactory createProducer, {
+  required int selectionOffset,
+  int selectionLength = 0,
+  String fileName = 'test.dart',
+  bool useWorkspacePackages = false,
+  bool useExamplePackages = false,
+}) async {
+  final packageDirectory = useExamplePackages ? Directory('${Directory.current.path}/example') : Directory.current;
+  final directory = useWorkspacePackages || useExamplePackages
+      ? await packageDirectory.createTemp('.my_lints_test_')
+      : await Directory.systemTemp.createTemp('my_lints_test_');
+  final path = directory.uri.resolve(fileName).toFilePath();
+  await File(path).writeAsString(source);
+
+  try {
+    final collection = AnalysisContextCollection(includedPaths: [directory.path], sdkPath: _findDartSdkPath());
+    try {
+      final session = collection.contextFor(path).currentSession;
+      final unitResult = await session.getResolvedUnit(path);
+      final libraryResult = await session.getResolvedLibrary(path);
+      if (unitResult is! ResolvedUnitResult || libraryResult is! ResolvedLibraryResult) {
+        throw StateError('Could not resolve test source: $path');
+      }
+
+      final context = CorrectionProducerContext.createResolved(
+        libraryResult: libraryResult,
+        unitResult: unitResult,
+        selectionOffset: selectionOffset,
+        selectionLength: selectionLength,
+      );
+      final producer = createProducer(context: context);
+      final builder = ChangeBuilder(session: session);
+      await producer.compute(builder);
+
+      final edits = builder.sourceChange.edits.where((edit) => edit.file == path).expand((edit) => edit.edits).toList();
+      return SourceEdit.applySequence(source, edits);
     } finally {
       await collection.dispose();
     }
