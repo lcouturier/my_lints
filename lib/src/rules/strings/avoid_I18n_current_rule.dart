@@ -7,8 +7,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/extensions.dart';
-import 'package:my_lints/src/common/type_checker.dart';
+import 'package:my_lints/src/common/helpers.dart';
 
 /// A rule that reports `I18n.current` in functions and methods with a
 /// `BuildContext` parameter.
@@ -68,28 +67,16 @@ class _Visitor extends SimpleAstVisitor<void> {
 
 class _I18nCurrentVisitor extends RecursiveAstVisitor<void> {
   final AvoidI18nCurrentRule rule;
-  final AstNode parent;
-  final Map<int, (bool, String)> _contextCache = {};
+  final String? contextName;
 
-  _I18nCurrentVisitor(this.rule, this.parent);
+  _I18nCurrentVisitor(this.rule, AstNode parent) : contextName = getContextName(parent);
 
   @override
   void visitPropertyAccess(PropertyAccess node) {
     if (node case PropertyAccess(
       target: PropertyAccess(target: SimpleIdentifier(name: 'I18n'), propertyName: SimpleIdentifier(name: 'current')),
-    )) {
-      if (parent is MethodDeclaration) {
-        final result = _getCachedContextName(parent);
-        if (result.$1) {
-          rule.reportAtNode(node);
-        }
-      }
-      if (parent is FunctionDeclaration) {
-        final result = _getCachedContextName(parent);
-        if (result.$1) {
-          rule.reportAtNode(node);
-        }
-      }
+    ) when contextName != null) {
+      rule.reportAtNode(node);
     }
     super.visitPropertyAccess(node);
   }
@@ -99,50 +86,14 @@ class _I18nCurrentVisitor extends RecursiveAstVisitor<void> {
     if (node case PrefixedIdentifier(
       prefix: SimpleIdentifier(name: 'I18n'),
       identifier: SimpleIdentifier(name: 'current'),
-    )) {
-      if (parent is MethodDeclaration) {
-        final result = _getCachedContextName(parent);
-        if (result.$1) {
-          rule.reportAtNode(node);
-        }
-      }
-      if (parent is FunctionDeclaration) {
-        final result = _getCachedContextName(parent);
-        if (result.$1) {
-          rule.reportAtNode(node);
-        }
-      }
+    ) when contextName != null) {
+      rule.reportAtNode(node);
     }
     super.visitPrefixedIdentifier(node);
   }
 
-  (bool, String) _getCachedContextName(AstNode parent) {
-    return _contextCache.putIfAbsent(parent.hashCode, () {
-      if (parent is MethodDeclaration) {
-        final parameters = parent.parameters?.parameters;
-        if (parameters == null || parameters.isEmpty) return (false, '');
-
-        final result = parameters.firstWhereOrElse(
-          (e) => e.isBuildContext,
-          (e) => (true, e.toString().split(' ')[1]),
-          () => (false, ''),
-        );
-        _contextCache[parent.hashCode] = result;
-        return result;
-      }
-      if (parent is FunctionDeclaration) {
-        final parameters = parent.functionExpression.parameters?.parameters;
-        if (parameters == null || parameters.isEmpty) return (false, '');
-
-        final result = parameters.firstWhereOrElse(
-          (e) => e.isBuildContext,
-          (e) => (true, e.toString().split(' ')[1]),
-          () => (false, ''),
-        );
-        _contextCache[parent.hashCode] = result;
-        return result;
-      }
-      return (false, '');
-    });
+  @override
+  void visitFunctionDeclaration(FunctionDeclaration node) {
+    // A local function is analyzed by its own registered visitor.
   }
 }

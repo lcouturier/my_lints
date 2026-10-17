@@ -1,30 +1,20 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:my_lints/src/common/extensions.dart';
-import 'package:my_lints/src/common/type_checker.dart';
 
-mixin ContextName {
-  (bool, String) getContextName(MethodDeclaration? method, FunctionDeclaration? function) {
-    if (method != null) {
-      final parameters = method.parameters?.parameters;
-      if (parameters == null || parameters.isEmpty) return (false, '');
+String? getContextName(AstNode node) {
+  final executable = node.thisOrAncestorMatching(
+    (ancestor) => ancestor is MethodDeclaration || ancestor is FunctionDeclaration,
+  );
+  final parameters = switch (executable) {
+    final MethodDeclaration method => method.parameters?.parameters,
+    final FunctionDeclaration function => function.functionExpression.parameters?.parameters,
+    _ => null,
+  };
 
-      return parameters.firstWhereOrElse(
-        (e) => e.isBuildContext,
-        (e) => (true, e.toString().split(' ')[1]),
-        () => (false, ''),
-      );
-    }
-
-    if (function != null) {
-      final parameters = function.functionExpression.parameters?.parameters;
-      if (parameters == null || parameters.isEmpty) return (false, '');
-      return parameters.firstWhereOrElse(
-        (e) => e.isBuildContext,
-        (e) => (true, e.toString().split(' ')[1]),
-        () => (false, ''),
-      );
-    }
-
-    return (false, '');
+  for (final parameter in parameters ?? const <FormalParameter>[]) {
+    final unwrapped = parameter.unWrapped;
+    if (unwrapped.isBuildContext) return unwrapped.name?.lexeme;
   }
+
+  return null;
 }

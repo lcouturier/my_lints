@@ -15,6 +15,29 @@ String title(BuildContext context) => I18n.current.toString();
       expect(runAnalysisRuleOnUnit(AvoidI18nCurrentRule(), unit), hasLength(1));
     });
 
+    test('reports I18n.current with a named BuildContext parameter', () async {
+      final unit = await resolveSource('''
+import 'package:flutter/widgets.dart';
+class I18n { static final I18n current = I18n(); }
+String title({required BuildContext context}) => I18n.current.toString();
+''', useExamplePackages: true);
+
+      expect(runAnalysisRuleOnUnit(AvoidI18nCurrentRule(), unit), hasLength(1));
+    });
+
+    test('does not inherit BuildContext in a local function', () async {
+      final unit = await resolveSource('''
+import 'package:flutter/widgets.dart';
+class I18n { static final I18n current = I18n(); }
+String title(BuildContext context) {
+  String localTitle() => I18n.current.toString();
+  return localTitle();
+}
+''', useExamplePackages: true);
+
+      expect(runAnalysisRuleOnUnit(AvoidI18nCurrentRule(), unit), isEmpty);
+    });
+
     test('does not report I18n.current without a BuildContext parameter', () async {
       final unit = await resolveSource('''
 class I18n { static final I18n current = I18n(); }

@@ -60,17 +60,17 @@ class _Visitor extends SimpleAstVisitor<void> {
       if (member is MethodDeclaration && member.name.lexeme == 'initState') {
         final visitor = _ContextInInitStateVisitor();
         member.body.visitChildren(visitor);
-        final (found, node) = visitor.foundContext;
-        if (found) {
-          rule.reportAtNode(node);
+        final contextUse = visitor.contextUse;
+        if (contextUse != null) {
+          rule.reportAtNode(contextUse);
         }
       }
       if (member is MethodDeclaration && member.name.lexeme == 'dispose') {
         final visitor = _ContextInDisposeVisitor();
         member.body.visitChildren(visitor);
-        final (found, node) = visitor.foundContext;
-        if (found) {
-          rule.reportAtNode(node);
+        final contextUse = visitor.contextUse;
+        if (contextUse != null) {
+          rule.reportAtNode(contextUse);
         }
       }
     }
@@ -78,12 +78,9 @@ class _Visitor extends SimpleAstVisitor<void> {
 }
 
 class _ContextInInitStateVisitor extends RecursiveAstVisitor<void> {
-  _ContextInInitStateVisitor();
-  bool insideSafeAsync = false;
-
   static const _safeAsyncMethods = {'addPostFrameCallback', 'scheduleFrameCallback', 'addListener'};
 
-  (bool, AstNode?) foundContext = (false, null);
+  AstNode? contextUse;
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
@@ -119,21 +116,18 @@ class _ContextInInitStateVisitor extends RecursiveAstVisitor<void> {
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
     if (node case SimpleIdentifier(isBuildContext: true)) {
-      foundContext = (true, node);
+      contextUse = node;
     }
   }
 }
 
 class _ContextInDisposeVisitor extends RecursiveAstVisitor<void> {
-  _ContextInDisposeVisitor();
-  bool insideSafeAsync = false;
-
-  (bool, AstNode?) foundContext = (false, null);
+  AstNode? contextUse;
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
     if (node case SimpleIdentifier(isBuildContext: true)) {
-      foundContext = (true, node);
+      contextUse = node;
     }
   }
 }
