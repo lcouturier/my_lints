@@ -61,26 +61,29 @@ class _Visitor extends RecursiveAstVisitor<void> {
 }
 
 extension IfStatmentExtensions on IfStatement {
-  bool get isReplacable {
+  AssignmentExpression? get nullAwareAssignmentCandidate {
     if (expression case BinaryExpression(
       leftOperand: SimpleIdentifier(:final name),
       operator: Token(type: TokenType.EQ_EQ),
       rightOperand: NullLiteral(),
     )) {
-      if (elseStatement != null) return false;
+      if (elseStatement != null) return null;
 
       if (thenStatement case Block(:final statements) when statements.length == 1) {
         final actualStatement = statements.single;
         if (actualStatement case ExpressionStatement(
           expression: AssignmentExpression(
-            leftHandSide: SimpleIdentifier(name: final exprName),
-            operator: Token(type: TokenType.EQ),
-          ),
+                leftHandSide: SimpleIdentifier(name: final exprName),
+                operator: Token(type: TokenType.EQ),
+              ) &&
+              final assignment,
         ) when name == exprName) {
-          return true;
+          return assignment;
         }
       }
     }
-    return false;
+    return null;
   }
+
+  bool get isReplacable => nullAwareAssignmentCandidate != null;
 }

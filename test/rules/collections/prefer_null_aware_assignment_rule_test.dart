@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:my_lints/src/fixes/prefer_null_aware_assignment_fix.dart';
 import 'package:my_lints/src/rules/collections/prefer_null_aware_assignment_rule.dart';
 
 import '../../rule_test_harness.dart';
@@ -62,6 +63,60 @@ void f(int? a, int? b) {
 ''');
 
       expect(diagnostics, isEmpty);
+    });
+
+    test('fix replaces the if statement with a null-aware assignment', () async {
+      const source = '''
+void f(int? a) {
+  if (a == null) {
+    a = 42;
+  }
+}
+''';
+
+      final result = await applyResolvedFix(
+        source,
+        PreferNullAwareAssignmentFix.new,
+        selectionOffset: source.indexOf('if ('),
+      );
+
+      expect(result, '''
+void f(int? a) {
+  a ??= 42;
+}
+''');
+    });
+
+    test('in-file fix replaces only valid occurrences', () async {
+      const source = '''
+void f(int? a, int? b) {
+  if (a == null) {
+    a = 42;
+  }
+  if (b == null) {
+    b = 7;
+  } else {
+    b = 8;
+  }
+}
+''';
+
+      final result = await applyResolvedFix(
+        source,
+        PreferNullAwareAssignmentFixInFile.new,
+        selectionOffset: source.indexOf('if ('),
+      );
+
+      expect(result, '''
+void f(int? a, int? b) {
+  a ??= 42;
+  if (b == null) {
+    b = 7;
+  } else {
+    b = 8;
+  }
+}
+''');
     });
   });
 }
