@@ -108,6 +108,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `avoid_unclosed_stream_subscriptions` | Signale les champs `StreamSubscription` d’un `State` qui ne sont pas annulés dans `dispose()`. |
 | `avoid_empty_set_state` | Évite les appels à `setState` dont le callback ne modifie aucun état. |
 | `avoid_mounted_in_set_state` | Évite de vérifier `mounted` à l’intérieur du callback de `setState` ; effectuez la vérification avant l’appel. |
+| `avoid_set_state_after_await_without_mounted_check` | Signale les appels à `setState` après un `await` lorsqu’aucune vérification récente de `mounted` ne les protège. |
 | `prefer_edge_insets_symmetric` | Préfère `EdgeInsets.symmetric` lorsque les valeurs opposées de `EdgeInsets.only` ou `EdgeInsets.fromLTRB` sont égales. |
 | `prefer_value_notifier_over_stateful` | Préfère l'utilisation de ValueNotifier pour les StatefulWidget simples avec un seul champ mutable et une gestion d'état basique. |
 | `prefer_spacing_over_divide_widgets` | Préfère des widgets d’espacement aux séparateurs employés uniquement pour créer un espace entre des widgets. |

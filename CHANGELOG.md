@@ -4,6 +4,8 @@
 
 ### Added
 
+* Add the `avoid_set_state_after_await_without_mounted_check` lint rule for
+  unprotected `setState` calls after asynchronous gaps.
 * Add the `avoid_uncancelled_timers_in_state` lint rule for timers stored in
   Flutter `State` fields but not cancelled in `dispose()`.
 * Add the `avoid_unclosed_stream_subscriptions` lint rule for subscriptions
