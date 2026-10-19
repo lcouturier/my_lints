@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 
 ListLiteral? equatablePropsList(MethodDeclaration method) {
   return switch (method.body) {
@@ -19,5 +20,14 @@ ListLiteral? equatablePropsList(MethodDeclaration method) {
   };
 }
 
-Set<String> equatablePropsFields(ListLiteral propsList) =>
-    propsList.elements.whereType<SimpleIdentifier>().map((identifier) => identifier.name).toSet();
+Set<String> equatablePropsFields(ListLiteral propsList) {
+  return {
+    ...propsList.elements.whereType<SimpleIdentifier>().map((identifier) => identifier.name).toSet(),
+    ...propsList.elements.whereType<BinaryExpression>().map((expression) {
+      if (expression.leftOperand is SimpleIdentifier && expression.operator.type == TokenType.QUESTION_QUESTION) {
+        return (expression.leftOperand as SimpleIdentifier).name;
+      }
+      return '';
+    }).toSet(),
+  };
+}

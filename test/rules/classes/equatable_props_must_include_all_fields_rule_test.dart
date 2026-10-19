@@ -19,6 +19,23 @@ void main() {
 import 'package:equatable/equatable.dart';
 
 class Person extends Equatable {
+  final String? name;
+  final int age;
+  Person({required this.name, required this.age});
+
+  @override
+  List<Object?> get props => [name ?? '', age];
+}
+''', useExamplePackages: true);
+
+      expect(runAnalysisRuleOnUnit(EquatablePropsMustIncludeAllFieldsRule(), unit), isEmpty);
+    });
+
+    test('reports when props is missing fields', () async {
+      final unit = await resolveSource('''
+import 'package:equatable/equatable.dart';
+
+class Person extends Equatable {
   final String name;
   final int age;
   Person({required this.name, required this.age});

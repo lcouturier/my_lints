@@ -64,8 +64,10 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (node case ClassDeclaration(isEquatable: true, :final fields, members: final members) when fields.isNotEmpty) {
-      final propsMethod = members.whereType<MethodDeclaration>().firstWhereOrNull((m) => m.name.lexeme == 'props');
+    if (node case ClassDeclaration(isEquatable: true, :final fields, :final members) when fields.isNotEmpty) {
+      final methods = {for (final member in members.whereType<MethodDeclaration>()) member.name.lexeme: member};
+      final propsMethod = methods['props'];
+
       final propsList = propsMethod == null ? null : equatablePropsList(propsMethod);
       if (propsMethod != null && propsList != null) {
         final missing = fields.difference(equatablePropsFields(propsList)).toList()..sort();
