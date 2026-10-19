@@ -53,7 +53,9 @@ class _Visitor extends RecursiveAstVisitor<void> {
     if (node.expression case IsExpression(expression: SimpleIdentifier(:final name), notOperator: null)) {
       var found = false;
       node.thenStatement.visitChildren(_PropertyAccessFinder(name: name, onFound: () => found = true));
-      if (found) rule.reportAtNode(node.expression);
+      if (found) {
+        rule.reportAtNode(node.expression);
+      }
     }
 
     super.visitIfStatement(node);
@@ -68,7 +70,9 @@ class _PropertyAccessFinder extends RecursiveAstVisitor<void> {
 
   @override
   void visitPrefixedIdentifier(PrefixedIdentifier node) {
-    if (node.prefix.name == name) onFound();
+    if (node.prefix.name == name) {
+      onFound();
+    }
     super.visitPrefixedIdentifier(node);
   }
 
