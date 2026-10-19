@@ -4,6 +4,8 @@
 
 ### Added
 
+* Add the `prefer_if_case_over_is` lint rule for type checks followed by
+  property access on the checked value.
 * Add the `avoid_uncancelled_timers_in_state` lint rule for timers stored in
   Flutter `State` fields but not cancelled in `dispose()`.
 * Add the `avoid_unclosed_stream_subscriptions` lint rule for subscriptions

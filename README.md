@@ -37,6 +37,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `avoid_get_prefix_for_properties` | Signale les champs, getters et setters dont le nom commence par `get` suivi d’une majuscule. |
 | `avoid_unnecessary_block` | Évite les blocs `{}` qui n’apportent pas de portée ni de contrôle supplémentaire. |
 | `avoid_unused_after_null_check` | Signale les vérifications de nullité après lesquelles le code ne se sert pas du résultat de cette vérification. |
+| `prefer_if_case_over_is` | Préfère un motif objet `if-case` lorsqu’un test de type est suivi d’un accès aux propriétés de la valeur testée. |
 | `avoid_incomplete_copy_with` | Détecte les méthodes `copyWith` qui ne recopient pas les propriétés de l’objet comme attendu. |
 | `proper_super_calls` | Vérifie les appels à `super` attendus dans les méthodes redéfinies concernées. |
 | `avoid_assignation_in_condition` | Évite les affectations intégrées à une condition, difficiles à distinguer d’une comparaison. |
