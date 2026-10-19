@@ -56,6 +56,7 @@ import 'package:analyzer/error/error.dart';
 ///   }
 /// }
 /// ```
+@Deprecated('Work in progress')
 class AvoidLateInitializationInConstructorRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_late_initialization_in_constructor',
