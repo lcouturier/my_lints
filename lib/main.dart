@@ -64,6 +64,7 @@ import 'package:my_lints/src/rules/spread/avoid_redundant_spread_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_yoda_condition_rule.dart';
 import 'package:my_lints/src/rules/collections/avoid_map_keys_contains_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_mounted_in_setstate.dart';
+import 'package:my_lints/src/rules/flutter/avoid_set_state_after_await_without_mounted_check_rule.dart';
 import 'package:my_lints/src/rules/style/avoid_nested_assignment_rule.dart';
 import 'package:my_lints/src/rules/record/avoid_nested_record_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_nested_switch_expression_rule.dart';
@@ -142,6 +143,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidEmptySetStateRule())
       ..registerWarningRule(EdgeInsetsRule())
       ..registerWarningRule(AvoidMountedInSetStateRule())
+      ..registerWarningRule(AvoidSetStateAfterAwaitWithoutMountedCheckRule())
       ..registerWarningRule(AvoidThrowLiteralRule())
       ..registerWarningRule(AvoidNestedTernaryRule())
       ..registerWarningRule(AvoidExtensionsOnRecordsRule())
