@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
 String? getContextName(AstNode node) {
