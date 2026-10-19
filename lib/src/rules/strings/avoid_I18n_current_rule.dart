@@ -7,6 +7,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 import 'package:my_lints/src/common/helpers.dart';
 
 /// A rule that reports `I18n.current` in functions and methods with a
@@ -72,7 +73,7 @@ class _I18nCurrentVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitPropertyAccess(PropertyAccess node) {
-    if (isI18nCurrentAccess(node) && getContextName(node) != null) {
+    if (node.isI18nCurrentAccess && getContextName(node) != null) {
       rule.reportAtNode(node);
     }
     super.visitPropertyAccess(node);
@@ -80,7 +81,7 @@ class _I18nCurrentVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitPrefixedIdentifier(PrefixedIdentifier node) {
-    if (isI18nCurrentAccess(node) && getContextName(node) != null) {
+    if (node.isI18nCurrentAccess && getContextName(node) != null) {
       rule.reportAtNode(node);
     }
     super.visitPrefixedIdentifier(node);

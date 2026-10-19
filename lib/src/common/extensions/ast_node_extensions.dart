@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:my_lints/src/common/extensions/list_extensions.dart';
 
 extension AstNodeExtensions on AstNode {
@@ -39,5 +40,25 @@ extension AstNodeExtensions on AstNode {
       final ExtensionTypeDeclaration declaration => declaration.members.instanceFieldNames,
       _ => const <String>{},
     };
+  }
+
+  bool get isI18nCurrentAccess {
+    final (target, property) = switch (this) {
+      PrefixedIdentifier(:final prefix, :final identifier) => (prefix, identifier),
+      PropertyAccess(target: final SimpleIdentifier target, :final propertyName) => (target, propertyName),
+      _ => (null, null),
+    };
+    if (target == null || property == null || target.name != 'I18n' || property.name != 'current') return false;
+
+    final targetElement = target.element;
+    final currentElement = property.element;
+    if (targetElement is! InterfaceElement || currentElement is! GetterElement || !currentElement.isStatic) {
+      return false;
+    }
+
+    final ofMethod = targetElement.getMethod('of');
+    if (ofMethod == null || !ofMethod.isStatic || ofMethod.formalParameters.length != 1) return false;
+
+    return ofMethod.formalParameters.single.type.getDisplayString(withNullability: false) == 'BuildContext';
   }
 }

@@ -6,6 +6,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/fixes/fixes.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
+import 'package:my_lints/src/common/extensions.dart';
 import 'package:my_lints/src/common/helpers.dart';
 
 class AvoidI18nCurrentFix extends ResolvedCorrectionProducer {
@@ -27,7 +28,7 @@ class AvoidI18nCurrentFix extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    final access = node.thisOrAncestorMatching(isI18nCurrentAccess);
+    final access = node.thisOrAncestorMatching((n) => n.isI18nCurrentAccess);
     if (access == null) return;
 
     final contextName = getContextName(access);
@@ -89,7 +90,7 @@ class _I18nCurrentVisitor extends RecursiveAstVisitor<void> {
   }
 
   void _addOccurrence(AstNode node) {
-    if (!isI18nCurrentAccess(node)) return;
+    if (!node.isI18nCurrentAccess) return;
 
     final contextName = getContextName(node);
     if (contextName != null) {

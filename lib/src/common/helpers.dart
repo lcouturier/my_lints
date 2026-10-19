@@ -28,24 +28,6 @@ String? getContextName(AstNode node) {
   return _buildContextName(parameters, shadowedNames);
 }
 
-bool isI18nCurrentAccess(AstNode node) {
-  final (target, property) = switch (node) {
-    PrefixedIdentifier(:final prefix, :final identifier) => (prefix, identifier),
-    PropertyAccess(target: final SimpleIdentifier target, :final propertyName) => (target, propertyName),
-    _ => (null, null),
-  };
-  if (target == null || property == null || target.name != 'I18n' || property.name != 'current') return false;
-
-  final targetElement = target.element;
-  final currentElement = property.element;
-  if (targetElement is! InterfaceElement || currentElement is! GetterElement || !currentElement.isStatic) return false;
-
-  final ofMethod = targetElement.getMethod('of');
-  if (ofMethod == null || !ofMethod.isStatic || ofMethod.formalParameters.length != 1) return false;
-
-  return ofMethod.formalParameters.single.type.getDisplayString(withNullability: false) == 'BuildContext';
-}
-
 String? _buildContextName(List<FormalParameter>? parameters, Set<String> shadowedNames) {
   for (final parameter in parameters ?? const <FormalParameter>[]) {
     final unwrapped = parameter.unWrapped;
