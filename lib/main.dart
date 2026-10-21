@@ -39,6 +39,7 @@ import 'package:my_lints/src/rules/async/avoid_unawaited_futures_in_callbacks_ru
 import 'package:my_lints/src/rules/async/avoid_unchecked_stream_subscriptions_rule.dart';
 import 'package:my_lints/src/rules/style/avoid_unnecessary_block_rule.dart';
 import 'package:my_lints/src/rules/types/avoid_nullable_list_return_type_rule.dart';
+import 'package:my_lints/src/rules/types/avoid_unnecessary_nullable_return_rule.dart';
 import 'package:my_lints/src/rules/types/avoid_unused_after_null_check_rule.dart';
 import 'package:my_lints/src/rules/types/avoid_unused_callback_parameters_rule.dart';
 import 'package:my_lints/src/rules/types/prefer_if_case_over_is_rule.dart';
@@ -98,6 +99,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferSafeFirstWhereRule())
       ..registerWarningRule(PreferSpreadForAddallRule())
       ..registerWarningRule(AvoidUsageOfNullableListRule())
+      ..registerWarningRule(AvoidUnnecessaryNullableReturnRule())
       ..registerWarningRule(UseItemextentForLargeListRule())
       ..registerWarningRule(AddCubitSuffixRule())
       ..registerWarningRule(AvoidGetPrefixForPropertiesRule())
