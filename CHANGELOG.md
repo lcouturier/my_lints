@@ -4,6 +4,8 @@
 
 ### Added
 
+* Add the `avoid_async_set_state` lint rule for async callbacks passed to
+  Flutter's `setState`.
 * Add the `prefer_if_case_over_is` lint rule for type checks followed by
   property access on the checked value.
 * Add the `avoid_uncancelled_timers_in_state` lint rule for timers stored in
