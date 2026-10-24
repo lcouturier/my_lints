@@ -6,10 +6,13 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// A rule that prefers `BlocProvider.of` calls to BuildContext BLoC extensions.
+/// A rule that prefers `BuildContext` BLoC extensions over `BlocProvider.of` calls.
 ///
 /// In Flutter widget classes, this rule reports calls to `BlocProvider.of`.
-/// Use `context.read` or `context.watch` to access the provided BLoC.
+/// Use `context.watch<MyBloc>()` to access state in `build` and
+/// `context.read<MyBloc>()` to access events in callbacks. Note that
+/// `BlocProvider.of(context)` defaults to `listen: false`, so it never
+/// rebuilds the widget on state changes, unlike `context.watch`.
 ///
 /// ## Example
 ///
@@ -18,8 +21,11 @@ import 'package:my_lints/src/common/extensions.dart';
 /// class MyWidget extends StatelessWidget {
 ///   @override
 ///   Widget build(BuildContext context) {
-///     BlocProvider.of<MyBloc>(context).update();
-///     return const SizedBox();
+///     final bloc = BlocProvider.of<MyBloc>(context);
+///     return ElevatedButton(
+///       onPressed: () => bloc.add(Increment()),
+///       child: Text('${bloc.state.count}'),
+///     );
 ///   }
 /// }
 /// ```
@@ -29,8 +35,11 @@ import 'package:my_lints/src/common/extensions.dart';
 /// class MyWidget extends StatelessWidget {
 ///   @override
 ///   Widget build(BuildContext context) {
-///     context.read<MyBloc>().update();
-///     return const SizedBox();
+///     final count = context.watch<MyBloc>().state.count;
+///     return ElevatedButton(
+///       onPressed: () => context.read<MyBloc>().add(Increment()),
+///       child: Text('$count'),
+///     );
 ///   }
 /// }
 /// ```
@@ -38,7 +47,7 @@ class PreferBlocExtensionsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_bloc_extensions',
     'Prefer using BLoC extensions for state and event access.',
-    correctionMessage: 'Use BLoC extensions instead of direct property access.',
+    correctionMessage: 'Use context.watch for state and context.read for events instead of BlocProvider.of.',
   );
 
   PreferBlocExtensionsRule() : super(name: code.name, description: code.problemMessage);
