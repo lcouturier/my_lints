@@ -63,4 +63,16 @@ void bar(List<int> values, int value) {
 
     expect(diagnostics, hasLength(1));
   });
+
+  test('reports when indexOf is compared to -1 using ==', () async {
+    final unit = await resolveSource('''
+void bar(List<int> values, int value) {
+  final isPresent = values.indexOf(value) == -1;
+}
+''');
+
+    final diagnostics = runAnalysisRuleOnUnit(PreferContainsRule(), unit);
+
+    expect(diagnostics, hasLength(1));
+  });
 }

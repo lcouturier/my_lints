@@ -8,7 +8,7 @@ void foo() {
     print('found');
   }
 
-  if (-1 == list.indexOf(5)) {
+  if (1 == list.indexOf(5)) {
     print("not found");
   }
 
