@@ -103,10 +103,10 @@ class _ConditionVisitor extends RecursiveAstVisitor<void> {
   }
 
   bool _isConstant(Expression expression) {
-    try {
-      return expression.isConstant;
-    } on ArgumentError {
-      return false;
-    }
+    return switch (expression) {
+      PrefixExpression(operator: Token(type: TokenType.MINUS), operand: Literal()) => true,
+      Literal() => true,
+      _ => false,
+    };
   }
 }

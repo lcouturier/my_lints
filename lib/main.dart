@@ -178,6 +178,7 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidYodaConditionFix.new)
       ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidYodaConditionFixInFile.new)
       ..registerFixForRule(PreferContainsRule.code, PreferContainsFix.new)
+      ..registerFixForRule(PreferContainsRule.code, PreferContainsFixInFile.new)
       ..registerFixForRule(PreferTernaryOverIfElseRule.code, PreferTernaryOverIfElseFix.new)
       ..registerFixForRule(PreferLastRule.code, PreferLastFix.new)
       ..registerFixForRule(PreferLastRule.code, PreferLastFixInFile.new)

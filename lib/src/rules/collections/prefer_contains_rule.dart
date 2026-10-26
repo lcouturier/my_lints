@@ -2,9 +2,9 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 /// A rule that prefers `contains` over comparing `indexOf` with `-1`.
 ///
@@ -51,19 +51,5 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (node.isIndexOfComparedToMinusOne) {
       rule.reportAtNode(node);
     }
-  }
-}
-
-extension on BinaryExpression {
-  bool get isIndexOfComparedToMinusOne {
-    return switch (this) {
-      BinaryExpression(
-        leftOperand: MethodInvocation(methodName: SimpleIdentifier(name: 'indexOf'), :final target),
-        operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
-        rightOperand: PrefixExpression(operator: Token(type: TokenType.MINUS), operand: IntegerLiteral(value: 1)),
-      ) =>
-        target?.staticType?.isDartCoreList ?? false,
-      _ => false,
-    };
   }
 }
