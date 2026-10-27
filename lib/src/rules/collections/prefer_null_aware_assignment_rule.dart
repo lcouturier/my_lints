@@ -61,6 +61,18 @@ class _Visitor extends RecursiveAstVisitor<void> {
 }
 
 extension IfStatmentExtensions on IfStatement {
+  /// Returns `true` when this `if` statement matches the pattern:
+  /// ```dart
+  /// if (variable == null) {
+  ///   variable = value;
+  /// }
+  /// ```
+  /// which is semantically equivalent to `variable ??= value;`.
+  ///
+  /// The pattern requires:
+  /// - A condition comparing a simple identifier against `null`.
+  /// - No `else` branch.
+  /// - A single-statement body assigning to the same identifier.
   bool get isReplacable {
     if (expression case BinaryExpression(
       leftOperand: SimpleIdentifier(:final name),

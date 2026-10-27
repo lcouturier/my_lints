@@ -6,7 +6,6 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
-import 'package:my_lints/src/common/type_checker.dart';
 
 /// A rule that prefers `first` over accessing an iterable's first item by index.
 ///
@@ -72,13 +71,14 @@ class _Visitor extends SimpleAstVisitor<void> {
 }
 
 extension on IndexExpression {
+  /// Returns `true` when this index access targets the first element of a
+  /// list or set, i.e. the index is the integer literal `0` and the target
+  /// has a static type of `List` or `Set`.
   bool get isFirstElementAccess {
-    if (this case IndexExpression(
-      target: Expression(staticType: final targetType?),
-      index: IntegerLiteral(value: 0),
-    ) when (iterableChecker.isAssignableFromType(targetType))) {
-      return true;
-    }
-    return false;
+    return switch (this) {
+      IndexExpression(target: Expression(staticType: DartType(isListOrSet: true)), index: IntegerLiteral(value: 0)) =>
+        true,
+      _ => false,
+    };
   }
 }
