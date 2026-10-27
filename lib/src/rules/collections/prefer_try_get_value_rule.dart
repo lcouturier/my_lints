@@ -68,10 +68,7 @@ class _Visitor extends SimpleAstVisitor<void> {
       final indexTargetName = indexTarget.unParenthesized.normalizedName;
       final keyArgName = keyArg.unParenthesized.normalizedName;
       final indexArgName = indexArg.unParenthesized.normalizedName;
-      if (targetName != null &&
-          targetName == indexTargetName &&
-          keyArgName != null &&
-          keyArgName == indexArgName) {
+      if (targetName != null && targetName == indexTargetName && keyArgName != null && keyArgName == indexArgName) {
         rule.reportAtNode(node);
       }
     }
