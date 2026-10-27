@@ -72,20 +72,23 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (!node.isFlutterWidget) return;
+    if (node case ClassDeclaration(isFlutterStatefulWidget: true)) {
+      final methods = {for (final member in node.members.whereType<MethodDeclaration>()) member.name.lexeme: member};
+      final initState = methods["initState"];
+      final dispose = methods["dispose"];
 
-    for (final member in node.members.whereType<MethodDeclaration>()) {
-      if (member.name.lexeme == 'initState') {
-        final visitor = _InitStateVisitor(method: member);
-        member.body.visitChildren(visitor);
+      if (initState != null) {
+        final visitor = _InitStateVisitor(method: initState);
+        initState.body.visitChildren(visitor);
         final (:hasSuperCalled, :statement) = visitor.hasSuperCalled;
         if (!hasSuperCalled) {
           rule.reportAtNode(statement);
         }
       }
-      if (member.name.lexeme == 'dispose') {
-        final visitor = _DisposeVisitor(method: member);
-        member.body.visitChildren(visitor);
+
+      if (dispose != null) {
+        final visitor = _DisposeVisitor(method: dispose);
+        dispose.body.visitChildren(visitor);
         final (:hasSuperCalled, :statement) = visitor.hasSuperCalled;
         if (!hasSuperCalled) {
           rule.reportAtNode(statement);
@@ -105,17 +108,13 @@ class _InitStateVisitor extends SimpleAstVisitor<void> {
 
   @override
   void visitBlock(Block node) {
-    if (node.statements.isEmpty) return;
-    if (node.statements.first is! ExpressionStatement) return;
-
-    for (var i = 0; i < node.statements.length; i++) {
-      if (node.statements[i] is ExpressionStatement) {
-        final expression = (node.statements[i] as ExpressionStatement).expression;
-        if (expression case MethodInvocation(
-          methodName: SimpleIdentifier(name: 'initState'),
-          target: SuperExpression(),
+    if (node case Block(:final statements) when statements.isNotEmpty && statements.first is ExpressionStatement) {
+      for (var i = 0; i < statements.length; i++) {
+        if (statements[i] case ExpressionStatement(
+          expression: MethodInvocation(methodName: SimpleIdentifier(name: 'initState'), target: SuperExpression()) &&
+              final expr,
         )) {
-          hasSuperCalled = (hasSuperCalled: i == 0, statement: expression);
+          hasSuperCalled = (hasSuperCalled: i == 0, statement: expr);
         }
       }
     }
@@ -132,17 +131,13 @@ class _DisposeVisitor extends SimpleAstVisitor<void> {
 
   @override
   void visitBlock(Block node) {
-    if (node.statements.isEmpty) return;
-    if (node.statements.last is! ExpressionStatement) return;
-
-    for (var i = 0; i < node.statements.length; i++) {
-      if (node.statements[i] is ExpressionStatement) {
-        final expression = (node.statements[i] as ExpressionStatement).expression;
-        if (expression case MethodInvocation(
-          methodName: SimpleIdentifier(name: 'dispose'),
-          target: SuperExpression(),
+    if (node case Block(:final statements) when statements.isNotEmpty && statements.last is ExpressionStatement) {
+      for (var i = 0; i < statements.length; i++) {
+        if (statements[i] case ExpressionStatement(
+          expression: MethodInvocation(methodName: SimpleIdentifier(name: 'dispose'), target: SuperExpression()) &&
+              final expr,
         )) {
-          hasSuperCalled = (hasSuperCalled: (i == (node.statements.length - 1)), statement: expression);
+          hasSuperCalled = (hasSuperCalled: (i == (statements.length - 1)), statement: expr);
         }
       }
     }

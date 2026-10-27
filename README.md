@@ -108,6 +108,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `avoid_uncancelled_timers_in_state` | Signale les champs `Timer` d’un `State` qui ne sont pas annulés dans `dispose()`. |
 | `avoid_unclosed_stream_subscriptions` | Signale les champs `StreamSubscription` d’un `State` qui ne sont pas annulés dans `dispose()`. |
 | `avoid_empty_set_state` | Évite les appels à `setState` dont le callback ne modifie aucun état. |
+| `avoid_async_set_state` | Signale les callbacks `async` passés à `setState`, qui doit effectuer ses mises à jour de façon synchrone. |
 | `avoid_mounted_in_set_state` | Évite de vérifier `mounted` à l’intérieur du callback de `setState` ; effectuez la vérification avant l’appel. |
 | `prefer_edge_insets_symmetric` | Préfère `EdgeInsets.symmetric` lorsque les valeurs opposées de `EdgeInsets.only` ou `EdgeInsets.fromLTRB` sont égales. |
 | `prefer_value_notifier_over_stateful` | Préfère l'utilisation de ValueNotifier pour les StatefulWidget simples avec un seul champ mutable et une gestion d'état basique. |

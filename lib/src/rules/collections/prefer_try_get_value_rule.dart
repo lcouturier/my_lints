@@ -8,26 +8,32 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
-/// A rule under development that reports some conditional map lookups.
+/// A rule that prefers a single map lookup over the `containsKey` + index
+/// pattern.
 ///
-/// It currently recognizes a conditional expression whose condition calls
-/// `containsKey` and whose true branch indexes the same target with an
-/// expression other than a simple identifier. It may produce false positives;
-/// no general replacement is documented until the rule is complete.
+/// When a conditional expression checks `containsKey` on a map and then indexes
+/// the same map with the same key in the true branch, a single lookup with a
+/// fallback is clearer: `map[key] ?? fallback`.
+///
+/// ⚠️ This rule is experimental and may produce false positives.
 ///
 /// ## Example
 ///
-/// ⚠️ Currently reported:
+/// ❌ Bad:
 /// ```dart
-/// final result = map.containsKey(key) ? map[key.toString()] : fallback;
+/// final value = map.containsKey(key) ? map[key] : fallback;
 /// ```
-
+///
+/// ✅ Good:
+/// ```dart
+/// final value = map[key] ?? fallback;
+/// ```
 class PreferTryGetValueRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_try_get_value',
     'Prefer using tryGetValue pattern instead of containsKey and []',
     correctionMessage:
-        "Consider using tryGetValue instead of containsKey and [] for better performance and readability.",
+        "Consider using `map[key] ?? fallback` instead of containsKey and [] for better performance and readability.",
   );
 
   PreferTryGetValueRule() : super(name: code.name, description: code.problemMessage);
@@ -56,12 +62,13 @@ class _Visitor extends SimpleAstVisitor<void> {
         argumentList: ArgumentList(arguments: [final keyArg]),
       ),
       thenExpression: IndexExpression(target: final indexTarget?, index: final indexArg),
+      elseExpression: final fallback,
     )) {
       final targetName = target.unParenthesized.normalizedName;
       final indexTargetName = indexTarget.unParenthesized.normalizedName;
       final keyArgName = keyArg.unParenthesized.normalizedName;
       final indexArgName = indexArg.unParenthesized.normalizedName;
-      if (targetName != null && targetName == indexTargetName && indexArgName == null) {
+      if (targetName != null && targetName == indexTargetName && keyArgName != null && keyArgName == indexArgName) {
         rule.reportAtNode(node);
       }
     }

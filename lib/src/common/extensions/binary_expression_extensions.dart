@@ -38,6 +38,18 @@ extension BinaryExpressionExtensions on BinaryExpression {
 
   /// The getter replacing this comparison: `isEmpty` for `==`, `isNotEmpty` for `!=`.
   String get emptinessGetterName => operator.type == TokenType.EQ_EQ ? 'isEmpty' : 'isNotEmpty';
+
+  bool get isIndexOfComparedToMinusOne {
+    return switch (this) {
+      BinaryExpression(
+        leftOperand: MethodInvocation(methodName: SimpleIdentifier(name: 'indexOf'), :final target),
+        operator: Token(type: TokenType.EQ_EQ) || Token(type: TokenType.BANG_EQ),
+        rightOperand: PrefixExpression(operator: Token(type: TokenType.MINUS), operand: IntegerLiteral(value: 1)),
+      ) =>
+        target?.staticType?.isDartCoreList ?? false,
+      _ => false,
+    };
+  }
 }
 
 bool _supportsIsEmpty(DartType? type) =>

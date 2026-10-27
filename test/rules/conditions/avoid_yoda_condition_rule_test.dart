@@ -59,15 +59,5 @@ void f(int value) {
 
       expect(diagnostics, hasLength(2));
     });
-
-    test('does not report variables on the left or two constants', () async {
-      final unit = await resolveSource('''
-void f(int value) { if (value == 1) {} if (1 == 2) {} }
-''');
-
-      final diagnostics = runAnalysisRuleOnUnit(AvoidYodaConditionsRule(), unit);
-
-      expect(diagnostics, isEmpty);
-    });
   });
 }

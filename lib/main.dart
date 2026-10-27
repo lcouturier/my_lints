@@ -26,6 +26,7 @@ import 'package:my_lints/src/rules/collections/prefer_spread_for_addall_rule.dar
 import 'package:my_lints/src/rules/conditions/avoid_assignation_in_condition_rule.dart';
 import 'package:my_lints/src/rules/style/avoid_cascade_after_if_null_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_compare_same_value_rule.dart';
+import 'package:my_lints/src/rules/flutter/avoid_async_set_state_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_disposable_state_field_leaks_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_uncancelled_timers_in_state_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_unclosed_stream_subscriptions_rule.dart';
@@ -140,6 +141,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidRedundantDurationRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
+      ..registerWarningRule(AvoidAsyncSetStateRule())
       ..registerWarningRule(EdgeInsetsRule())
       ..registerWarningRule(AvoidMountedInSetStateRule())
       ..registerWarningRule(AvoidThrowLiteralRule())
@@ -176,6 +178,7 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidYodaConditionFix.new)
       ..registerFixForRule(AvoidYodaConditionsRule.code, AvoidYodaConditionFixInFile.new)
       ..registerFixForRule(PreferContainsRule.code, PreferContainsFix.new)
+      ..registerFixForRule(PreferContainsRule.code, PreferContainsFixInFile.new)
       ..registerFixForRule(PreferTernaryOverIfElseRule.code, PreferTernaryOverIfElseFix.new)
       ..registerFixForRule(PreferLastRule.code, PreferLastFix.new)
       ..registerFixForRule(PreferLastRule.code, PreferLastFixInFile.new)
