@@ -51,21 +51,21 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node.methodName.name != 'listen') return;
+    if (node case MethodInvocation(methodName: Identifier(name: 'listen'))) {
+      final parent = node.parent;
+      if (parent is AssignmentExpression && parent.leftHandSide == node) {
+        return;
+      }
 
-    final parent = node.parent;
-    if (parent is AssignmentExpression && parent.leftHandSide == node) {
-      return;
-    }
+      if (parent is VariableDeclaration && parent.initializer == node) {
+        return;
+      }
 
-    if (parent is VariableDeclaration && parent.initializer == node) {
-      return;
-    }
-
-    if (parent is ExpressionStatement) {
-      final returnType = node.staticType;
-      if (returnType is InterfaceType && returnType.getDisplayString().contains('StreamSubscription')) {
-        rule.reportAtNode(node);
+      if (parent is ExpressionStatement) {
+        final returnType = node.staticType;
+        if (returnType is InterfaceType && returnType.getDisplayString().contains('StreamSubscription')) {
+          rule.reportAtNode(node);
+        }
       }
     }
   }
