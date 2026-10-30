@@ -55,8 +55,8 @@ class _Visitor extends SimpleAstVisitor<void> {
   @override
   void visitMethodInvocation(MethodInvocation node) {
     if (node case MethodInvocation(
-      methodName: SimpleIdentifier(name: 'forEach'),
       target: Expression(staticType: DartType(isListOrSet: true)),
+      methodName: SimpleIdentifier(name: 'forEach'),
     )) {
       rule.reportAtOffset(node.methodName.offset, node.methodName.length);
     }

@@ -36,5 +36,31 @@ void f(Map<String, int> myMap) {
 
       expect(diagnostics, hasLength(1));
     });
+    test('does not report keys.contains on a non-Map target', () async {
+      final unit = await resolveSource('''
+class NotAMap {
+  bool get keys => false;
+}
+
+void f(NotAMap obj) {
+    if (obj.keys.contains('key')) { }
+}
+''');
+
+      final diagnostics = runAnalysisRuleOnUnit(AvoidMapKeysContainsRule(), unit);
+
+      expect(diagnostics, hasLength(0));
+    });
+    test('does not report keys.contains on a dynamic target', () async {
+      final unit = await resolveSource('''
+void f(dynamic obj) {
+    if (obj.keys.contains('key')) { }
+}
+''');
+
+      final diagnostics = runAnalysisRuleOnUnit(AvoidMapKeysContainsRule(), unit);
+
+      expect(diagnostics, hasLength(0));
+    });
   });
 }

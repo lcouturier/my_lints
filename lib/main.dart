@@ -96,6 +96,7 @@ class MyLintsPlugin extends Plugin {
   @override
   void register(PluginRegistry registry) {
     registry
+      ..registerWarningRule(AvoidEnumValuesByIndexRule())
       ..registerWarningRule(PreferSafeFirstWhereRule())
       ..registerWarningRule(PreferSpreadForAddallRule())
       ..registerWarningRule(AvoidUsageOfNullableListRule())

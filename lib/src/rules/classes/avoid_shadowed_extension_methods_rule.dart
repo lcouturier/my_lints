@@ -67,8 +67,8 @@ class _Visitor extends SimpleAstVisitor<void> {
 
       final result = extensionMethods.hashJoin(
         methods,
-        (MethodDeclaration method) => method.name.lexeme,
-        (MethodElement method) => method.name,
+        leftKey: (MethodDeclaration method) => method.name.lexeme,
+        rightKey: (MethodElement method) => method.name,
       );
       for (final element in result) {
         rule.reportAtToken(element.left.name, arguments: [element.left.name.lexeme]);
