@@ -39,6 +39,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `avoid_unused_after_null_check` | Signale les vérifications de nullité après lesquelles le code ne se sert pas du résultat de cette vérification. |
 | `prefer_if_case_over_is` | Préfère un motif objet `if-case` lorsqu’un test de type est suivi d’un accès aux propriétés de la valeur testée. |
 | `avoid_incomplete_copy_with` | Détecte les méthodes `copyWith` qui ne recopient pas les propriétés de l’objet comme attendu. |
+| `avoid_optional_in_copy_with` | Signale les classes qui ont des champs de type `Optional` et une méthode `copyWith`. Préfère `ValueGetter<T>` pour distinguer "pas de changement" de "valeur null explicite". |
 | `proper_super_calls` | Vérifie les appels à `super` attendus dans les méthodes redéfinies concernées. |
 | `avoid_assignation_in_condition` | Évite les affectations intégrées à une condition, difficiles à distinguer d’une comparaison. |
 | `avoid_nested_assignment` | Évite les affectations imbriquées dans une autre expression. |
