@@ -16,6 +16,7 @@ import 'package:my_lints/src/fixes/prefer_null_aware_assignment_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_elements_fix.dart';
 import 'package:my_lints/src/fixes/prefer_const_empty_list_after_if_null_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_notation_fix.dart';
+import 'package:my_lints/src/fixes/prefer_if_case_over_is_fix.dart';
 import 'package:my_lints/src/fixes/prefer_ternary_over_if_else_fix.dart';
 import 'package:my_lints/src/fixes/prefer_void_callback_fix.dart';
 import 'package:my_lints/src/fixes/prefer_where_type_fix.dart';
@@ -191,6 +192,7 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(AvoidI18nCurrentRule.code, AvoidI18nCurrentFix.new)
       ..registerFixForRule(AvoidI18nCurrentRule.code, AvoidI18nCurrentFixInFile.new)
       ..registerFixForRule(PreferFirstRule.code, PreferFirstFix.new)
-      ..registerFixForRule(PreferFirstRule.code, PreferFirstFixInFile.new);
+      ..registerFixForRule(PreferFirstRule.code, PreferFirstFixInFile.new)
+      ..registerFixForRule(PreferIfCaseOverIsRule.code, PreferIfCaseOverIsFix.new);
   }
 }

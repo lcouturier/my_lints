@@ -45,12 +45,10 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitNamedType(NamedType node) {
-    if (node case NamedType(
-      element: Element(name: 'bool', library: LibraryElement(isDartCore: true)),
-      question: _?,
-      isInsideCopyWith: false,
-    )) {
-      rule.reportAtNode(node);
+    if (node case NamedType(element: Element(name: 'bool', library: LibraryElement(isDartCore: true)), question: _?)) {
+      if (!node.isInsideCopyWith) {
+        rule.reportAtNode(node);
+      }
     }
   }
 }
