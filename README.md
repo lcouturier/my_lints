@@ -6,23 +6,31 @@ version compatible avec la contrainte `^3.11.5` du package.
 
 ## Installation et configuration
 
-Pour utiliser le plugin depuis une copie locale du dépôt, ajoutez-le à votre
-fichier `analysis_options.yaml`. Le chemin est relatif à ce fichier :
+Ajoutez le package comme dépendance de développement :
+
+```sh
+dart pub add --dev my_lints
+```
+
+Activez ensuite le plugin dans le fichier `analysis_options.yaml` à la racine
+de votre projet :
+
+```yaml
+plugins:
+  my_lints: ^0.0.1
+```
+
+Pour travailler avec une copie locale du dépôt, configurez plutôt le chemin du
+plugin :
 
 ```yaml
 plugins:
   my_lints:
     path: ../my_lints
-
-my_lints:
-  rules:
-    - prefer_contains_over_indexOf
-    - prefer_is_empty
-    - use_itemextent_for_large_list
 ```
 
-Adaptez le chemin au répertoire où se trouve le package. Les noms de règles à
-configurer sont les identifiants indiqués dans le catalogue ci-dessous.
+Les règles enregistrées comme avertissements sont activées par défaut. Le
+catalogue ci-dessous décrit leurs identifiants et leur comportement.
 
 ## Règles disponibles
 

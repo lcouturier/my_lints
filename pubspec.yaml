@@ -1,7 +1,14 @@
 name: my_lints
-description: "description: Custom lint rules using the Dart 3.11 analyzer plugin API."
+description: Custom lint rules for Dart and Flutter using the Dart analysis server plugin API.
 version: 0.0.1
 homepage: https://github.com/lcouturier/my_lints
+repository: https://github.com/lcouturier/my_lints
+issue_tracker: https://github.com/lcouturier/my_lints/issues
+topics:
+  - dart
+  - flutter
+  - lints
+  - analyzer-plugin
 
 environment:
   sdk: ^3.11.5
