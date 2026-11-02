@@ -52,7 +52,7 @@ class _Visitor extends SimpleAstVisitor<void> {
       index: IntegerLiteral(),
       target: PrefixedIdentifier(
         identifier: SimpleIdentifier(name: 'values'),
-        prefix: SimpleIdentifier(element: Element()),
+        prefix: SimpleIdentifier(element: EnumElement()),
       ),
     )) {
       rule.reportAtNode(node);

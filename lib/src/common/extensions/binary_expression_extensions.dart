@@ -1,8 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
-import 'package:analyzer/dart/element/nullability_suffix.dart';
-import 'package:analyzer/dart/element/type.dart';
-import 'package:my_lints/src/common/type_checker.dart';
+import 'package:my_lints/src/common/extensions.dart';
 
 extension BinaryExpressionExtensions on BinaryExpression {
   /// Returns the receiver of a `x.length == 0` or `x.length != 0` comparison, `null` otherwise.
@@ -34,7 +32,7 @@ extension BinaryExpressionExtensions on BinaryExpression {
   };
 
   /// Returns `true` when this comparison can safely be rewritten as `isEmpty`/`isNotEmpty`.
-  bool get isEmptinessComparison => _supportsIsEmpty(lengthComparisonTarget?.staticType);
+  bool get isEmptinessComparison => lengthComparisonTarget!.staticType!.hasIsEmpty;
 
   /// The getter replacing this comparison: `isEmpty` for `==`, `isNotEmpty` for `!=`.
   String get emptinessGetterName => operator.type == TokenType.EQ_EQ ? 'isEmpty' : 'isNotEmpty';
@@ -51,8 +49,3 @@ extension BinaryExpressionExtensions on BinaryExpression {
     };
   }
 }
-
-bool _supportsIsEmpty(DartType? type) =>
-    type is InterfaceType &&
-    type.nullabilitySuffix != NullabilitySuffix.question &&
-    (type.isDartCoreString || isIterableOrSubclass(type) || isMapOrSubclass(type));

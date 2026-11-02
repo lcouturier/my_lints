@@ -23,19 +23,16 @@ class AvoidEnumValuesByIndexFix extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    if (node is! IndexExpression) return;
-    final indexExpr = node as IndexExpression;
-    final targetNode = indexExpr.target;
+    if (node case IndexExpression(
+      index: IntegerLiteral(value: final index),
+      target: PrefixedIdentifier(prefix: SimpleIdentifier(element: EnumElement(:final constants) && final enumValues)),
+    )) {
+      final value = constants.elementAt(index!).displayName;
+      final replacement = "${enumValues.name}.$value";
 
-    if (targetNode is! PrefixedIdentifier) return;
-    final enumValues = (targetNode.prefix.element as EnumElement);
-    final index = (indexExpr.index as IntegerLiteral).value;
-
-    final value = enumValues.constants.elementAt(index!).displayName;
-    final replacement = "${enumValues.name}.$value";
-
-    await builder.addDartFileEdit(file, (builder) {
-      builder.addSimpleReplacement(range.node(node), replacement);
-    });
+      await builder.addDartFileEdit(file, (builder) {
+        builder.addSimpleReplacement(range.node(node), replacement);
+      });
+    }
   }
 }

@@ -16,6 +16,11 @@ extension DartTypeExtensions on DartType {
   /// Note: `Map` is included because it can be spread in map literals.
   bool get isListOrSet => isDartCoreIterable || isDartCoreSet || isDartCoreList || isDartCoreMap;
 
+  /// Returns true if the type is a `Map` (or a subtype thereof).
+  bool get isMap {
+    return (this is InterfaceType) && (this as InterfaceType).isDartCoreMap;
+  }
+
   // Checks if a DartType is a nullable list.
   bool get isNullableList {
     final predicates = [
@@ -53,4 +58,10 @@ extension DartTypeExtensions on DartType {
 
   bool get isStreamSubscription => (this is InterfaceType) && (this as InterfaceType).isStreamSubscription;
   bool get isTimer => (this is InterfaceType) && (this as InterfaceType).isTimer;
+
+  bool get hasIsEmpty {
+    return this is InterfaceType &&
+        nullabilitySuffix != NullabilitySuffix.question &&
+        (isDartCoreString || isDartCoreIterable || isDartCoreMap);
+  }
 }

@@ -65,10 +65,10 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitFunctionDeclaration(FunctionDeclaration node) {
     if (node case FunctionDeclaration(
       name: Token(lexeme: final name),
-      functionExpression: FunctionExpression(body: final FunctionBody body),
+      functionExpression: FunctionExpression(body: FunctionBody(isAsynchronous: true) && final body),
       isGetter: false,
       isSetter: false,
-    ) when !name.startsWith('_') && body.isAsynchronous) {
+    ) when !name.startsWith('_')) {
       final visitor = _AwaitFinderVisitor();
       body.accept(visitor);
       if (visitor.hasAwait) return;

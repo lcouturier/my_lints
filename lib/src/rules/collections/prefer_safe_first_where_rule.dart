@@ -3,7 +3,6 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:my_lints/src/common/extensions.dart';
 
@@ -61,7 +60,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   @override
   void visitMethodInvocation(MethodInvocation node) {
     if (node case MethodInvocation(
-      target: Expression(staticType: DartType(isListOrSet: true)),
+      isListOrSetTarget: true,
       methodName: SimpleIdentifier(name: final methodName),
       hasElseParameter: false,
     ) when _methods.contains(methodName)) {
@@ -71,6 +70,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 }
 
 extension on MethodInvocation {
+  bool get isListOrSetTarget => target?.staticType?.isListOrSet ?? false;
   bool get hasElseParameter =>
       argumentList.arguments.any((arg) => arg is NamedExpression && arg.name.label.name == 'orElse');
 }
