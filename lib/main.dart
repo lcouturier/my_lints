@@ -1,4 +1,5 @@
-library;
+// ignore: unnecessary_library_name
+library my_lints;
 
 import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
