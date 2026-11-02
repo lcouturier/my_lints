@@ -45,7 +45,7 @@ class PreferIfCaseOverIsFix extends ResolvedCorrectionProducer {
     // `node` is the most-specific AST node at the selection offset.
     // The rule reports the IsExpression; we locate it (or its parent) from here.
     final isExpr = switch (node) {
-      IsExpression e => e,
+      final IsExpression e => e,
       // The selection may land on the target identifier inside the IsExpression.
       _ => node.thisOrAncestorOfType<IsExpression>(),
     };
