@@ -54,7 +54,7 @@ class User {
 
 void checkUser(User user) {
   // Trop de variables dans un contexte réel (user, name, age, isActive, hasPermission, isVerified = 6 variables > 3)
-  if (user != null && user.name != null && user.age != null && user.isActive && user.hasPermission && user.isVerified) {
+  if (user.name != null && user.age != null && user.isActive && user.hasPermission && user.isVerified) {
     // do something
   }
 }
