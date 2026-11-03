@@ -4,6 +4,8 @@
 
 ### Added
 
+* Add the `avoid_let_scoped_function` lint rule for `let` calls immediately
+  followed by a fallback value with `??`.
 * Add the `avoid_async_set_state` lint rule for async callbacks passed to
   Flutter's `setState`.
 * Add the `prefer_if_case_over_is` lint rule for type checks followed by

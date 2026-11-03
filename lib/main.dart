@@ -40,6 +40,7 @@ import 'package:my_lints/src/rules/strings/avoid_tolist_before_join_rule.dart';
 import 'package:my_lints/src/rules/async/avoid_unawaited_futures_in_callbacks_rule.dart';
 import 'package:my_lints/src/rules/async/avoid_unchecked_stream_subscriptions_rule.dart';
 import 'package:my_lints/src/rules/style/avoid_unnecessary_block_rule.dart';
+import 'package:my_lints/src/rules/style/avoid_let_scoped_function_rule.dart';
 import 'package:my_lints/src/rules/types/avoid_nullable_list_return_type_rule.dart';
 import 'package:my_lints/src/rules/types/avoid_unused_after_null_check_rule.dart';
 import 'package:my_lints/src/rules/types/avoid_unused_callback_parameters_rule.dart';
@@ -142,6 +143,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidCompareSameValueRule())
       ..registerWarningRule(AvoidRedundantDurationRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
+      ..registerWarningRule(AvoidLetScopedFunctionRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
       ..registerWarningRule(AvoidAsyncSetStateRule())
       ..registerWarningRule(EdgeInsetsRule())

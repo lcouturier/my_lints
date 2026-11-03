@@ -51,6 +51,7 @@ plugin. Les identifiants sont ceux utilisés dans `analysis_options.yaml`.
 | `avoid_nested_switch_expression_rule` | Évite les expressions `switch` imbriquées difficiles à parcourir. |
 | `avoid_nested_ternary` | Évite les opérateurs ternaires imbriqués ; préférez une structure de contrôle plus lisible. |
 | `avoid_cascade_after_if_null` | Signale l’opérateur cascade appliqué directement après `??`, qui peut nécessiter des parenthèses pour lever l’ambiguïté. |
+| `avoid_let_scoped_function` | Évite un appel à `let` suivi de `??` lorsqu’une expression null-aware avec une valeur de repli est plus claire. |
 | `avoid_shadowed_extension_methods` | Signale les méthodes d’extension qui masquent une méthode portant le même nom sur le type étendu. |
 | `avoid_throw_literal` | Évite de lever une valeur littérale au lieu d’une exception ou d’une erreur explicite. |
 | `avoid_unused_callback_parameters` | Signale les paramètres de callback qui ne sont pas utilisés dans le corps de la fonction. |
