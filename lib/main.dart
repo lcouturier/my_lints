@@ -10,6 +10,7 @@ import 'package:my_lints/src/fixes/avoid_redundant_map_from_fix.dart';
 import 'package:my_lints/src/fixes/prefer_any_or_every_fix.dart';
 import 'package:my_lints/src/fixes/prefer_contains_fix.dart';
 import 'package:my_lints/src/fixes/prefer_explicit_function_type_fix.dart';
+import 'package:my_lints/src/fixes/prefer_extension_type_for_wrapper_fix.dart';
 import 'package:my_lints/src/fixes/prefer_first_fix.dart';
 import 'package:my_lints/src/fixes/prefer_last_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_assignment_fix.dart';
@@ -84,6 +85,7 @@ import 'package:my_lints/src/rules/collections/prefer_last_rule.dart';
 import 'package:my_lints/src/rules/collections/prefer_null_aware_elements_rule.dart';
 import 'package:my_lints/src/rules/collections/prefer_null_aware_notation_rule.dart';
 import 'package:my_lints/src/rules/spread/prefer_null_aware_spread_rule.dart';
+import 'package:my_lints/src/rules/types/prefer_extension_type_for_wrapper_rule.dart';
 import 'package:my_lints/src/rules/types/prefer_void_callback_rule.dart';
 import 'package:my_lints/src/rules/strings/unnecessary_to_string_in_interpolation_rule.dart';
 import 'package:my_lints/src/rules/flutter/use_itemextent_for_large_list_rule.dart';
@@ -119,6 +121,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidIncompleteCopyWithRule())
       ..registerWarningRule(ProperSuperCallsRule())
       ..registerWarningRule(PreferFactoryConstructorRule())
+      ..registerWarningRule(PreferExtensionTypeForWrapperRule())
       ..registerWarningRule(PreferNullAwareAssignmentRule())
       ..registerWarningRule(PreferExplicitFunctionType())
       ..registerWarningRule(PreferAnyRule())
@@ -166,6 +169,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferLastRule());
 
     registry
+      ..registerFixForRule(PreferExtensionTypeForWrapperRule.code, PreferExtensionTypeForWrapperFix.new)
       ..registerFixForRule(EquatablePropsMustIncludeAllFieldsRule.code, EquatablePropsMustIncludeAllFieldsFix.new)
       ..registerFixForRule(PreferVoidCallbackRule.code, PreferVoidCallbackFix.new)
       ..registerFixForRule(PreferVoidCallbackRule.code, PreferVoidCallbackFixInFile.new)
