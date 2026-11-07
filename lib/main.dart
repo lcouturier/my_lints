@@ -84,6 +84,7 @@ import 'package:my_lints/src/rules/collections/prefer_last_rule.dart';
 import 'package:my_lints/src/rules/collections/prefer_null_aware_elements_rule.dart';
 import 'package:my_lints/src/rules/collections/prefer_null_aware_notation_rule.dart';
 import 'package:my_lints/src/rules/spread/prefer_null_aware_spread_rule.dart';
+import 'package:my_lints/src/rules/types/prefer_extension_type_for_wrapper_rule.dart';
 import 'package:my_lints/src/rules/types/prefer_void_callback_rule.dart';
 import 'package:my_lints/src/rules/strings/unnecessary_to_string_in_interpolation_rule.dart';
 import 'package:my_lints/src/rules/flutter/use_itemextent_for_large_list_rule.dart';
@@ -119,6 +120,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidIncompleteCopyWithRule())
       ..registerWarningRule(ProperSuperCallsRule())
       ..registerWarningRule(PreferFactoryConstructorRule())
+      ..registerWarningRule(PreferExtensionTypeForWrapperRule())
       ..registerWarningRule(PreferNullAwareAssignmentRule())
       ..registerWarningRule(PreferExplicitFunctionType())
       ..registerWarningRule(PreferAnyRule())
