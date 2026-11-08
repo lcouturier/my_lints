@@ -29,3 +29,7 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 /build/
 /coverage/
+
+# Test temporary directories
+.my_lints_test_*/
+my_lints_test_*/
