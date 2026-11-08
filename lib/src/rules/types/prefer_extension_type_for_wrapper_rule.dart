@@ -56,44 +56,47 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    // Skip abstract classes — they cannot be extension types.
-    if (node.abstractKeyword != null) return;
+    if (node case ClassDeclaration(isWrapperClass: true)) {
+      final result = node.hasSingleNonStaticFinalField;
+      if (!result.success || result.fieldName == null) return;
 
-    // Skip classes that extend another class (only Object is allowed).
-    if (node.extendsClause != null) return;
+      bool initializesField = false;
+      for (final ctor in node.members.whereType<ConstructorDeclaration>()) {
+        for (final init in ctor.initializers) {
+          if (init is ConstructorFieldInitializer && init.fieldName.name == result.fieldName) {
+            initializesField = true;
+          }
+        }
+        for (final param in ctor.parameters.parameters) {
+          if (param is FieldFormalParameter && param.name.lexeme == result.fieldName) {
+            initializesField = true;
+          }
+        }
+      }
 
-    // Skip classes that implement other interfaces.
-    if (node.implementsClause != null) return;
+      if (!initializesField) return;
 
-    // Exactly one non-static instance field declaration.
-    final fields = node.members.whereType<FieldDeclaration>().where((f) => !f.isStatic).toList();
-    if (fields.length != 1) return;
+      rule.reportAtNode(node);
+    }
+  }
+}
+
+extension on ClassDeclaration {
+  bool get isAbstract => abstractKeyword != null;
+  bool get hasExtendsClause => extendsClause != null;
+  bool get hasImplementsClause => implementsClause != null;
+
+  bool get isWrapperClass {
+    return !isAbstract && !hasExtendsClause && !hasImplementsClause;
+  }
+
+  ({bool success, String? fieldName}) get hasSingleNonStaticFinalField {
+    final fields = members.whereType<FieldDeclaration>().where((f) => !f.isStatic).toList();
+    if (fields.length != 1) return (success: false, fieldName: null);
 
     final variables = fields.first.fields.variables;
-    if (variables.length != 1) return;
+    if (variables.length != 1) return (success: false, fieldName: null);
 
-    final variable = variables.first;
-    if (!variable.isFinal) return;
-
-    final fieldName = variable.name.lexeme;
-
-    // The constructor must initialize the field (this.field or initializer list).
-    bool initializesField = false;
-    for (final ctor in node.members.whereType<ConstructorDeclaration>()) {
-      for (final init in ctor.initializers) {
-        if (init is ConstructorFieldInitializer && init.fieldName.name == fieldName) {
-          initializesField = true;
-        }
-      }
-      for (final param in ctor.parameters.parameters) {
-        if (param is FieldFormalParameter && param.name.lexeme == fieldName) {
-          initializesField = true;
-        }
-      }
-    }
-
-    if (!initializesField) return;
-
-    rule.reportAtNode(node);
+    return (success: variables.first.isFinal, fieldName: variables.first.name.lexeme);
   }
 }
