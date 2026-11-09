@@ -17,6 +17,29 @@ class UserId {
       expect(runAnalysisRuleOnUnit(PreferExtensionTypeForWrapperRule(), unit), hasLength(1));
     });
 
+    test('reports eligible wrappers with different representation types', () async {
+      final unit = await resolveSource('''
+class UserId {
+  final String value;
+  const UserId(this.value);
+}
+
+class RetryCount {
+  final int _value;
+  const RetryCount(this._value);
+  int get value => _value;
+}
+
+class Timeout {
+  final Duration value;
+  Timeout(this.value);
+  bool get isZero => value == Duration.zero;
+}
+''');
+
+      expect(runAnalysisRuleOnUnit(PreferExtensionTypeForWrapperRule(), unit), hasLength(3));
+    });
+
     test('does not report a class with multiple fields', () async {
       final unit = await resolveSource('''
 class User {
