@@ -29,6 +29,31 @@ class User {
       expect(runAnalysisRuleOnUnit(PreferExtensionTypeForWrapperRule(), unit), isEmpty);
     });
 
+    test('does not report a class with a static field', () async {
+      final unit = await resolveSource('''
+class UserId {
+  static const String kind = 'user';
+  final String value;
+  const UserId(this.value);
+}
+''');
+
+      expect(runAnalysisRuleOnUnit(PreferExtensionTypeForWrapperRule(), unit), isEmpty);
+    });
+
+    test('does not report a class with an injected service parameter', () async {
+      final unit = await resolveSource('''
+class AnalyticsService {}
+
+class UserId {
+  final String value;
+  const UserId(this.value, AnalyticsService analyticsService);
+}
+''');
+
+      expect(runAnalysisRuleOnUnit(PreferExtensionTypeForWrapperRule(), unit), isEmpty);
+    });
+
     test('does not report a class extending another class', () async {
       final unit = await resolveSource('''
 class MyException implements Exception {

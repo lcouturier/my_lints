@@ -10,7 +10,9 @@ import 'package:analyzer/error/error.dart';
 /// An extension type (Dart 3) wraps a value without any runtime allocation,
 /// unlike a regular class that boxes the value. When a class exposes exactly
 /// one final instance field initialized by its constructor, it can usually be
-/// replaced by an extension type for zero-cost abstraction.
+/// replaced by an extension type for zero-cost abstraction. Classes with
+/// static fields or constructor parameters beyond the wrapped field are ignored
+/// because they may represent configuration or injected dependencies.
 ///
 /// ## Example
 ///
@@ -59,6 +61,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (node case ClassDeclaration(isWrapperClass: true)) {
       final result = node.hasSingleNonStaticFinalField;
       if (!result.success || result.fieldName == null) return;
+      if (!node.hasOnlyWrappedFieldConstructorParameters(result.fieldName!)) return;
 
       bool initializesField = false;
       for (final ctor in node.members.whereType<ConstructorDeclaration>()) {
@@ -85,9 +88,21 @@ extension on ClassDeclaration {
   bool get isAbstract => abstractKeyword != null;
   bool get hasExtendsClause => extendsClause != null;
   bool get hasImplementsClause => implementsClause != null;
+  bool get hasStaticField => members.whereType<FieldDeclaration>().any((field) => field.isStatic);
 
   bool get isWrapperClass {
-    return !isAbstract && !hasExtendsClause && !hasImplementsClause;
+    return !isAbstract && !hasExtendsClause && !hasImplementsClause && !hasStaticField;
+  }
+
+  bool hasOnlyWrappedFieldConstructorParameters(String fieldName) {
+    for (final constructor in members.whereType<ConstructorDeclaration>()) {
+      final parameters = constructor.parameters.parameters;
+      if (parameters.any((parameter) => parameter is! FieldFormalParameter || parameter.name.lexeme != fieldName)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   ({bool success, String? fieldName}) get hasSingleNonStaticFinalField {
