@@ -76,7 +76,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
       if (!initializesField) return;
 
-      rule.reportAtNode(node);
+      rule.reportAtToken(node.name);
     }
   }
 }

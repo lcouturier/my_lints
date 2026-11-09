@@ -33,7 +33,7 @@ class PreferSpreadForAddallRule extends AnalysisRule {
   PreferSpreadForAddallRule() : super(name: code.name, description: code.problemMessage);
 
   @override
-  LintCode get diagnosticCode => code;
+  DiagnosticCode get diagnosticCode => code;
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {

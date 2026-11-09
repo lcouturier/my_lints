@@ -42,7 +42,7 @@ class AvoidComplicatedConditionalRule extends AnalysisRule {
   final int threshold;
 
   @override
-  LintCode get diagnosticCode => code;
+  DiagnosticCode get diagnosticCode => code;
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {

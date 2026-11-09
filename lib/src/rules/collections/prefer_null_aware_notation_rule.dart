@@ -42,7 +42,7 @@ class PreferNullAwareNotationRule extends AnalysisRule {
       );
 
   @override
-  LintCode get diagnosticCode => code;
+  DiagnosticCode get diagnosticCode => code;
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {

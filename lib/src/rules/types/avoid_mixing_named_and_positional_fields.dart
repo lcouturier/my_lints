@@ -17,7 +17,7 @@ class AvoidMixingNamedAndPositionalFields extends AnalysisRule {
     : super(name: 'avoid_mixing_named_and_positional_fields', description: 'Avoid mixing named and positional fields');
 
   @override
-  LintCode get diagnosticCode => code;
+  DiagnosticCode get diagnosticCode => code;
 
   @override
   void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
