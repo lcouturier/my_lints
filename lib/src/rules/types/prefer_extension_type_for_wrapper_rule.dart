@@ -95,14 +95,10 @@ extension on ClassDeclaration {
   }
 
   bool hasOnlyWrappedFieldConstructorParameters(String fieldName) {
-    for (final constructor in members.whereType<ConstructorDeclaration>()) {
-      final parameters = constructor.parameters.parameters;
-      if (parameters.any((parameter) => parameter is! FieldFormalParameter || parameter.name.lexeme != fieldName)) {
-        return false;
-      }
-    }
-
-    return true;
+    return members.whereType<ConstructorDeclaration>().any((e) {
+      final parameters = e.parameters.parameters;
+      return parameters.every((p) => p is FieldFormalParameter && p.name.lexeme == fieldName);
+    });
   }
 
   ({bool success, String? fieldName}) get hasSingleNonStaticFinalField {
