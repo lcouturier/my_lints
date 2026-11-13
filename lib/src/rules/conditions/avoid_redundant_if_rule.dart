@@ -6,7 +6,6 @@ import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:my_lints/src/common/extensions.dart';
 
 /// A rule that detects if statements that simply return a boolean.
 ///
@@ -56,34 +55,36 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitIfStatement(IfStatement node) {
-    final elseStatement = node.elseStatement;
-    if (elseStatement != null) return;
-
-    final thenStatement = node.thenStatement;
-    final thenReturn = _extractReturn(thenStatement);
-    if (thenReturn == null) return;
-
-    final thenExpr = thenReturn.expression?.unParenthesized;
-    if (thenExpr is! BooleanLiteral) return;
-
-    final body = node.parent;
-    if (body is! Block) return;
-
-    final statements = body.statements;
-    final nextIndex = statements.indexWhere((s) => s == node) + 1;
-    if (nextIndex >= statements.length) return;
-    final nextStatement = statements[nextIndex];
-    final nextReturn = _extractReturn(nextStatement);
-    if (nextReturn == null) return;
-
-    final nextExpr = nextReturn.expression?.unParenthesized;
-    if (nextExpr is! BooleanLiteral) return;
-
-    if (thenExpr.value == true && nextExpr.value == false) {
-      rule.reportAtNode(node);
-    } else if (thenExpr.value == false && nextExpr.value == true) {
-      rule.reportAtNode(node);
+    final redundant = _redundantBooleanReturn(node);
+    if (redundant != null) {
+      rule.reportAtNode(redundant);
     }
+  }
+
+  /// Détecte si [node] est un `if` sans `else` qui retourne un booléen
+  /// suivi immédiatement du retour opposé. Retourne le nœud si redondant.
+  IfStatement? _redundantBooleanReturn(IfStatement node) {
+    if (node.elseStatement != null) return null;
+
+    final thenReturn = _extractReturn(node.thenStatement);
+    final thenExpr = thenReturn?.expression?.unParenthesized;
+    if (thenExpr is! BooleanLiteral) return null;
+
+    final block = node.parent;
+    if (block is! Block) return null;
+
+    final statements = block.statements;
+    final nextIndex = statements.indexOf(node) + 1;
+    if (nextIndex >= statements.length) return null;
+
+    final nextReturn = _extractReturn(statements[nextIndex]);
+    final nextExpr = nextReturn?.expression?.unParenthesized;
+    if (nextExpr is! BooleanLiteral) return null;
+
+    final isRedundant =
+        (thenExpr.value == true && nextExpr.value == false) || (thenExpr.value == false && nextExpr.value == true);
+
+    return isRedundant ? node : null;
   }
 
   ReturnStatement? _extractReturn(Statement? statement) {
