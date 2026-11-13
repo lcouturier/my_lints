@@ -26,12 +26,15 @@ import 'package:my_lints/src/rules/bloc/add_cubit_suffix_rule.dart';
 import 'package:my_lints/src/rules/collections/prefer_safe_first_where_rule.dart';
 import 'package:my_lints/src/rules/collections/prefer_spread_for_addall_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_assignation_in_condition_rule.dart';
+import 'package:my_lints/src/rules/conditions/avoid_redundant_if_rule.dart';
 import 'package:my_lints/src/rules/style/avoid_cascade_after_if_null_rule.dart';
 import 'package:my_lints/src/rules/conditions/avoid_compare_same_value_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_async_set_state_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_disposable_state_field_leaks_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_uncancelled_timers_in_state_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_unclosed_stream_subscriptions_rule.dart';
+import 'package:my_lints/src/rules/flutter/avoid_context_in_callback_rule.dart';
+import 'package:my_lints/src/rules/flutter/avoid_context_read_in_callback_rule.dart';
 import 'package:my_lints/src/rules/flutter/avoid_empty_set_state_rule.dart';
 import 'package:my_lints/src/rules/flutter/prefer_on_prefix_for_widget_callbacks_rule.dart';
 import 'package:my_lints/src/rules/flutter/edge_insets_rule.dart';
@@ -146,6 +149,8 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidRedundantDurationRule())
       ..registerWarningRule(AvoidCascadeAfterIfNullRule())
       ..registerWarningRule(AvoidEmptySetStateRule())
+      ..registerWarningRule(AvoidContextInCallbackRule())
+      ..registerWarningRule(AvoidContextReadInCallbackRule())
       ..registerWarningRule(AvoidAsyncSetStateRule())
       ..registerWarningRule(EdgeInsetsRule())
       ..registerWarningRule(AvoidMountedInSetStateRule())
@@ -153,6 +158,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidNestedTernaryRule())
       ..registerWarningRule(AvoidExtensionsOnRecordsRule())
       ..registerWarningRule(AvoidAssignationInConditionRule())
+      ..registerWarningRule(AvoidRedundantIfRule())
       ..registerWarningRule(AvoidIdenticalIfBranchRule())
       ..registerWarningRule(AvoidRedundantCollectionRule())
       ..registerWarningRule(AvoidRedundantSpreadRule())
