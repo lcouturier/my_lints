@@ -112,7 +112,6 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidUnusedAfterNullCheckRule())
       ..registerWarningRule(PreferIfCaseOverIsRule())
       ..registerWarningRule(AvoidUnusedCallbackParametersRule())
-      ..registerWarningRule(CubitStateMustBeEquatableRule())
       ..registerWarningRule(EquatablePropsMustIncludeAllFieldsRule())
       ..registerWarningRule(UnProtectedEmitAfterAwaitRule())
       ..registerWarningRule(PreferSpacingOverDivideWidgetsRule())

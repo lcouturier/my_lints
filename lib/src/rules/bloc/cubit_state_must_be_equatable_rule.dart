@@ -40,6 +40,7 @@ import 'package:my_lints/src/common/extensions.dart';
 ///   MyCubit() : super(MyState(0));
 /// }
 /// ```
+@Deprecated('Do not use anymore')
 class CubitStateMustBeEquatableRule extends AnalysisRule {
   static LintCode code = const LintCode(
     'cubit_state_must_be_equatable',
