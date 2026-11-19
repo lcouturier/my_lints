@@ -158,7 +158,6 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(PreferReturnAwaitRule())
       ..registerWarningRule(UnnecessaryToStringInInterpolationRule())
       ..registerWarningRule(AvoidToListBeforeJoinRule())
-      ..registerWarningRule(AvoidUnawaitedFuturesInCallbacksRule())
       ..registerWarningRule(AvoidUncheckedStreamSubscriptionsRule())
       ..registerWarningRule(PreferWhereTypeRule())
       ..registerWarningRule(AvoidI18nCurrentRule())

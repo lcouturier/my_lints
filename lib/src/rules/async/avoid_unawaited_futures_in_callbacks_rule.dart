@@ -40,6 +40,7 @@ import 'package:my_lints/src/common/extensions.dart';
 ///   );
 /// }
 /// ```
+@Deprecated('Do not use anymore')
 class AvoidUnawaitedFuturesInCallbacksRule extends AnalysisRule {
   AvoidUnawaitedFuturesInCallbacksRule() : super(name: code.name, description: code.problemMessage);
 
