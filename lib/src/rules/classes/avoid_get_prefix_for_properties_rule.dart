@@ -29,7 +29,11 @@ import 'package:analyzer/error/error.dart';
 /// }
 /// ```
 class AvoidGetPrefixForPropertiesRule extends AnalysisRule {
-  static const LintCode code = LintCode('avoid_get_prefix_for_properties', 'Avoid the "get" prefix in property names.');
+  static const LintCode code = LintCode(
+    'avoid_get_prefix_for_properties',
+    'Avoid the "get" prefix in property names.',
+    severity: DiagnosticSeverity.WARNING,
+  );
 
   AvoidGetPrefixForPropertiesRule() : super(name: code.name, description: code.problemMessage);
 

@@ -26,6 +26,7 @@ class AvoidRedundantSpreadRule extends AnalysisRule {
     'avoid_redundant_spread',
     'Avoid redundant spread elements.',
     correctionMessage: 'Remove the unnecessary spread.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidRedundantSpreadRule() : super(name: code.name, description: code.problemMessage);

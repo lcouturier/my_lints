@@ -27,6 +27,7 @@ class PreferNamedRecordFieldsRule extends AnalysisRule {
     'prefer_named_record_fields',
     'Record fields should be named for better readability.',
     correctionMessage: 'Consider adding names to record fields.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferNamedRecordFieldsRule() : super(name: code.name, description: code.problemMessage);

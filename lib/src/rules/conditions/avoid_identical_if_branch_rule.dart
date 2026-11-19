@@ -36,6 +36,7 @@ class AvoidIdenticalIfBranchRule extends AnalysisRule {
     'avoid_identical_if_branch',
     'Avoid identical if branches.',
     correctionMessage: 'Consider refactoring the code to eliminate redundant branches.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidIdenticalIfBranchRule() : super(name: code.name, description: code.problemMessage);

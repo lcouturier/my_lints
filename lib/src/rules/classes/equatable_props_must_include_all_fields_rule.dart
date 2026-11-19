@@ -42,6 +42,7 @@ class EquatablePropsMustIncludeAllFieldsRule extends AnalysisRule {
     'equatable_props_must_include_all_fields',
     'props getter is missing fields: {0}',
     correctionMessage: 'Add missing fields {0} to props',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   EquatablePropsMustIncludeAllFieldsRule() : super(name: code.name, description: code.problemMessage);

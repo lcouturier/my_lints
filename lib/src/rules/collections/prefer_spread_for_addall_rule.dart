@@ -28,6 +28,7 @@ class PreferSpreadForAddallRule extends AnalysisRule {
     'prefer_spread_for_addAll',
     'Use spread operator (...) instead of addAll().',
     correctionMessage: 'Replace addAll() with spread operator.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferSpreadForAddallRule() : super(name: code.name, description: code.problemMessage);

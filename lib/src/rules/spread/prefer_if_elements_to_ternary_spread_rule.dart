@@ -29,6 +29,7 @@ class PreferIfElementsToTernarySpreadRule extends AnalysisRule {
     'prefer_if_elements_to_ternary_spread',
     'Prefer using if elements instead of ternary expressions for spread operations.',
     correctionMessage: 'Use if elements instead of ternary expressions for spread operations.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferIfElementsToTernarySpreadRule() : super(name: code.name, description: code.problemMessage);

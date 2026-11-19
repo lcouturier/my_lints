@@ -32,6 +32,7 @@ class AvoidNullableInterpolationRule extends AnalysisRule {
     'avoid_nullable_interpolation',
     'Avoid using nullable values in string interpolation.',
     correctionMessage: 'Consider using a non-nullable value or providing a default value.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override

@@ -28,6 +28,7 @@ class AvoidEnumValuesByIndexRule extends AnalysisRule {
     'avoid_enum_values_by_index',
     'Avoid accessing enum values by index.',
     correctionMessage: 'Use the enum constant directly or byName() if using a string.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidEnumValuesByIndexRule() : super(name: code.name, description: code.problemMessage);

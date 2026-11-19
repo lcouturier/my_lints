@@ -32,6 +32,7 @@ class AvoidNestedSwitchExpressionRule extends AnalysisRule {
     'avoid_nested_switch_expression_rule',
     'Nested switch expressions can be difficult to read and maintain. Consider refactoring to avoid nesting.',
     correctionMessage: 'Try refactoring the code to avoid nested switch expressions.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidNestedSwitchExpressionRule() : super(name: code.name, description: code.problemMessage);

@@ -48,6 +48,7 @@ class AvoidUnawaitedFuturesInCallbacksRule extends AnalysisRule {
     'avoid_unawaited_futures_in_callbacks',
     'Avoid unawaited futures in callbacks.',
     correctionMessage: 'Consider awaiting the future or handling it appropriately.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override

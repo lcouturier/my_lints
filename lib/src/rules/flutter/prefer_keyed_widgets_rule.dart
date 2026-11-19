@@ -35,6 +35,7 @@ class PreferKeyedWidgetsRule extends AnalysisRule {
     'prefer_keyed_widgets',
     'Widgets in lists should have a key property to help Flutter identify them.',
     correctionMessage: 'Add a key property to this widget.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferKeyedWidgetsRule() : super(name: code.name, description: code.problemMessage);

@@ -35,6 +35,7 @@ class UseItemextentForLargeListRule extends AnalysisRule {
     'use_itemextent_for_large_list',
     'Use itemExtent for large lists.',
     correctionMessage: 'Add itemExtent or prototypeItem to ListView.builder for better performance',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   UseItemextentForLargeListRule() : super(name: code.name, description: code.problemMessage);

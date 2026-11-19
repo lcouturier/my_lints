@@ -26,6 +26,7 @@ class PreferConstEmptyListAfterIfNullRule extends AnalysisRule {
     'prefer_const_empty_list_after_if_null',
     'Prefer a const empty list as the if-null fallback.',
     correctionMessage: 'Use const [] instead of [].',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferConstEmptyListAfterIfNullRule() : super(name: code.name, description: code.problemMessage);

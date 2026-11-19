@@ -24,7 +24,11 @@ import 'package:analyzer/error/error.dart';
 /// final values = [...?items];
 /// ```
 class PreferNullAwareSpreadRule extends AnalysisRule {
-  static const LintCode code = LintCode('prefer_null_aware_spread', 'Use a null-aware spread (...?) instead.');
+  static const LintCode code = LintCode(
+    'prefer_null_aware_spread',
+    'Use a null-aware spread (...?) instead.',
+    severity: DiagnosticSeverity.WARNING,
+  );
 
   PreferNullAwareSpreadRule() : super(name: code.name, description: code.problemMessage);
 

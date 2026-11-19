@@ -26,6 +26,7 @@ class UseJoinOnStringsRule extends AnalysisRule {
     'avoid_join_on_non_strings',
     'Avoid calling join() on Iterable that does not contain Strings.',
     correctionMessage: 'Convert elements to String before calling join(), e.g. map((e) => e.toString()).join().',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   UseJoinOnStringsRule() : super(name: code.name, description: code.problemMessage);

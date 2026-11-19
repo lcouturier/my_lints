@@ -37,6 +37,7 @@ class AvoidNestedBlocProviderRule extends AnalysisRule {
     'avoid_nested_bloc_provider',
     "Avoid nested BlocProvider. Consider flattening the structure.",
     correctionMessage: "Consider using MultiBlocProvider.",
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidNestedBlocProviderRule() : super(name: code.name, description: code.problemMessage);

@@ -31,6 +31,7 @@ class PreferMapOverMapIndexedRule extends AnalysisRule {
     'prefer_map_over_mapIndexed',
     "Prefer using map when the index is not used.",
     correctionMessage: "Use map instead of mapIndexed.",
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferMapOverMapIndexedRule() : super(name: code.name, description: code.problemMessage);

@@ -28,6 +28,7 @@ class AvoidYodaConditionsRule extends AnalysisRule {
     'avoid_yoda_conditions',
     'Avoid Yoda conditions.',
     correctionMessage: 'Consider reordering the operands to improve readability.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidYodaConditionsRule() : super(name: code.name, description: code.problemMessage);

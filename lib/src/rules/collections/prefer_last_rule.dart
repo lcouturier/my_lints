@@ -27,6 +27,7 @@ class PreferLastRule extends AnalysisRule {
     'prefer_last_over_index',
     "Use '.last' instead of accessing the last element by index.",
     correctionMessage: "Replace with '.last'.",
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferLastRule() : super(name: code.name, description: code.problemMessage);

@@ -27,6 +27,7 @@ class PreferCollectionIfForConditionalElementsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_collection_if_for_conditional_elements',
     'Avoid unnecessary spreads or ternaries in collections.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferCollectionIfForConditionalElementsRule() : super(name: code.name, description: code.problemMessage);

@@ -31,6 +31,7 @@ class AvoidComplexLoopConditionsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_complex_loop_conditions',
     'Avoid complex loop conditions. Extract the condition to a variable or method.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidComplexLoopConditionsRule() : super(name: code.name, description: code.problemMessage);

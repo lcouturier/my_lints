@@ -29,6 +29,7 @@ class AvoidMagicNumbersRule extends AnalysisRule {
     'avoid_magic_numbers',
     'Avoid using numeric literals directly in code.',
     correctionMessage: 'Avoid using magic numbers. Consider defining them as constants with meaningful names.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidMagicNumbersRule() : super(name: code.name, description: code.problemMessage);

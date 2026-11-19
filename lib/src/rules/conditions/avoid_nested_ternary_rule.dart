@@ -31,6 +31,7 @@ class AvoidNestedTernaryRule extends AnalysisRule {
     'avoid_nested_ternary',
     'Nested ternary operators can make code harder to read and understand.',
     correctionMessage: 'Consider using a regular if-else statement instead.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidNestedTernaryRule() : super(name: code.name, description: code.problemMessage);

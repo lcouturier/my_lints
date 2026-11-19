@@ -30,6 +30,7 @@ class UnnecessaryStringInterpolationRule extends AnalysisRule {
     'unnecessary_string_interpolation',
     'Unnecessary string interpolation.',
     correctionMessage: 'Remove unnecessary interpolation braces.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   UnnecessaryStringInterpolationRule() : super(name: code.name, description: code.problemMessage);

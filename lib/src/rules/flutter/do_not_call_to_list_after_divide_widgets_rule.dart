@@ -26,6 +26,7 @@ class DoNotCallToListAfterDivideWidgetsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'do_not_call_to_list_after_divide_widgets',
     'Do not call toList() after divideWidgets method.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   DoNotCallToListAfterDivideWidgetsRule() : super(name: code.name, description: code.problemMessage);

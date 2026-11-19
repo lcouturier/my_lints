@@ -31,6 +31,7 @@ class AvoidJoinOnNullableItemRule extends AnalysisRule {
     'avoid_join_on_nullable_item',
     'Avoid calling join() on an Iterable containing nullable items or dynamic types.',
     correctionMessage: 'Ensure the Iterable does not contain null values before calling join() by calling whereType().',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidJoinOnNullableItemRule() : super(name: code.name, description: code.problemMessage);

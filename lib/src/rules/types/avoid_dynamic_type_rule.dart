@@ -27,6 +27,7 @@ class AvoidDynamicTypeRule extends AnalysisRule {
     'avoid_dynamic_type',
     'Using dynamic is considered unsafe since it can easily result in runtime errors.',
     correctionMessage: 'Try replacing it with a different type.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidDynamicTypeRule() : super(name: code.name, description: code.problemMessage);

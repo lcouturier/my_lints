@@ -39,6 +39,7 @@ class AvoidReturningValueFromCubitMethodsRule extends AnalysisRule {
     'avoid_returning_value_from_cubit_methods',
     'Cubit methods should not return values. Emit states instead.',
     correctionMessage: 'Listen to a Cubit state change instead',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidReturningValueFromCubitMethodsRule() : super(name: code.name, description: code.problemMessage);

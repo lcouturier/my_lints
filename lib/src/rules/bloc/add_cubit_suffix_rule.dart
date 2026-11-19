@@ -23,7 +23,11 @@ import 'package:my_lints/src/common/extensions.dart';
 /// class UserStateCubit extends Cubit<UserState> {}
 /// ```
 class AddCubitSuffixRule extends AnalysisRule {
-  static LintCode code = const LintCode('add_cubit_suffix_rule', 'Consider add cubit suffix to {0}.');
+  static LintCode code = const LintCode(
+    'add_cubit_suffix_rule',
+    'Consider add cubit suffix to {0}.',
+    severity: DiagnosticSeverity.WARNING,
+  );
 
   AddCubitSuffixRule() : super(name: code.name, description: code.problemMessage);
 

@@ -28,6 +28,7 @@ class PreferFirstRule extends AnalysisRule {
     'prefer_first_over_index',
     "Use '.first' instead of accessing the first element by index.",
     correctionMessage: "Replace with '.first'.",
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferFirstRule() : super(name: code.name, description: code.problemMessage);

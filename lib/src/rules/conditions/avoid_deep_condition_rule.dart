@@ -35,6 +35,7 @@ class AvoidDeepConditionsRule extends AnalysisRule {
     'avoid_deep_conditions',
     'Condition is nested too deeply.',
     correctionMessage: 'Extract parts of the condition into well-named boolean variables.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidDeepConditionsRule({required this.maxDepth}) : super(name: code.name, description: code.problemMessage);

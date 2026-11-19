@@ -26,6 +26,7 @@ class PreferThrowExceptionOrErrorRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_throw_exception_or_error',
     'Avoid throwing literals or raw Exception/Error. Use a specific Exception or Error type instead.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferThrowExceptionOrErrorRule() : super(name: code.name, description: code.problemMessage);

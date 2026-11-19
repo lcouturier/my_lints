@@ -48,6 +48,7 @@ class PreferBlocExtensionsRule extends AnalysisRule {
     'prefer_bloc_extensions',
     'Prefer using BLoC extensions for state and event access.',
     correctionMessage: 'Use context.watch for state and context.read for events instead of BlocProvider.of.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferBlocExtensionsRule() : super(name: code.name, description: code.problemMessage);

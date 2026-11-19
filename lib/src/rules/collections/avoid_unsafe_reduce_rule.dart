@@ -31,6 +31,7 @@ class AvoidUnsafeReduceRule extends AnalysisRule {
     'avoid_unsafe_reduce',
     'Avoid unsafe reduce usage',
     correctionMessage: 'Provide a condition to ensure that reduce is not called on an empty iterable.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidUnsafeReduceRule() : super(name: code.name, description: code.problemMessage);

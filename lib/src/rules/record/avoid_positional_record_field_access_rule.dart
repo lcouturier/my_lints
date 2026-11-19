@@ -28,6 +28,7 @@ class AvoidPositionalRecordFieldAccessRule extends AnalysisRule {
     'avoid_positional_record_field_access',
     'Avoid positional record field access.',
     correctionMessage: 'Use named record field access instead of positional access.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidPositionalRecordFieldAccessRule() : super(name: code.name, description: code.problemMessage);

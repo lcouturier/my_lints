@@ -46,7 +46,7 @@ class AvoidUncancelledTimersInStateRule extends AnalysisRule {
     'avoid_uncancelled_timers_in_state',
     'Timer "{0}" is not cancelled in dispose().',
     correctionMessage: 'Call cancel() on the timer in dispose().',
-    severity: ErrorSeverity.WARNING,
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override

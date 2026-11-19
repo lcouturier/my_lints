@@ -26,6 +26,7 @@ class PreferNullAwareElementsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_null_aware_elements',
     "Prefer null-aware elements ('...?') instead of checking for a potential null value.",
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferNullAwareElementsRule() : super(name: code.name, description: code.problemMessage);

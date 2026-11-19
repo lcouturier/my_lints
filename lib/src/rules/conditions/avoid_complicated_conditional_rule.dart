@@ -35,6 +35,7 @@ class AvoidComplicatedConditionalRule extends AnalysisRule {
     'avoid_complicated_conditionals',
     'Avoid complicated conditionals.',
     correctionMessage: 'Consider splitting the condition into smaller expressions.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidComplicatedConditionalRule({required this.threshold}) : super(name: code.name, description: code.problemMessage);

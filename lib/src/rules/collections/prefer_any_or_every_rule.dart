@@ -30,6 +30,7 @@ class PreferAnyRule extends AnalysisRule {
     'prefer_any',
     'Use .{0}() instead of .where().{1}.',
     correctionMessage: 'Replace with .{0}() for better readability and performance.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferAnyRule() : super(name: code.name, description: code.problemMessage);

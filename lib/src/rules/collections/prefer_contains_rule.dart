@@ -27,6 +27,7 @@ class PreferContainsRule extends AnalysisRule {
     'prefer_contains_over_indexOf',
     'Use .contains() instead of .indexOf() compared to -1.',
     correctionMessage: 'Replace with .contains() for better readability.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferContainsRule() : super(name: code.name, description: code.problemMessage);

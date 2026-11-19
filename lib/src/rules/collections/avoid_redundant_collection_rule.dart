@@ -30,6 +30,7 @@ class AvoidRedundantCollectionRule extends AnalysisRule {
     'avoid_redundant_collection',
     'Redundant collection creation.',
     correctionMessage: 'Try using a collection literal with a spread operator instead.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidRedundantCollectionRule() : super(name: code.name, description: code.problemMessage);
