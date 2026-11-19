@@ -29,6 +29,7 @@ class PreferWhereTypeRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_where_type',
     'Prefer using whereType<T>() instead of where((e) => e != null)',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferWhereTypeRule() : super(name: code.name, description: code.problemMessage);

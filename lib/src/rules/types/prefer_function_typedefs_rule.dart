@@ -28,6 +28,7 @@ class PreferFunctionTypedefsRule extends AnalysisRule {
     'prefer_function_typedefs',
     'Prefer function typedefs',
     correctionMessage: 'Use a typedef instead of an inline function type.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferFunctionTypedefsRule() : super(name: code.name, description: code.problemMessage);

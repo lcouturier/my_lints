@@ -32,6 +32,7 @@ class AvoidForEachRule extends AnalysisRule {
     'avoid_for_each',
     'Avoid using forEach',
     correctionMessage: 'Consider using a for-in loop instead of forEach.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidForEachRule() : super(name: code.name, description: code.problemMessage);

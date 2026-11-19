@@ -32,6 +32,7 @@ class PreferTernaryOverIfElseRule extends AnalysisRule {
     'prefer_ternary_over_if_else',
     "Use a ternary operator instead of an if-else statement.",
     correctionMessage: "Try using a ternary operator instead of an if-else statement.",
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferTernaryOverIfElseRule() : super(name: code.name, description: code.problemMessage);

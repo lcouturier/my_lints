@@ -28,6 +28,7 @@ class PreferStringInterpolationRule extends AnalysisRule {
     'prefer_string_interpolation',
     'Prefer using string interpolation over string concatenation.',
     correctionMessage: 'Use string interpolation instead of concatenation.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferStringInterpolationRule() : super(name: code.name, description: code.problemMessage);

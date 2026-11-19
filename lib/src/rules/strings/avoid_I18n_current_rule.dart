@@ -32,6 +32,7 @@ class AvoidI18nCurrentRule extends AnalysisRule {
     'avoid_i18n_current',
     'Avoid using I18n.current. Consider using I18n.of(context) instead.',
     correctionMessage: 'Replace I18n.current with I18n.of(context) for better readability and maintainability.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidI18nCurrentRule() : super(name: code.name, description: code.problemMessage);

@@ -24,7 +24,11 @@ import 'package:analyzer/error/error.dart';
 /// ```
 @Deprecated('Do not use anymore this rule, prefer using prefer_void_callable_rule.')
 class PreferUsageOfValueGetterRule extends AnalysisRule {
-  static const LintCode code = LintCode('prefer_usage_of_value_getter', 'Prefer using the value getter.');
+  static const LintCode code = LintCode(
+    'prefer_usage_of_value_getter',
+    'Prefer using the value getter.',
+    severity: DiagnosticSeverity.WARNING,
+  );
 
   PreferUsageOfValueGetterRule() : super(name: code.name, description: code.problemMessage);
 

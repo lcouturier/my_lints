@@ -32,6 +32,7 @@ class AvoidNestedAssignmentRule extends AnalysisRule {
     'avoid_nested_assignment',
     'Nested assignments can lead to confusion or indicate an incorrect operator (= instead of ==).',
     correctionMessage: 'Try moving each assignment to its own line.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidNestedAssignmentRule() : super(name: code.name, description: code.problemMessage);

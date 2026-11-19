@@ -38,7 +38,7 @@ class PreferExtensionTypeForWrapperRule extends AnalysisRule {
     'prefer_extension_type_for_wrapper',
     'Use an extension type instead of a class that wraps a single value.',
     correctionMessage: 'Wrap this value in an extension type.',
-    severity: ErrorSeverity.WARNING,
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override

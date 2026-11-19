@@ -31,6 +31,7 @@ class PreferNullAwareAssignmentRule extends AnalysisRule {
     'prefer_null_aware_assignment',
     "Prefer using null-aware assignment.",
     correctionMessage: "Use ??= instead of explicit null check and assignment.",
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferNullAwareAssignmentRule() : super(name: code.name, description: code.problemMessage);

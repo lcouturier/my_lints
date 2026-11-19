@@ -44,6 +44,7 @@ class AvoidWatchOutsideBuildRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_watch_outside_build',
     'Watching a stream outside of a build method can lead to memory leaks.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidWatchOutsideBuildRule() : super(name: code.name, description: code.problemMessage);

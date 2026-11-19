@@ -27,6 +27,7 @@ class AvoidSelfAssignmentRule extends AnalysisRule {
     'avoid_self_assignment',
     'Avoid self-assignment.',
     correctionMessage: 'Remove the self-assignment.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidSelfAssignmentRule() : super(name: code.name, description: code.problemMessage);

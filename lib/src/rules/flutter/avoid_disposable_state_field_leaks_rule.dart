@@ -54,7 +54,11 @@ import 'package:my_lints/src/common/extensions.dart';
 class AvoidDisposableStateFieldLeaksRule extends AnalysisRule {
   AvoidDisposableStateFieldLeaksRule() : super(name: code.name, description: code.problemMessage);
 
-  static const LintCode code = LintCode('avoid_disposable_state_field_leaks', 'Controller "{0}" is not disposed.');
+  static const LintCode code = LintCode(
+    'avoid_disposable_state_field_leaks',
+    'Controller "{0}" is not disposed.',
+    severity: DiagnosticSeverity.WARNING,
+  );
 
   @override
   DiagnosticCode get diagnosticCode => code;

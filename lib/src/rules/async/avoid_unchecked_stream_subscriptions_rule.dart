@@ -33,6 +33,7 @@ class AvoidUncheckedStreamSubscriptionsRule extends AnalysisRule {
     'avoid_unchecked_stream_subscriptions',
     'Stream subscription is not stored or cancelled.',
     correctionMessage: 'Store the subscription in a variable so it can be cancelled later.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override

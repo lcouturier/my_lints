@@ -29,6 +29,7 @@ class PreferNamedBooleanParametersRule extends AnalysisRule {
     'prefer_named_boolean_parameters',
     'Converting positional boolean parameters to named parameters helps you avoid situations with a wrong value passed to the parameter.',
     correctionMessage: 'Try converting {0} boolean parameter to a named parameter.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferNamedBooleanParametersRule() : super(name: code.name, description: code.problemMessage);

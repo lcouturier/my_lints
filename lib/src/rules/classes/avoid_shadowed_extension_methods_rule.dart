@@ -38,6 +38,7 @@ class AvoidShadowedExtensionMethodsRule extends AnalysisRule {
     'avoid_shadowed_extension_methods',
     'Avoid shadowing extension methods. Method "{0}" is already defined in the extended class.',
     correctionMessage: 'Use a different method name for "{0}" to avoid shadowing.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidShadowedExtensionMethodsRule() : super(name: code.name, description: code.problemMessage);

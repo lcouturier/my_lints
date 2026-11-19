@@ -51,6 +51,7 @@ class ProperSuperCallsRule extends AnalysisRule {
   static LintCode code = const LintCode(
     'proper_super_calls',
     "Ensure that 'super.initState()' and 'super.dispose()' are called in the correct order.",
+    severity: DiagnosticSeverity.WARNING,
   );
 
   ProperSuperCallsRule() : super(name: code.name, description: code.problemMessage);

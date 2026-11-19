@@ -37,6 +37,7 @@ class PreferReturnAwaitRule extends AnalysisRule {
     'Prefer returning the awaited result of a Future.',
     correctionMessage:
         'Consider using "return await" instead of returning the Future directly when inside a try-catch block.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferReturnAwaitRule() : super(name: code.name, description: code.problemMessage);

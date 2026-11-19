@@ -26,6 +26,7 @@ class AvoidDeepPropertyAccessRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_deep_property_access',
     'Avoid deep property access (e.g. a.b.c.d). Consider breaking it into multiple lines or using intermediate variables.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidDeepPropertyAccessRule() : super(name: code.name, description: code.problemMessage);

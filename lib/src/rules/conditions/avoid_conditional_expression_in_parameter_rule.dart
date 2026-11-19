@@ -36,6 +36,7 @@ class AvoidConditionalExpressionInParameterRule extends AnalysisRule {
     'avoid_conditional_expression_in_parameter',
     'Avoid using conditional expressions in parameter values.',
     correctionMessage: 'Try to avoid using conditional expressions in parameter values.',
+    severity: DiagnosticSeverity.WARNING,
   );
   AvoidConditionalExpressionInParameterRule() : super(name: code.name, description: code.problemMessage);
 

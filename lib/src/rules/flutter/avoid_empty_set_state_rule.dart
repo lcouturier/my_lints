@@ -28,6 +28,7 @@ class AvoidEmptySetStateRule extends AnalysisRule {
   static LintCode code = const LintCode(
     'avoid_empty_set_state',
     'Calling setState with an empty callback will still cause the widget to be re-rendered, but since it does not change the state, an empty callback is usually a sign of a bug.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidEmptySetStateRule() : super(name: code.name, description: code.problemMessage);

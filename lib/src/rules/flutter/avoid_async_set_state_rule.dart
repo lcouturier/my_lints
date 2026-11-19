@@ -34,6 +34,7 @@ class AvoidAsyncSetStateRule extends AnalysisRule {
     'avoid_async_set_state',
     'Do not pass an async callback to setState.',
     correctionMessage: 'Complete asynchronous work before calling setState and keep its callback synchronous.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidAsyncSetStateRule() : super(name: code.name, description: code.problemMessage);

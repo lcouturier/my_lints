@@ -32,6 +32,7 @@ class AvoidDoubleNegationConditionsRule extends AnalysisRule {
     'avoid_double_negation_conditions',
     'Avoid double negation in conditions.',
     correctionMessage: 'Remove the double negation for better readability.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidDoubleNegationConditionsRule() : super(name: code.name, description: code.problemMessage);

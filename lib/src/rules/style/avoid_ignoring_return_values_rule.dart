@@ -28,6 +28,7 @@ class AvoidIgnoringReturnValuesRule extends AnalysisRule {
   static LintCode code = const LintCode(
     'avoid-ignoring-return-values',
     'Warns when a return value of a method or function invocation or a class instance property access is not used.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override

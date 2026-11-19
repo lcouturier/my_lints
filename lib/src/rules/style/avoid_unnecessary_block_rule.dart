@@ -32,6 +32,7 @@ class AvoidUnnecessaryBlockRule extends AnalysisRule {
     'avoid_unnecessary_block',
     'Avoid unnecessary block.',
     correctionMessage: 'Remove the unnecessary block.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidUnnecessaryBlockRule() : super(name: code.name, description: code.problemMessage);

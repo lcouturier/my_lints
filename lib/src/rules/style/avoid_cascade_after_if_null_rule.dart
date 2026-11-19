@@ -27,6 +27,7 @@ class AvoidCascadeAfterIfNullRule extends AnalysisRule {
     'avoid_cascade_after_if_null',
     'Avoid using cascade operator after if-null operator.',
     correctionMessage: 'Add parentheses around the cascade expression.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidCascadeAfterIfNullRule() : super(name: code.name, description: code.problemMessage);

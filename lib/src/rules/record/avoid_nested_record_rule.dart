@@ -26,6 +26,7 @@ class AvoidNestedRecordRule extends AnalysisRule {
     'avoid_nested_record',
     'Avoid using nested records.',
     correctionMessage: 'Extract the inner record into a variable or use a dedicated class.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidNestedRecordRule() : super(name: code.name, description: code.problemMessage);

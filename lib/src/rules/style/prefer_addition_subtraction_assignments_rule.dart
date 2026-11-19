@@ -25,6 +25,7 @@ class PreferAdditionSubtractionAssignmentsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_addition_subtraction_assignments',
     'Prefer using += and -= instead of ++ and --',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferAdditionSubtractionAssignmentsRule() : super(name: code.name, description: code.problemMessage);

@@ -34,6 +34,7 @@ class PreferTryGetValueRule extends AnalysisRule {
     'Prefer using tryGetValue pattern instead of containsKey and []',
     correctionMessage:
         "Consider using `map[key] ?? fallback` instead of containsKey and [] for better performance and readability.",
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferTryGetValueRule() : super(name: code.name, description: code.problemMessage);

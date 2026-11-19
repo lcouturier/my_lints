@@ -32,6 +32,7 @@ class AvoidUnusedAfterNullCheckRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'avoid_unused_after_null_check',
     'The variable {0} is null-checked in a condition but never referenced inside the guarded block.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override

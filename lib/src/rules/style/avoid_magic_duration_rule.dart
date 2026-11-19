@@ -28,6 +28,7 @@ class AvoidMagicDurationRule extends AnalysisRule {
     'avoid_magic_duration',
     'Avoid using magic durations.',
     correctionMessage: 'Define a constant with a descriptive name for the duration.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidMagicDurationRule() : super(name: code.name, description: code.problemMessage);

@@ -33,6 +33,7 @@ class PreferOnPrefixForWidgetCallbacksRule extends AnalysisRule {
     'prefer_on_prefix_for_widget_callbacks',
     'Name widget callback fields with the `on` prefix.',
     correctionMessage: 'Prefix the callback field name with `on`.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override

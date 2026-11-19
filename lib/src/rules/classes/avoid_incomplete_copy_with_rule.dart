@@ -42,6 +42,7 @@ class AvoidIncompleteCopyWithRule extends AnalysisRule {
     'avoid_incomplete_copy_with',
     'copyWith method is missing parameters',
     correctionMessage: 'Add missing parameters {0} to copyWith',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidIncompleteCopyWithRule() : super(name: code.name, description: code.problemMessage);

@@ -24,7 +24,12 @@ import 'package:analyzer/error/error.dart';
 /// void update(bool value) {}
 /// ```
 class AvoidNullableBoolRule extends AnalysisRule {
-  static const code = LintCode('avoid_nullable_bool', 'Avoid nullable bool', correctionMessage: 'Avoid nullable bool');
+  static const code = LintCode(
+    'avoid_nullable_bool',
+    'Avoid nullable bool',
+    correctionMessage: 'Avoid nullable bool',
+    severity: DiagnosticSeverity.WARNING,
+  );
 
   AvoidNullableBoolRule() : super(name: code.name, description: code.problemMessage);
 

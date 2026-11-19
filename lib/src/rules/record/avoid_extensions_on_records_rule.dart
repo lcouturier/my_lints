@@ -38,6 +38,7 @@ class AvoidExtensionsOnRecordsRule extends AnalysisRule {
     "avoid_extensions_on_records",
     "Creating an extension on a record type will make that extension available for every record with the same form (e.g. (String, String)), which can lead to unexpected results. Also, since extensions are used to add additional behavior to external objects, and the primary purpose of records is to group data (not behavior), it's recommended to create a dedicated class instead."
         "Avoid declaring extensions on record types. Try declaring a class instead.",
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override

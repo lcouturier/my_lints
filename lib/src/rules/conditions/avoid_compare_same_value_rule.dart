@@ -27,7 +27,7 @@ class AvoidCompareSameValueRule extends AnalysisRule {
     'avoid_compare_same_value',
     'Avoid comparing the same value.',
     correctionMessage: 'Remove the comparison.',
-    severity: DiagnosticSeverity.ERROR,
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidCompareSameValueRule() : super(name: code.name, description: code.problemMessage);

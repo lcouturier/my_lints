@@ -34,6 +34,7 @@ class PreferExplicitFunctionType extends AnalysisRule {
     'prefer_explicit_function_type',
     "This 'Function' type does not specify a return type or parameter list.",
     correctionMessage: 'Try adding explicit return type and parameter list.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferExplicitFunctionType() : super(name: code.name, description: code.problemMessage);

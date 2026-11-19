@@ -26,6 +26,7 @@ class PreferCompoundAssignmentRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_compound_assignment',
     'Prefer using compound assignment operators (e.g., +=, -=) instead of simple assignment with arithmetic operations.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferCompoundAssignmentRule() : super(name: code.name, description: code.problemMessage);

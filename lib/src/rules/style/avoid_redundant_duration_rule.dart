@@ -26,6 +26,7 @@ class AvoidRedundantDurationRule extends AnalysisRule {
     'avoid_redundant_duration',
     'Redundant Duration constructor can be simplified.',
     correctionMessage: 'Remove the argument.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidRedundantDurationRule() : super(name: code.name, description: code.problemMessage);

@@ -23,10 +23,11 @@ import 'package:analyzer/error/error.dart';
 /// final matches = value == 5;
 /// ```
 class AvoidAssignationInConditionRule extends AnalysisRule {
-  static final code = const LintCode(
+  static final LintCode code = const LintCode(
     'avoid_assignation_in_condition',
     "Don't use assignation in condition.",
     correctionMessage: "Consider assigning the value to a variable before the condition.",
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidAssignationInConditionRule() : super(name: code.name, description: code.problemMessage);

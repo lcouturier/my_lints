@@ -29,6 +29,7 @@ class PreferIsEmptyRule extends AnalysisRule {
     'prefer_is_empty',
     'Prefer using `isEmpty`/`isNotEmpty` instead of comparing `length` to `0`.',
     correctionMessage: 'Replace `.length == 0` with `.isEmpty` and `.length != 0` with `.isNotEmpty`.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override

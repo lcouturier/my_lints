@@ -35,7 +35,11 @@ import 'package:analyzer/error/error.dart';
 /// }
 /// ```
 class AvoidNestedIfRule extends AnalysisRule {
-  static const LintCode code = LintCode('avoid_nested_if', 'Avoid nested if statements.');
+  static const LintCode code = LintCode(
+    'avoid_nested_if',
+    'Avoid nested if statements.',
+    severity: DiagnosticSeverity.WARNING,
+  );
 
   AvoidNestedIfRule() : super(name: code.name, description: code.problemMessage);
 

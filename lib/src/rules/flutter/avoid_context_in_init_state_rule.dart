@@ -33,7 +33,11 @@ import 'package:my_lints/src/common/extensions.dart';
 /// }
 /// ```
 class AvoidContextInInitStateRule extends AnalysisRule {
-  static LintCode code = const LintCode('avoid_context_in_initState', "Don't use 'context' in this method.");
+  static LintCode code = const LintCode(
+    'avoid_context_in_initState',
+    "Don't use 'context' in this method.",
+    severity: DiagnosticSeverity.WARNING,
+  );
 
   AvoidContextInInitStateRule() : super(name: code.name, description: code.problemMessage);
 

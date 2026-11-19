@@ -34,6 +34,7 @@ class EdgeInsetsRule extends AnalysisRule {
     'prefer_edge_insets_symmetric',
     'Prefer using EdgeInsets.symmetric when opposing EdgeInsets values are equal.',
     correctionMessage: 'Use EdgeInsets.symmetric to express the equal opposing values.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   EdgeInsetsRule() : super(name: code.name, description: code.problemMessage);

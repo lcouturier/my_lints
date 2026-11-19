@@ -34,6 +34,7 @@ class AvoidLongConditionsRule extends AnalysisRule {
     'avoid_long_conditions',
     'Conditions are too long or complex. Consider extracting to variables.',
     correctionMessage: 'Extract parts of the condition to named variables.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidLongConditionsRule({required this.maxTokens, required this.maxVariables, required this.maxOperatorTypes})

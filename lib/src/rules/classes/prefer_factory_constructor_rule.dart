@@ -33,6 +33,7 @@ class PreferFactoryConstructorRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_factory_constructor',
     'Prefer using factory constructors instead of static methods for object creation.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferFactoryConstructorRule() : super(name: code.name, description: code.problemMessage);

@@ -27,6 +27,7 @@ class AvoidToListBeforeJoinRule extends AnalysisRule {
     'avoid_tolist_before_join',
     'Avoid calling toList() before join() on Iterable.',
     correctionMessage: 'Call join() directly on the Iterable without converting it to a List first.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidToListBeforeJoinRule() : super(name: code.name, description: code.problemMessage);

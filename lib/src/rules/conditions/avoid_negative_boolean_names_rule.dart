@@ -31,6 +31,7 @@ class AvoidNegativeBooleanRule extends AnalysisRule {
     'avoid_negative_boolean',
     'Avoid negative boolean names.',
     correctionMessage: 'Use a positive boolean name to improve readability.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidNegativeBooleanRule() : super(name: code.name, description: code.problemMessage);

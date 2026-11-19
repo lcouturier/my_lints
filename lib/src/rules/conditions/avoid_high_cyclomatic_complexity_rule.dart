@@ -32,6 +32,7 @@ class AvoidHighCyclomaticComplexityRule extends AnalysisRule {
     'avoid_high_cyclomatic_complexity',
     'Function has high cyclomatic complexity ({0}). Consider extracting to smaller functions.',
     correctionMessage: 'Extract complex logic into separate functions.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidHighCyclomaticComplexityRule({required this.threshold})

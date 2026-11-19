@@ -27,6 +27,7 @@ class UnnecessaryToStringInInterpolationRule extends AnalysisRule {
     'unnecessary_to_string_in_interpolation',
     'Unnecessary `toString()` call in string interpolation.',
     correctionMessage: 'Remove unnecessary `toString()` call.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   UnnecessaryToStringInInterpolationRule() : super(name: code.name, description: code.problemMessage);

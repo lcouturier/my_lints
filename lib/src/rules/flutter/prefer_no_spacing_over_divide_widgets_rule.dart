@@ -35,6 +35,7 @@ class PreferSpacingOverDivideWidgetsRule extends AnalysisRule {
     'prefer_spacing_over_divide_widgets',
     'Prefer spacing property on column instead of divideWidgets meethod.',
     correctionMessage: 'Use spacing property instead of divideWidgets method.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   PreferSpacingOverDivideWidgetsRule() : super(name: code.name, description: code.problemMessage);

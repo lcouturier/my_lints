@@ -32,6 +32,7 @@ class PreferIfCaseOverIsRule extends AnalysisRule {
   static const LintCode code = LintCode(
     'prefer_if_case_over_is',
     'Use an if-case object pattern to access properties of the checked value.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override

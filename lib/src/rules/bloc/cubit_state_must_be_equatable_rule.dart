@@ -46,6 +46,7 @@ class CubitStateMustBeEquatableRule extends AnalysisRule {
     'cubit_state_must_be_equatable',
     'L\'état de ce Cubit ({0}) doit hériter de Equatable.',
     correctionMessage: 'Faites hériter la classe d\'état de Equatable.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   CubitStateMustBeEquatableRule() : super(name: code.name, description: code.problemMessage);

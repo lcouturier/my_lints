@@ -31,6 +31,7 @@ class AvoidUsageOfNullableListRule extends AnalysisRule {
     'Avoid usage of nullable list return type and parameters',
     correctionMessage:
         'Avoid using nullable list return type and parameters. Consider using non-nullable list instead.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   AvoidUsageOfNullableListRule() : super(name: code.name, description: code.problemMessage);
