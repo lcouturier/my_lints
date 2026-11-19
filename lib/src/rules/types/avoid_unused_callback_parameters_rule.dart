@@ -25,7 +25,9 @@ import 'package:my_lints/src/common/type_checker.dart';
 class AvoidUnusedCallbackParametersRule extends AnalysisRule {
   AvoidUnusedCallbackParametersRule() : super(name: code.name, description: code.problemMessage);
 
-  static const LintCode code = LintCode('avoid_unused_callback_parameters', 'The callback parameter {0} is not used.',
+  static const LintCode code = LintCode(
+    'avoid_unused_callback_parameters',
+    'The callback parameter {0} is not used.',
     severity: DiagnosticSeverity.WARNING,
   );
 
