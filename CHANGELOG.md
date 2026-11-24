@@ -4,6 +4,7 @@
 
 ### Added
 
+* Add the `prefer_map_sum` lint rule for integer summation folds.
 * Add the `avoid_let_scoped_function` lint rule for `let` calls immediately
   followed by a fallback value with `??`.
 * Add the `avoid_async_set_state` lint rule for async callbacks passed to

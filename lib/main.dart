@@ -46,6 +46,7 @@ import 'package:my_lints/src/rules/types/avoid_unused_callback_parameters_rule.d
 import 'package:my_lints/src/rules/types/prefer_if_case_over_is_rule.dart';
 import 'package:my_lints/src/rules/flutter/do_not_call_to_list_after_divide_widgets_rule.dart';
 import 'package:my_lints/src/rules/collections/prefer_map_over_map_indexed_rule.dart';
+import 'package:my_lints/src/rules/collections/prefer_map_sum_rule.dart';
 import 'package:my_lints/src/rules/flutter/prefer_no_spacing_over_divide_widgets_rule.dart';
 import 'package:my_lints/src/rules/async/unprotected_emit_after_await_rule.dart';
 import 'package:my_lints/src/rules/classes/prefer_factory_constructor_rule.dart';
@@ -106,6 +107,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidGetPrefixForPropertiesRule())
       ..registerWarningRule(AvoidUselessAsyncMethodRule())
       ..registerWarningRule(PreferMapOverMapIndexedRule())
+      ..registerWarningRule(PreferMapSumRule())
       ..registerWarningRule(AvoidUnnecessaryBlockRule())
       ..registerWarningRule(AvoidUnusedAfterNullCheckRule())
       ..registerWarningRule(PreferIfCaseOverIsRule())
