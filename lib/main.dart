@@ -13,6 +13,7 @@ import 'package:my_lints/src/fixes/prefer_explicit_function_type_fix.dart';
 import 'package:my_lints/src/fixes/prefer_extension_type_for_wrapper_fix.dart';
 import 'package:my_lints/src/fixes/prefer_first_fix.dart';
 import 'package:my_lints/src/fixes/prefer_last_fix.dart';
+import 'package:my_lints/src/fixes/prefer_map_sum_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_assignment_fix.dart';
 import 'package:my_lints/src/fixes/prefer_null_aware_elements_fix.dart';
 import 'package:my_lints/src/fixes/prefer_const_empty_list_after_if_null_fix.dart';
@@ -46,6 +47,7 @@ import 'package:my_lints/src/rules/types/avoid_unused_callback_parameters_rule.d
 import 'package:my_lints/src/rules/types/prefer_if_case_over_is_rule.dart';
 import 'package:my_lints/src/rules/flutter/do_not_call_to_list_after_divide_widgets_rule.dart';
 import 'package:my_lints/src/rules/collections/prefer_map_over_map_indexed_rule.dart';
+import 'package:my_lints/src/rules/collections/prefer_map_sum_rule.dart';
 import 'package:my_lints/src/rules/flutter/prefer_no_spacing_over_divide_widgets_rule.dart';
 import 'package:my_lints/src/rules/async/unprotected_emit_after_await_rule.dart';
 import 'package:my_lints/src/rules/classes/prefer_factory_constructor_rule.dart';
@@ -106,6 +108,7 @@ class MyLintsPlugin extends Plugin {
       ..registerWarningRule(AvoidGetPrefixForPropertiesRule())
       ..registerWarningRule(AvoidUselessAsyncMethodRule())
       ..registerWarningRule(PreferMapOverMapIndexedRule())
+      ..registerWarningRule(PreferMapSumRule())
       ..registerWarningRule(AvoidUnnecessaryBlockRule())
       ..registerWarningRule(AvoidUnusedAfterNullCheckRule())
       ..registerWarningRule(PreferIfCaseOverIsRule())
@@ -194,6 +197,7 @@ class MyLintsPlugin extends Plugin {
       ..registerFixForRule(AvoidI18nCurrentRule.code, AvoidI18nCurrentFixInFile.new)
       ..registerFixForRule(PreferFirstRule.code, PreferFirstFix.new)
       ..registerFixForRule(PreferFirstRule.code, PreferFirstFixInFile.new)
-      ..registerFixForRule(PreferIfCaseOverIsRule.code, PreferIfCaseOverIsFix.new);
+      ..registerFixForRule(PreferIfCaseOverIsRule.code, PreferIfCaseOverIsFix.new)
+      ..registerFixForRule(PreferMapSumRule.code, PreferMapSumFix.new);
   }
 }
