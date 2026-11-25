@@ -52,40 +52,58 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node.methodName.name != 'fold' || node.target == null) return;
-    if (node.methodName.element?.library?.uri != Uri.parse('dart:core')) return;
+    if (node
+        case MethodInvocation(
+          methodName: SimpleIdentifier(element: MethodElement(name: 'fold', library: LibraryElement(isDartCore: true))),
+          :final target,
+          argumentList: ArgumentList(arguments: [final initialValue, final callback]),
+        )
+        when (target != null) &&
+            (initialValue is IntegerLiteral && initialValue.value == 0) &&
+            (callback is FunctionExpression && callback.body is ExpressionFunctionBody) &&
+            (callback.parameters?.parameters.length == 2) &&
+            (callback.parameters?.parameters.first.declaredFragment?.element.type.isDartCoreInt ?? false)) {
+      final expression = (callback.body as ExpressionFunctionBody).expression.unParenthesized;
+      if (expression is! BinaryExpression || expression.operator.type != TokenType.PLUS) return;
 
-    final arguments = node.argumentList.arguments;
-    if (arguments.length != 2) return;
-    final initialValue = arguments[0].unParenthesized;
-    if (initialValue is! IntegerLiteral || initialValue.value != 0) return;
+      final left = expression.leftOperand.unParenthesized;
+      final right = expression.rightOperand;
+      final accumulator = callback.parameters!.parameters.first.declaredFragment!.element;
+      if (left is! SimpleIdentifier || left.element != accumulator || right.staticType?.isDartCoreInt != true) return;
 
-    final callback = arguments[1].unParenthesized;
-    if (callback is! FunctionExpression || callback.body is! ExpressionFunctionBody) return;
-    final parameters = callback.parameters?.parameters;
-    if (parameters == null || parameters.length != 2) return;
-    final accumulator = parameters.first.declaredFragment?.element;
-    if (accumulator == null || !accumulator.type.isDartCoreInt) return;
+      final accumulatorReferences = _AccumulatorVisitor(accumulator);
+      right.accept(accumulatorReferences);
+      if (accumulatorReferences.found) return;
 
-    final expression = (callback.body as ExpressionFunctionBody).expression.unParenthesized;
-    if (expression is! BinaryExpression || expression.operator.type != TokenType.PLUS) return;
-    final left = expression.leftOperand.unParenthesized;
-    final right = expression.rightOperand;
-    if (left is! SimpleIdentifier || left.element != accumulator || right.staticType?.isDartCoreInt != true) return;
+      rule.reportAtNode(node.methodName);
+    }
 
-    final accumulatorReferences = _AccumulatorReferences(accumulator);
-    right.accept(accumulatorReferences);
-    if (accumulatorReferences.found) return;
+    // final callback = arguments[1].unParenthesized;
+    // if (callback is! FunctionExpression || callback.body is! ExpressionFunctionBody) return;
+    // final parameters = callback.parameters?.parameters;
+    // if (parameters == null || parameters.length != 2) return;
+    // final accumulator = parameters.first.declaredFragment?.element;
+    // if (accumulator == null || !accumulator.type.isDartCoreInt) return;
 
-    rule.reportAtNode(node.methodName);
+    // final expression = (callback.body as ExpressionFunctionBody).expression.unParenthesized;
+    // if (expression is! BinaryExpression || expression.operator.type != TokenType.PLUS) return;
+    // final left = expression.leftOperand.unParenthesized;
+    // final right = expression.rightOperand;
+    // if (left is! SimpleIdentifier || left.element != accumulator || right.staticType?.isDartCoreInt != true) return;
+
+    // final accumulatorReferences = _AccumulatorVisitor(accumulator);
+    // right.accept(accumulatorReferences);
+    // if (accumulatorReferences.found) return;
+
+    // rule.reportAtNode(node.methodName);
   }
 }
 
-class _AccumulatorReferences extends RecursiveAstVisitor<void> {
+class _AccumulatorVisitor extends RecursiveAstVisitor<void> {
   final FormalParameterElement accumulator;
   bool found = false;
 
-  _AccumulatorReferences(this.accumulator);
+  _AccumulatorVisitor(this.accumulator);
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {

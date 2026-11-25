@@ -1,8 +1,6 @@
-int sumLengths(List<String> values) =>
-    values.fold<int>(0, (total, value) => total + value.length); // LINT
+int sumLengths(List<String> values) => values.fold<int>(0, (total, value) => total + value.length); // LINT
 
-int sumLengthsWithMap(List<String> values) =>
-    values.map((value) => value.length).sum;
+int sumLengthsWithMap(List<String> values) => values.map((value) => value.length).sum;
 
 class Values {
   final List<String> items;
@@ -11,8 +9,7 @@ class Values {
   Values(this.items, this.name);
 }
 
-int? sumNullableLengths(Values? values) =>
-    values?.items.map((value) => value.length).sum;
+int? sumNullableLengths(Values? values) => values?.items.map((value) => value.length).sum;
 
 // An extension such as package:collection's IterableIntegerExtension is needed.
 extension IntegerSum on Iterable<int> {
