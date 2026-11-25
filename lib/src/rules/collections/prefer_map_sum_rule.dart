@@ -52,53 +52,43 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitMethodInvocation(MethodInvocation node) {
-    if (node
-        case MethodInvocation(
-          methodName: SimpleIdentifier(element: MethodElement(name: 'fold', library: LibraryElement(isDartCore: true))),
-          :final target,
-          argumentList: ArgumentList(arguments: [final initialValue, final callback]),
-        )
-        when (target != null) &&
-            (initialValue is IntegerLiteral && initialValue.value == 0) &&
-            (callback is FunctionExpression && callback.body is ExpressionFunctionBody) &&
-            (callback.parameters?.parameters.length == 2) &&
-            (callback.parameters?.parameters.first.declaredFragment?.element.type.isDartCoreInt ?? false)) {
-      final expression = (callback.body as ExpressionFunctionBody).expression.unParenthesized;
-      if (expression is! BinaryExpression || expression.operator.type != TokenType.PLUS) return;
+    if (node case MethodInvocation(
+      methodName: SimpleIdentifier(element: MethodElement(name: 'fold', library: LibraryElement(isDartCore: true))),
+      :final target,
+      argumentList: ArgumentList(arguments: [final initialValue, final callback]),
+    ) when (target != null)) {
+      final initial = initialValue.unParenthesized;
+      if (initial is! IntegerLiteral || initial.value != 0) return;
 
+      // Ensure the callback is a function expression with two parameters and an integer accumulator as the first parameter.
+      final function = callback.unParenthesized;
+      if (function is! FunctionExpression) return;
+      final body = function.body;
+      if (body is! ExpressionFunctionBody) return;
+      final parameters = function.parameters?.parameters;
+      if (parameters == null || parameters.length != 2) return;
+
+      final accumulator = parameters.first.declaredFragment?.element;
+      if (accumulator == null || !accumulator.type.isDartCoreInt) return;
+
+      // Ensure the binary expression is of the form `accumulator + value` where `value` is an integer and does not reference the accumulator.
+      final expression = body.expression.unParenthesized;
+      if (expression is! BinaryExpression || expression.operator.type != TokenType.PLUS) return;
       final left = expression.leftOperand.unParenthesized;
       final right = expression.rightOperand;
-      final accumulator = callback.parameters!.parameters.first.declaredFragment!.element;
       if (left is! SimpleIdentifier || left.element != accumulator || right.staticType?.isDartCoreInt != true) return;
 
+      // Ensure the right operand does not reference the accumulator.
       final accumulatorReferences = _AccumulatorVisitor(accumulator);
       right.accept(accumulatorReferences);
       if (accumulatorReferences.found) return;
 
       rule.reportAtNode(node.methodName);
     }
-
-    // final callback = arguments[1].unParenthesized;
-    // if (callback is! FunctionExpression || callback.body is! ExpressionFunctionBody) return;
-    // final parameters = callback.parameters?.parameters;
-    // if (parameters == null || parameters.length != 2) return;
-    // final accumulator = parameters.first.declaredFragment?.element;
-    // if (accumulator == null || !accumulator.type.isDartCoreInt) return;
-
-    // final expression = (callback.body as ExpressionFunctionBody).expression.unParenthesized;
-    // if (expression is! BinaryExpression || expression.operator.type != TokenType.PLUS) return;
-    // final left = expression.leftOperand.unParenthesized;
-    // final right = expression.rightOperand;
-    // if (left is! SimpleIdentifier || left.element != accumulator || right.staticType?.isDartCoreInt != true) return;
-
-    // final accumulatorReferences = _AccumulatorVisitor(accumulator);
-    // right.accept(accumulatorReferences);
-    // if (accumulatorReferences.found) return;
-
-    // rule.reportAtNode(node.methodName);
   }
 }
 
+// ignore: unused_element
 class _AccumulatorVisitor extends RecursiveAstVisitor<void> {
   final FormalParameterElement accumulator;
   bool found = false;
